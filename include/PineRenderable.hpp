@@ -18,7 +18,8 @@ typedef std::shared_ptr<PineRenderable> PineRenderablePtr;
 
 class PineRenderable: public HierarchicalRenderable {
 public:
-    PineRenderable(ShaderProgramPtr shaderProgram, float height, int nbLeaves);
+    PineRenderable(ShaderProgramPtr shaderProgram, float height, float radius,
+            unsigned int nbLeaves = 7);
     ~PineRenderable();
 
     /**

@@ -22,15 +22,16 @@ void initialize_penguin_scene(Viewer &viewer) {
     ConeRenderablePtr leaves = std::make_shared<ConeRenderable>(flatShader,
             glm::vec4(1, 1, 1, 0), glm::vec4(0, 0.5, 0, 0), glm::vec4(0, 0.5, 0, 0),
             glm::vec4(0, 0, 0, 0), 9, 0.1);
-    //?
     viewer.addRenderable(leaves);
 
-    PineRenderablePtr sapin = std::make_shared<PineRenderable>(flatShader, 5, 0);
+    PineRenderablePtr sapin = std::make_shared<PineRenderable>(flatShader, 5, 1.5);
     sapin->bindTrunk(sapin);
     glm::mat4 translationM = glm::translate(glm::mat4(1.0), glm::vec3(2.0, 0.0, 0.0));
     sapin->setParentTransform(translationM);
 
     viewer.addRenderable(sapin);
+    viewer.getCamera().setViewMatrix(
+            glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
 
 }
 
