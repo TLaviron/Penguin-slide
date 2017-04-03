@@ -39,7 +39,7 @@ PineRenderable::PineRenderable(ShaderProgramPtr shaderProgram, float height, flo
     for (unsigned int i = 1; i < nbLeaves; i++) {
         currentRadius += drad;
         m_leaves[i] = std::make_shared<ConeRenderable>(shaderProgram, snowWhite, pineGreen,
-                snowWhite, midnightBlack, 5, 0.1);
+                pineGreen, midnightBlack, 5, 0.1);
         translateM = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, -leafHeight));
         scaleM = glm::scale(glm::mat4(1.0), glm::vec3(currentRadius, currentRadius, leafHeight));
         m_leaves[i]->setParentTransform(translateM);
