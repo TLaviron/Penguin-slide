@@ -9,7 +9,7 @@
 #define INCLUDE_PINERENDERABLE_HPP_
 
 #include "../include/HierarchicalRenderable.hpp"
-#include "../include/ConeRenderable.hpp"
+#include "../include/lighting/LightedConeRenderable.hpp"
 #include <vector>
 
 class PineRenderable;
@@ -37,8 +37,8 @@ protected:
     void do_animate(float time);
 
 private:
-    ConeRenderablePtr m_trunk;
-    std::vector<ConeRenderablePtr> m_leaves;
+    LightedConeRenderablePtr m_trunk;
+    std::vector<LightedConeRenderablePtr> m_leaves;
 };
 
 typedef std::shared_ptr<PineRenderable> PineRenderablePtr;

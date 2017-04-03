@@ -6,6 +6,7 @@
  */
 
 #include "../include/PineRenderable.hpp"
+#include "../include/lighting/Material.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 PineRenderable::PineRenderable(ShaderProgramPtr shaderProgram, float height, float radius,
@@ -17,8 +18,15 @@ PineRenderable::PineRenderable(ShaderProgramPtr shaderProgram, float height, flo
     glm::vec4 coreLightBrown(0.6, 0.4, 0.4, 0);
     glm::vec4 midnightBlack(0, 0, 0, 0);
     glm::vec4 pineGreen(0, 0.5, 0, 0);
+    MaterialPtr trunkMaterial = std::make_shared<Material>(glm::vec3(darkBrown),
+            glm::vec3(barkBrown),
+            glm::vec3(0, 0, 0), 0.0);
+    MaterialPtr leafMaterial = std::make_shared<Material>(glm::vec3(pineGreen),
+            glm::vec3(barkBrown), glm::vec3(0.5, 0.5, 0.5), 0.5);
 
-    m_trunk = std::make_shared<ConeRenderable>(shaderProgram, barkBrown, coreLightBrown, darkBrown,
+    m_trunk = std::make_shared<LightedConeRenderable>(shaderProgram, trunkMaterial, barkBrown,
+            coreLightBrown,
+            darkBrown,
             midnightBlack, 10, 0, 0);
     m_trunk->setLocalTransform(
             glm::scale(glm::mat4(1.0), glm::vec3(radius / 5, radius / 5, height)));
@@ -31,14 +39,16 @@ PineRenderable::PineRenderable(ShaderProgramPtr shaderProgram, float height, flo
     glm::mat4 scaleM = glm::scale(glm::mat4(1.0),
             glm::vec3(currentRadius, currentRadius, leafHeight));
     m_leaves.resize(nbLeaves);
-    m_leaves[0] = std::make_shared<ConeRenderable>(shaderProgram, snowWhite, pineGreen, snowWhite,
+    m_leaves[0] = std::make_shared<LightedConeRenderable>(shaderProgram, leafMaterial, snowWhite,
+            pineGreen, snowWhite,
             midnightBlack, 5, 0.1);
     m_leaves[0]->setParentTransform(translateM);
     m_leaves[0]->setLocalTransform(scaleM);
     HierarchicalRenderable::addChild(m_trunk, m_leaves[0]);
     for (unsigned int i = 1; i < nbLeaves; i++) {
         currentRadius += drad;
-        m_leaves[i] = std::make_shared<ConeRenderable>(shaderProgram, snowWhite, pineGreen,
+        m_leaves[i] = std::make_shared<LightedConeRenderable>(shaderProgram, leafMaterial,
+                snowWhite, pineGreen,
                 pineGreen, midnightBlack, 5, 0.1);
         translateM = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, -leafHeight));
         scaleM = glm::scale(glm::mat4(1.0), glm::vec3(currentRadius, currentRadius, leafHeight));
