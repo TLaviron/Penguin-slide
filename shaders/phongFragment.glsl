@@ -87,7 +87,7 @@ vec3 computeDirectionalLight(DirectionalLight light, vec3 surfel_to_camera)
 
     // Combine results
     vec3 ambient  =                   light.ambient  * material.ambient ;
-    vec3 diffuse  = diffuse_factor  * light.diffuse  * material.diffuse ;
+    vec3 diffuse  = diffuse_factor  * light.diffuse  * vec3(surfel_color) ;
     vec3 specular = specular_factor * light.specular * material.specular;
 
     return (ambient + diffuse + specular);
@@ -112,7 +112,7 @@ vec3 computePointLight(PointLight light, vec3 surfel_to_camera)
 
     // Combine results
     vec3 ambient  = attenuation *                   light.ambient  * material.ambient ;
-    vec3 diffuse  = attenuation * diffuse_factor  * light.diffuse  * material.diffuse ;
+    vec3 diffuse  = attenuation * diffuse_factor  * light.diffuse  * vec3(surfel_color) ;
     vec3 specular = attenuation * specular_factor * light.specular * material.specular;
 
     return (ambient + diffuse + specular);
@@ -142,7 +142,7 @@ vec3 computeSpotLight(SpotLight light, vec3 surfel_to_camera)
 
     // Combine results
     vec3 ambient  =             attenuation *                   light.ambient  * material.ambient ;
-    vec3 diffuse  = intensity * attenuation * diffuse_factor  * light.diffuse  * material.diffuse ;
+    vec3 diffuse  = intensity * attenuation * diffuse_factor  * light.diffuse  * vec3(surfel_color) ;
     vec3 specular = intensity * attenuation * specular_factor * light.specular * material.specular;
 
     return (ambient + diffuse + specular);
@@ -166,5 +166,5 @@ void main()
     for (int i=0; i<clampedNumberOfSpotLight; ++i)
         tmpColor += computeSpotLight(spotLight[i], surfel_to_camera);
 
-    outColor = vec4(tmpColor,1.0);
+    outColor = vec4(tmpColor,1.0) * surfel_color;
 }
