@@ -37,3 +37,23 @@ glm::vec4 getColor(const float& factor, const float& low, const float& high)
     glm::vec3 rgbColor = glm::rgbColor(hsvColor);
     return glm::vec4(rgbColor[0], rgbColor[1], rgbColor[2], 1.0);
 }
+
+template<class T>
+T & hermiteInterp(const std::vector<T> &points, float t) {
+    if (t < 0 || t > points.size() - 3)
+        return points.front(); //exception!
+
+    unsigned int i = floor(t);
+    T p0 = points[i + 1];
+    T p1 = points[i + 2];
+    T t0 = (points[i + 2] - points[i]) / 2;
+    T t1 = (points[i + 3] - points[i + 1]) / 2;
+    array<T, 4> bezierContPt = { p0, p0 + t0 / 3, p1 - t1 / 3, p1 };
+    float l = t - i; // fractional part of t
+    for (int k = 3; k > 0; k--) {
+        for (int j = 0; j < k; j++) {
+            bezierContPt[j] = bezierContPt[j] * (1 - l) + bezierContPt[j + 1] * l;
+        }
+    }
+    return bezierContPt[0];
+}
