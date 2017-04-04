@@ -34,7 +34,7 @@ glm::vec4 randomColor();
  * @return The generated color vector. */
 glm::vec4 getColor(const float& factor, const float& low, const float& high);
 
-template<class T>
-T & hermiteInterp(const std::vector<T> &points, float t);
+
+float & hermiteInterp(std::vector<float> &points, float t);
 
 #endif //UTILS

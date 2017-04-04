@@ -2,14 +2,13 @@
 // Created by sebastien on 03/04/17.
 //
 #include "../../include/lighting/LightedSlopeRenderable.hpp"
-#include "../../include/lighting/LightedSlopeRenderable.hpp"
 #include "../../include/gl_helper.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
 
-LightedSlopeRenderable::LightedSlopeRenderable(ShaderProgramPtr program, double inclinaison, const MaterialPtr& material)
-        : SlopeRenderable(program,inclinaison), Materiable(material)
+LightedSlopeRenderable::LightedSlopeRenderable(ShaderProgramPtr program, double inclinaison,BasicTerrainGenerator terrain, const MaterialPtr& material)
+        : SlopeRenderable(program,inclinaison,terrain), Materiable(material)
 {
 }
 
