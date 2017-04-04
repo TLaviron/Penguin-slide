@@ -13,10 +13,10 @@ public:
     TerrainGenerator(float variation);
     virtual ~TerrainGenerator();
 
-    virtual float getX(float x)=0;
-    virtual float getY(float y)=0;
+    virtual float getX(float x) const=0;
+    virtual float getY(float y) const=0;
 
-    float getVariation();
+    float getVariation() const;
 
 private:
     float m_variation;

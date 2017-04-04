@@ -14,7 +14,7 @@ TerrainGenerator::TerrainGenerator(float variation) :
 TerrainGenerator::~TerrainGenerator() {
 }
 
-float TerrainGenerator::getVariation() {
+float TerrainGenerator::getVariation() const {
     return m_variation;
 }
 
