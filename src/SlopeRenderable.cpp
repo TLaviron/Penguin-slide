@@ -1,23 +1,118 @@
 //
 // Created by sebastien on 03/04/17.
 //
-#include "./../include/gl_helper.hpp"
-#include "./../include/log.hpp"
-#include "./../include/Utils.hpp"
+
 #include "../include/SlopeRenderable.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <math.h>
-#include <glm/gtx/transform.hpp>
-
-SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclinaison) :
+SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclinaison, BasicTerrainGenerator terrain) :
         HierarchicalRenderable(shaderProgram)
 {
+
+//    // 8 vertices
+//    m_positions.push_back(glm::vec3(-0.5, -0.5, -0.5));
+//    m_positions.push_back(glm::vec3(0.5, -0.5, -0.5));
+//    m_positions.push_back(glm::vec3(0.5, 0.5, -0.5));
+//    m_positions.push_back(glm::vec3(-0.5, 0.5, -0.5));
+//    m_positions.push_back(glm::vec3(-0.5, -0.5, 0.5));
+//    m_positions.push_back(glm::vec3(-0.5, 0.5, 0.5));
+//    m_positions.push_back(glm::vec3(0.5, 0.5, 0.5));
+//    m_positions.push_back(glm::vec3(0.5, -0.5, 0.5));
+//
+//    // 8 normals (== vertex coordinates, since the cube is centered)
+//    for(const glm::vec3& x : m_positions) {
+//        m_normals.push_back(glm::normalize(x));
+//    }
+//
+//    // 12 triangles, 3 index each
+//    m_index.push_back(glm::ivec3(0, 2, 1));
+//    m_index.push_back(glm::ivec3(0, 3, 2));
+//    m_index.push_back(glm::ivec3(1, 6, 7));
+//    m_index.push_back(glm::ivec3(1, 2, 6));
+//    m_index.push_back(glm::ivec3(5, 4, 7));
+//    m_index.push_back(glm::ivec3(5, 7, 6));
+//    m_index.push_back(glm::ivec3(4, 3, 0));
+//    m_index.push_back(glm::ivec3(4, 5, 3));
+//    m_index.push_back(glm::ivec3(3, 6, 2));
+//    m_index.push_back(glm::ivec3(3, 5, 6));
+//    m_index.push_back(glm::ivec3(4, 0, 1));
+//    m_index.push_back(glm::ivec3(4, 1, 7));
+//
+//    //Assign one color to each of the 12 triangles
+//    m_colors.push_back(glm::vec4(1,0,0,1));
+//    m_colors.push_back(glm::vec4(0,1,0,1));
+//    m_colors.push_back(glm::vec4(0,0,1,1));
+//    m_colors.push_back(glm::vec4(0,1,1,1));
+//    m_colors.push_back(glm::vec4(1,0,0,1));
+//    m_colors.push_back(glm::vec4(0,1,0,1));
+//    m_colors.push_back(glm::vec4(0,0,1,1));
+//    m_colors.push_back(glm::vec4(0,1,1,1));
+
+
+
+    int x = 8;
+    int y = 8;
+    int n = 2; // discretisation
+    std::vector<float> spline1(x);
+    std::vector<float> spline2(y);
+    std::vector<glm::vec3> herm1((x-1)*n + 1);
+    std::vector<glm::vec3> herm2((y-1)*n + 1);
+    // points de controle du spline
+    for (int k = 0; k < x; ++k) {
+        spline1[k] = random(-terrain.getVariation(), terrain.getVariation());
+    }
+    for (int k = 0; k < y; ++k) {
+        spline2[k] = random(-terrain.getVariation(), terrain.getVariation());
+    }
+    // calcul de l'interpolation des points de la spline
+    for (int k = 0; k < (x-1)*n + 1; ++k) {
+        if(k>n && k<(x-2)*n + 1 ){
+            herm1[k] = glm::vec3(0,((float) k)/n,hermiteInterp(spline1, ((float) k) / n));
+        }else if(k<=n){
+            herm1[k] = glm::vec3(0,((float) k)/n,spline1[1] + (spline1[1] - spline1[0])* ((float) (k%n))/n);
+        }else {
+            herm1[k] = glm::vec3(0,((float) k)/n,spline1[x-2]+ (spline1[x-1] - spline1[x-2])* ((float) (k%n))/n);
+        }
+    }
+    for (int k = 0; k < (y-1)*n + 1; ++k) {
+        if(k>n && k<(y-2)*n+1 ){
+            herm2[k] = glm::vec3(((float) k)/n,0,hermiteInterp(spline2, ((float) k) / n));
+        } else if(k<=n) {
+            herm2[k] = glm::vec3(((float) k)/n,0,spline2[0] + (spline2[1] - spline2[0])* ((float) (k%n))/n);
+        } else {
+            herm2[k] = glm::vec3((((float) k)/n),0,spline2[y-2] + (spline2[y-1] - spline2[y-2])* ((float) (k%n))/n);
+        }
+    }
+
+    //création des faces
+    m_positions.resize(n*n*x*y/2);
+    m_colors.resize(n*n*x*y/2);
+    m_index.resize(n*n*x*y);
+    m_normals.resize(n*n*x*y);
+    int debut = 0;
+    for (int i = 0; i < n*x; ++i) {
+        for (int j = debut; j < n*y ; j+=2) {
+//            printf("%f %f %f\n",herm1[i][0] + herm2[j][0],herm1[i][1] + herm2[j][1],herm1[i][2] + herm2[j][2]);
+
+            m_positions.push_back(glm::vec3(herm1[i][0] + herm2[j][0],herm1[i][1] + herm2[j][1],herm1[i][2] + herm2[j][2]));
+        }
+        debut = 1 - debut;
+    }
+    for (int i = 0; i < n*x; ++i) {
+        for (int j = debut; j < (n*y)/2; j++) {
+            if (i!=0){
+//                printf("%d %d %d\n",i*n*y +j,i*n*y +j+1,(i-1)*n*y -debut +j );
+                m_index.push_back(glm::vec3(i*n*y +j,i*n*y +j+1,(i-1)*n*y -debut +j ));
+                m_colors.push_back(randomColor());
+            }
+            if (i != n*x -1){
+               // printf("%d %d %d\n",i*n*y +j,i*n*y +j+1,(i+1)*n*y -debut +j);
+                m_index.push_back(glm::vec3(i*n*y +j,i*n*y +j+1,(i+1)*n*y -debut +j ));
+                m_colors.push_back(randomColor());
+
+            }
+        }
+        debut = 1 - debut;
+    }
     m_model = glm::mat4(1.0);
     glGenBuffers(1, &m_pBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer);
@@ -28,6 +123,9 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
     glcheck(glGenBuffers(1, &m_nBuffer));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
+    glcheck(glGenBuffers(1, &m_iBuffer));
+    glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
+    glcheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_index.size()*sizeof(glm::ivec3), m_index.data(), GL_STATIC_DRAW));
 }
 
 void SlopeRenderable::do_draw()
@@ -55,6 +153,8 @@ void SlopeRenderable::do_draw()
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
 
+    glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
+    glcheck(glDrawElements(GL_TRIANGLES, m_index.size()*3, GL_UNSIGNED_INT, (void*)0));
 //release
     glDisableVertexAttribArray(positionLocation);
     glDisableVertexAttribArray(colorLocation);
@@ -68,6 +168,7 @@ SlopeRenderable::~SlopeRenderable()
 {
     glDeleteBuffers(1, &m_pBuffer);
     glDeleteBuffers(1, &m_cBuffer);
+    glDeleteBuffers(1, &m_iBuffer);
     glcheck(glDeleteBuffers(1, &m_nBuffer));
 
 }
