@@ -13,6 +13,7 @@ void initialize_practical_06_scene(Viewer& viewer);
 void initialize_practical_07_scene(Viewer& viewer, unsigned int scene_to_load = 71);
 
 void initialize_penguin_scene(Viewer& viewer);
+void initialize_decor_scene(Viewer& viewer);
 
 
 int main(int argc, char* argv[])
@@ -31,9 +32,9 @@ int main(int argc, char* argv[])
     }
 
     switch (scene_to_load) {
-    case 0:
-        initialize_penguin_scene(viewer);
-        break;
+        case 0:
+            initialize_penguin_scene(viewer);
+            break;
         case 1:
             initialize_practical_01_scene(viewer);
             break;
@@ -61,8 +62,11 @@ int main(int argc, char* argv[])
         case 74:
             initialize_practical_07_scene(viewer, scene_to_load);
             break;
+        case 8:
+            initialize_decor_scene(viewer);
+            break;
         default:
-            LOG(fatal, "unknown practical number " << scene_to_load);
+        LOG(fatal, "unknown practical number " << scene_to_load);
             exit(EXIT_FAILURE);
     }
 
