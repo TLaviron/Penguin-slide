@@ -13,7 +13,7 @@
 
 // resolution used for keyframe animation
 // Should be a multiple of 4, otherwise animation will look shortened
-#define SHAKE_RESOLUTION 12
+#define SHAKE_RESOLUTION 20
 
 class KeyframedConeRenderable: public LightedConeRenderable, Keyframable {
 public:

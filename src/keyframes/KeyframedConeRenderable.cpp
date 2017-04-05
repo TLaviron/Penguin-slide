@@ -31,7 +31,8 @@ void KeyframedConeRenderable::shake(float time, float duration, float angle) {
                 GeometricTransformation(glm::vec3(0, 0, 0),
                         glm::quat(angleRatio * angle, glm::vec3(0, 0, 1)), glm::vec3(1, 1, 1)));
     }
-    addLocalTransformKeyframe(curtime, GeometricTransformation::makeScale(glm::vec3(1, 1, 1)));
+    addLocalTransformKeyframe(curtime, GeometricTransformation(glm::vec3(0, 0, 0),
+                        glm::quat(0, glm::vec3(0, 0, 1)), glm::vec3(1, 1, 1)));
 }
 
 void KeyframedConeRenderable::do_animate(float time) {

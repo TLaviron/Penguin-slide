@@ -70,7 +70,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     KeyframedConeRenderablePtr leaves = std::make_shared<KeyframedConeRenderable>(phongShader,
             Material::Emerald(),
             glm::vec4(1, 1, 1, 0), glm::vec4(0, 0.5, 0, 0), glm::vec4(0, 0.5, 0, 0),
-            glm::vec4(0, 0, 0, 0), 9, 0.1);
+            glm::vec4(0, 0, 0, 0), 8, 0.1);
 
     localTransformation = GeometricTransformation(glm::vec3(-1, 0, 0),
             glm::quat(glm::vec3(0, 0, 0)), glm::vec3(2, 2, 0.5)).toMatrix();
