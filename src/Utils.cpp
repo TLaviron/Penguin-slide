@@ -50,10 +50,37 @@ float & hermiteInterp(std::vector<float> &points, float t) {
     float t1 = (points[i + 3] - points[i + 1]) / 2;
     array<float, 4> bezierContPt = { p0, p0 + t0 / 3, p1 - t1 / 3, p1 };
     float l = t - i; // fractional part of t
+
+    // De Casteljau evaluation
     for (int k = 3; k > 0; k--) {
         for (int j = 0; j < k; j++) {
             bezierContPt[j] = bezierContPt[j] * (1 - l) + bezierContPt[j + 1] * l;
         }
     }
     return bezierContPt[0];
+}
+
+glm::vec3 & hermiteTangent(std::vector<glm::vec3> &points, float t) {
+    if (t < 0 || t > points.size() - 3)
+        return points.front(); //exception!
+
+    unsigned int i = floor(t);
+    glm::vec3 p0 = points[i + 1];
+    glm::vec3 p1 = points[i + 2];
+    glm::vec3 t0 = (points[i + 2] - points[i]) / 2;
+    glm::vec3 t1 = (points[i + 3] - points[i + 1]) / 2;
+    array<glm::vec3, 4> bezierContPt = { p0, p0 + t0 / 3, p1 - t1 / 3, p1 };
+    float l = t - i; // fractional part of t
+
+    //computing derivative bezier curve
+    for (int k = 0; k < 3; k++)
+        bezierContPt[k] = bezierContPt[k + 1] - bezierContPt[k];
+
+    // De Casteljau evaluation
+    for (int k = 2; k > 0; k--) {
+        for (int j = 0; j < k; j++) {
+            bezierContPt[j] = bezierContPt[j] * (1 - l) + bezierContPt[j + 1] * l;
+        }
+    }
+    return glm::normalize(bezierContPt[0]);
 }
