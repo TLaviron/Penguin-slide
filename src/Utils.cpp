@@ -60,7 +60,7 @@ glm::vec3 & hermiteInterp(std::vector<glm::vec3> &points, float t) {
     return bezierContPt[0];
 }
 
-glm::vec3 hermiteTangent(std::vector<glm::vec3> &points, float t) {
+glm::vec3 & hermiteTangent(std::vector<glm::vec3> &points, float t) {
     if (t < 0 || t > points.size() - 3)
         return points.front(); //exception!
 
@@ -82,5 +82,5 @@ glm::vec3 hermiteTangent(std::vector<glm::vec3> &points, float t) {
             bezierContPt[j] = bezierContPt[j] * (1 - l) + bezierContPt[j + 1] * l;
         }
     }
-    return glm::normalize(bezierContPt[0]);
+    return bezierContPt[0] = glm::normalize(bezierContPt[0]);
 }

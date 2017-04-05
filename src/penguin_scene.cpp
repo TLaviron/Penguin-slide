@@ -12,6 +12,7 @@
 #include "../include/lighting/Lights.hpp"
 #include "../include/lighting/DirectionalLightRenderable.hpp"
 #include "../include/lighting/PointLightRenderable.hpp"
+#include "../include/keyframes/KeyframedConeRenderable.hpp"
 
 #include "../include/lighting/LightedConeRenderable.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -66,10 +67,15 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
 
-    LightedConeRenderablePtr leaves = std::make_shared<LightedConeRenderable>(phongShader,
+    KeyframedConeRenderablePtr leaves = std::make_shared<KeyframedConeRenderable>(phongShader,
             Material::Emerald(),
             glm::vec4(1, 1, 1, 0), glm::vec4(0, 0.5, 0, 0), glm::vec4(0, 0.5, 0, 0),
             glm::vec4(0, 0, 0, 0), 9, 0.1);
+
+    localTransformation = GeometricTransformation(glm::vec3(-1, 0, 0),
+            glm::quat(glm::vec3(0, 0, 0)), glm::vec3(2, 2, 0.5)).toMatrix();
+    leaves->setLocalTransform(localTransformation);
+    leaves->shake(2, 2, 0.3);
     viewer.addRenderable(leaves);
 
     PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
@@ -80,6 +86,8 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addRenderable(sapin);
     viewer.getCamera().setViewMatrix(
             glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
+    viewer.startAnimation();
+    viewer.setAnimationLoop(true, 5);
 
 }
 
