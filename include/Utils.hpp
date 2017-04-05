@@ -37,6 +37,6 @@ glm::vec4 getColor(const float& factor, const float& low, const float& high);
 
 float & hermiteInterp(std::vector<float> &points, float t);
 
-glm::vec3 & hermiteTangent(std::vector<glm::vec3> &points, float t);
+glm::vec3 hermiteTangent(std::vector<glm::vec3> &points, float t);
 
 #endif //UTILS

@@ -46,9 +46,9 @@ float & hermiteInterp(std::vector<float> &points, float t) {
     unsigned int i = floor(t);
     float p0 = points[i + 1];
     float p1 = points[i + 2];
-    float t0 = (points[i + 2] - points[i]) / 2;
-    float t1 = (points[i + 3] - points[i + 1]) / 2;
-    array<float, 4> bezierContPt = { p0, p0 + t0 / 3, p1 - t1 / 3, p1 };
+    float t0 = (points[i + 2] - points[i]) * (1 / 2.0f);
+    float t1 = (points[i + 3] - points[i + 1]) * (1 / 2.0f);
+    array<float, 4> bezierContPt = { p0, p0 + t0 * (1 / 3.0f), p1 - t1 * (1 / 3.0f), p1 };
     float l = t - i; // fractional part of t
 
     // De Casteljau evaluation
@@ -60,16 +60,16 @@ float & hermiteInterp(std::vector<float> &points, float t) {
     return bezierContPt[0];
 }
 
-glm::vec3 & hermiteTangent(std::vector<glm::vec3> &points, float t) {
+glm::vec3 hermiteTangent(std::vector<glm::vec3> &points, float t) {
     if (t < 0 || t > points.size() - 3)
         return points.front(); //exception!
 
     unsigned int i = floor(t);
     glm::vec3 p0 = points[i + 1];
     glm::vec3 p1 = points[i + 2];
-    glm::vec3 t0 = (points[i + 2] - points[i]) / 2;
-    glm::vec3 t1 = (points[i + 3] - points[i + 1]) / 2;
-    array<glm::vec3, 4> bezierContPt = { p0, p0 + t0 / 3, p1 - t1 / 3, p1 };
+    glm::vec3 t0 = (points[i + 2] - points[i]) * 0.5f;
+    glm::vec3 t1 = (points[i + 3] - points[i + 1]) * 0.5f;
+    array<glm::vec3, 4> bezierContPt = { p0, p0 + t0 * (1 / 3.0f), p1 - t1 * (1 / 3.0f), p1 };
     float l = t - i; // fractional part of t
 
     //computing derivative bezier curve
