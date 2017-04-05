@@ -92,19 +92,19 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
     for (int i = 0; i < n*x; ++i) {
         for (int j = debut; j < n*y ; j+=2) {
             m_positions.push_back(herm1[i] + herm2[j]);
+            m_colors.push_back(randomColor());
+
         }
         debut = 1 - debut;
     }
     debut = 0;
     for (int i = 0; i < n*x; ++i) {
-        for (int j = debut; j < (n*y)/2; j++) {
+        for (int j = debut; j < (n*y-debut)/2; j++) {
             if (i!=0){
                 m_index.push_back(glm::vec3(i*n*y +j,i*n*y +j+1,(i-1)*n*y -debut +j ));
-                m_colors.push_back(randomColor());
             }
             if (i != n*x -1){
                 m_index.push_back(glm::vec3(i*n*y +j,i*n*y +j+1,(i+1)*n*y -debut +j ));
-                m_colors.push_back(randomColor());
 
             }
         }
