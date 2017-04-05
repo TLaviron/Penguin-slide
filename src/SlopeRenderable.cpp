@@ -8,9 +8,9 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
         HierarchicalRenderable(shaderProgram)
 {
 
-    int x = 100;
-    int y = 50;
-    int n = 2; // discretisation nécessairement pair
+    int x = 5;
+    int y = 5;
+    int n = 10; // discretisation nécessairement pair
     std::vector<glm::vec3> spline1(x);
     std::vector<glm::vec3> spline2(y);
     std::vector<glm::vec3> herm1((x-1)*n + 1);
@@ -51,14 +51,14 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
             m_colors.push_back(randomColor());
             if (i!=0 && i != n*(x-1)){
                 if (debut ||(j != 0 && j != n*y -2) ) {
-                    m_index.push_back(glm::ivec3(current_vertex, current_vertex - (y * (n / 2)),
-                                                 current_vertex + (y * (n / 2)) - 1));
-                    m_index.push_back(glm::ivec3(current_vertex, (current_vertex - (y * (n / 2))) + 1,
-                                                 current_vertex + (y * (n / 2))));
+                    m_index.push_back(glm::ivec3(current_vertex, current_vertex - ((y-1) * (n / 2) +1),
+                                                 current_vertex + ((y-1) * (n / 2)+1) - 1));
+                    m_index.push_back(glm::ivec3(current_vertex, (current_vertex - ((y-1) * (n / 2)+1)) + 1,
+                                                 current_vertex + ((y-1) * (n / 2)+1)));
                 }else if (j == 0){
-                    m_index.push_back(glm::ivec3(current_vertex,current_vertex-(y*(n/2)) + 1,current_vertex + (y*(n/2)) ));
+                    m_index.push_back(glm::ivec3(current_vertex,(current_vertex-((y-1)*(n/2)+1)) + 1,current_vertex + ((y-1)*(n/2)+1) ));
                 }else{
-                    m_index.push_back(glm::ivec3(current_vertex,current_vertex-(y*(n/2)),current_vertex+(y*(n/2)) -1 ));
+                    m_index.push_back(glm::ivec3(current_vertex,current_vertex-((y-1)*(n/2)+1),current_vertex+((y-1)*(n/2)+1) -1 ));
 
                 }
             }
