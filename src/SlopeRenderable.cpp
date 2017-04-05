@@ -8,67 +8,65 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
         HierarchicalRenderable(shaderProgram)
 {
 
-    int x = 8;
-    int y = 8;
-    int n = 2; // discretisation
+    int x = 100;
+    int y = 50;
+    int n = 2; // discretisation nécessairement pair
     std::vector<glm::vec3> spline1(x);
     std::vector<glm::vec3> spline2(y);
     std::vector<glm::vec3> herm1((x-1)*n + 1);
     std::vector<glm::vec3> herm2((y-1)*n + 1);
     // points de controle du spline
     for (int k = 0; k < x; ++k) {
-        spline1[k] = glm::vec3(0,k,random(-terrain.getVariation(), terrain.getVariation()));
+        spline1[k] = glm::vec3(k,0,random(-terrain.getVariation(), terrain.getVariation()));
     }
     for (int k = 0; k < y; ++k) {
-        spline2[k] = glm::vec3(k,0,random(-terrain.getVariation(), terrain.getVariation()));
+        spline2[k] = glm::vec3(0,k,random(-terrain.getVariation(), terrain.getVariation()));
     }
     // calcul de l'interpolation des points de la spline
     for (int k = 0; k < (x-1)*n + 1; ++k) {
         if(k>n && k<(x-2)*n + 1 ){
-            herm1[k] = hermiteInterp(spline1, ((float) k) / n);
+            herm1[k] = hermiteInterp(spline1, ((float) k) / n -1.0);
         }else if(k<=n){
-            herm1[k] = glm::vec3(0,((float) k)/n,spline1[1][2] + (spline1[1][2] - spline1[0][2])* ((float) (k%n))/n);
+            herm1[k] = glm::vec3(((float) k)/n,0.0f,spline1[1][2] + (spline1[1][2] - spline1[0][2])* ((float) (k%n))/n);
         }else {
-            herm1[k] = glm::vec3(0,((float) k)/n,spline1[x-2][2]+ (spline1[x-1][2] - spline1[x-2][2])* ((float) (k%n))/n);
+            herm1[k] = glm::vec3(((float) k)/n,0.0f,spline1[x-2][2]+ (spline1[x-1][2] - spline1[x-2][2])* ((float) (k%n))/n);
         }
     }
     for (int k = 0; k < (y-1)*n + 1; ++k) {
         if(k>n && k<(y-2)*n+1 ){
-            herm2[k] = hermiteInterp(spline2, ((float) k) / n);
+            herm2[k] = hermiteInterp(spline2, ((float) k) / n - 1.0);
         } else if(k<=n) {
-            herm2[k] = glm::vec3(((float) k)/n,0,spline2[0][2] + (spline2[1][2] - spline2[0][2])* ((float) (k%n))/n);
+            herm2[k] = glm::vec3(0.0f,((float) k)/n,spline2[0][2] + (spline2[1][2] - spline2[0][2])* ((float) (k%n))/n);
         } else {
-            herm2[k] = glm::vec3((((float) k)/n),0,spline2[y-2][2] + (spline2[y-1][2] - spline2[y-2][2])* ((float) (k%n))/n);
+            herm2[k] = glm::vec3(0.0f,(((float) k)/n),spline2[y-2][2] + (spline2[y-1][2] - spline2[y-2][2])* ((float) (k%n))/n);
         }
     }
 
     //création des faces
-    m_positions.resize(n*n*x*y/2);
-    m_colors.resize(n*n*x*y/2);
-    m_index.resize(n*n*x*y);
-    m_normals.resize(n*n*x*y);
     int debut = 0;
-    for (int i = 0; i < n*x; ++i) {
-        for (int j = debut; j < n*y ; j+=2) {
+    int current_vertex = 0;
+    for (int i = 0; i < n*(x-1)+1; ++i) {
+        for (int j = debut; j < (y-1)*n + 1 ; j+=2) {
             m_positions.push_back(herm1[i] + herm2[j]);
             m_colors.push_back(randomColor());
+            if (i!=0 && i != n*(x-1)){
+                if (debut ||(j != 0 && j != n*y -2) ) {
+                    m_index.push_back(glm::ivec3(current_vertex, current_vertex - (y * (n / 2)),
+                                                 current_vertex + (y * (n / 2)) - 1));
+                    m_index.push_back(glm::ivec3(current_vertex, (current_vertex - (y * (n / 2))) + 1,
+                                                 current_vertex + (y * (n / 2))));
+                }else if (j == 0){
+                    m_index.push_back(glm::ivec3(current_vertex,current_vertex-(y*(n/2)) + 1,current_vertex + (y*(n/2)) ));
+                }else{
+                    m_index.push_back(glm::ivec3(current_vertex,current_vertex-(y*(n/2)),current_vertex+(y*(n/2)) -1 ));
 
+                }
+            }
+            current_vertex++;
         }
         debut = 1 - debut;
     }
-    debut = 0;
-    for (int i = 0; i < n*x; ++i) {
-        for (int j = debut; j < (n*y-debut)/2; j++) {
-            if (i!=0){
-                m_index.push_back(glm::vec3(i*n*y +j,i*n*y +j+1,(i-1)*n*y -debut +j ));
-            }
-            if (i != n*x -1){
-                m_index.push_back(glm::vec3(i*n*y +j,i*n*y +j+1,(i+1)*n*y -debut +j ));
 
-            }
-        }
-        debut = 1 - debut;
-    }
     m_model = glm::mat4(1.0);
     glGenBuffers(1, &m_pBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer);
