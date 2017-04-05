@@ -13,6 +13,7 @@ void initialize_practical_06_scene(Viewer& viewer);
 void initialize_practical_07_scene(Viewer& viewer, unsigned int scene_to_load = 71);
 
 void initialize_penguin_scene(Viewer& viewer);
+void initialize_decor_scene(Viewer& viewer);
 
 
 int main(int argc, char* argv[])
@@ -32,7 +33,7 @@ int main(int argc, char* argv[])
 
     switch (scene_to_load) {
     case 0:
-        initialize_penguin_scene(viewer);
+        initialize_decor_scene(viewer);
         break;
         case 1:
             initialize_practical_01_scene(viewer);

@@ -52,34 +52,34 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
     int x = 8;
     int y = 8;
     int n = 2; // discretisation
-    std::vector<glm::vec3> spline1(x);
-    std::vector<glm::vec3> spline2(y);
+    std::vector<float> spline1(x);
+    std::vector<float> spline2(y);
     std::vector<glm::vec3> herm1((x-1)*n + 1);
     std::vector<glm::vec3> herm2((y-1)*n + 1);
     // points de controle du spline
     for (int k = 0; k < x; ++k) {
-        spline1[k] = glm::vec3(0,k,random(-terrain.getVariation(), terrain.getVariation()));
+        spline1[k] = random(-terrain.getVariation(), terrain.getVariation());
     }
     for (int k = 0; k < y; ++k) {
-        spline2[k] = glm::vec3(k,0,random(-terrain.getVariation(), terrain.getVariation()));
+        spline2[k] = random(-terrain.getVariation(), terrain.getVariation());
     }
     // calcul de l'interpolation des points de la spline
     for (int k = 0; k < (x-1)*n + 1; ++k) {
         if(k>n && k<(x-2)*n + 1 ){
-            herm1[k] = hermiteInterp(spline1, ((float) k) / n);
+            herm1[k] = glm::vec3(0,((float) k)/n,hermiteInterp(spline1, ((float) k) / n));
         }else if(k<=n){
-            herm1[k] = glm::vec3(0,((float) k)/n,spline1[1][2] + (spline1[1][2] - spline1[0][2])* ((float) (k%n))/n);
+            herm1[k] = glm::vec3(0,((float) k)/n,spline1[1] + (spline1[1] - spline1[0])* ((float) (k%n))/n);
         }else {
-            herm1[k] = glm::vec3(0,((float) k)/n,spline1[x-2][2]+ (spline1[x-1][2] - spline1[x-2][2])* ((float) (k%n))/n);
+            herm1[k] = glm::vec3(0,((float) k)/n,spline1[x-2]+ (spline1[x-1] - spline1[x-2])* ((float) (k%n))/n);
         }
     }
     for (int k = 0; k < (y-1)*n + 1; ++k) {
         if(k>n && k<(y-2)*n+1 ){
-            herm2[k] = hermiteInterp(spline2, ((float) k) / n);
+            herm2[k] = glm::vec3(((float) k)/n,0,hermiteInterp(spline2, ((float) k) / n));
         } else if(k<=n) {
-            herm2[k] = glm::vec3(((float) k)/n,0,spline2[0][2] + (spline2[1][2] - spline2[0][2])* ((float) (k%n))/n);
+            herm2[k] = glm::vec3(((float) k)/n,0,spline2[0] + (spline2[1] - spline2[0])* ((float) (k%n))/n);
         } else {
-            herm2[k] = glm::vec3((((float) k)/n),0,spline2[y-2][2] + (spline2[y-1][2] - spline2[y-2][2])* ((float) (k%n))/n);
+            herm2[k] = glm::vec3((((float) k)/n),0,spline2[y-2] + (spline2[y-1] - spline2[y-2])* ((float) (k%n))/n);
         }
     }
 
