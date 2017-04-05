@@ -8,47 +8,6 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
         HierarchicalRenderable(shaderProgram)
 {
 
-//    // 8 vertices
-//    m_positions.push_back(glm::vec3(-0.5, -0.5, -0.5));
-//    m_positions.push_back(glm::vec3(0.5, -0.5, -0.5));
-//    m_positions.push_back(glm::vec3(0.5, 0.5, -0.5));
-//    m_positions.push_back(glm::vec3(-0.5, 0.5, -0.5));
-//    m_positions.push_back(glm::vec3(-0.5, -0.5, 0.5));
-//    m_positions.push_back(glm::vec3(-0.5, 0.5, 0.5));
-//    m_positions.push_back(glm::vec3(0.5, 0.5, 0.5));
-//    m_positions.push_back(glm::vec3(0.5, -0.5, 0.5));
-//
-//    // 8 normals (== vertex coordinates, since the cube is centered)
-//    for(const glm::vec3& x : m_positions) {
-//        m_normals.push_back(glm::normalize(x));
-//    }
-//
-//    // 12 triangles, 3 index each
-//    m_index.push_back(glm::ivec3(0, 2, 1));
-//    m_index.push_back(glm::ivec3(0, 3, 2));
-//    m_index.push_back(glm::ivec3(1, 6, 7));
-//    m_index.push_back(glm::ivec3(1, 2, 6));
-//    m_index.push_back(glm::ivec3(5, 4, 7));
-//    m_index.push_back(glm::ivec3(5, 7, 6));
-//    m_index.push_back(glm::ivec3(4, 3, 0));
-//    m_index.push_back(glm::ivec3(4, 5, 3));
-//    m_index.push_back(glm::ivec3(3, 6, 2));
-//    m_index.push_back(glm::ivec3(3, 5, 6));
-//    m_index.push_back(glm::ivec3(4, 0, 1));
-//    m_index.push_back(glm::ivec3(4, 1, 7));
-//
-//    //Assign one color to each of the 12 triangles
-//    m_colors.push_back(glm::vec4(1,0,0,1));
-//    m_colors.push_back(glm::vec4(0,1,0,1));
-//    m_colors.push_back(glm::vec4(0,0,1,1));
-//    m_colors.push_back(glm::vec4(0,1,1,1));
-//    m_colors.push_back(glm::vec4(1,0,0,1));
-//    m_colors.push_back(glm::vec4(0,1,0,1));
-//    m_colors.push_back(glm::vec4(0,0,1,1));
-//    m_colors.push_back(glm::vec4(0,1,1,1));
-
-
-
     int x = 8;
     int y = 8;
     int n = 2; // discretisation
