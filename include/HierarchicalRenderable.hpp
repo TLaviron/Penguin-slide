@@ -9,6 +9,7 @@
  */
 
 #include "Renderable.hpp"
+#include "keyframes/GeometricTransformation.hpp"
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
@@ -144,6 +145,34 @@ public :
      */
     void setLocalTransform(const glm::mat4& localTransform);
 
+    /**
+     * @brief Read only access to the parent geometric transformation
+     *
+     * @return A read only reference to \ref m_parentStaticTransform, the parent geometric transformation
+     */
+    const GeometricTransformation & getParentStaticTransform() const;
+
+    /**
+     * @brief Sets the parent transform from a geometric transform.
+     *
+     * @param parentTransform The new parent transformation to create matrix from.
+     */
+    void setParentTransform(const GeometricTransformation & parentTransform);
+
+    /**
+     * @brief Read only access to the local geometric transformation
+     *
+     * @return A read only reference to \ref m_localStaticTransform, the local geometric transformation
+     */
+    const GeometricTransformation & getLocalStaticTransform() const;
+
+    /**
+     * @brief Sets the local transform from a geometric transform.
+     *
+     * @param localTransform The new local transformation to create matrix from.
+     */
+    void setLocalTransform(const GeometricTransformation & localTransform);
+
     /** \brief Set the model matrix.
      *
      * Override the Renderable method.
@@ -189,6 +218,21 @@ private:
      * by the children.
      */
     glm::mat4 m_localTransform;
+
+	/**
+	 * @brief Local transformation as a geometric transformation.
+	 *
+	 * Used as a base when adding an animation to an otherwise static object
+	 */
+    GeometricTransformation m_localStaticTransform;
+
+	/**
+	 * @brief Parent transformation as a geometric transformation.
+	 *
+	 * Used as a base when adding an animation to an otherwise static object
+	 */
+    GeometricTransformation m_parentStaticTransform;
+
 
     /**\brief Perform computations before do_draw()
      */
