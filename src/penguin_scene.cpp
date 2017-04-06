@@ -13,6 +13,8 @@
 #include "../include/lighting/DirectionalLightRenderable.hpp"
 #include "../include/lighting/PointLightRenderable.hpp"
 #include "../include/keyframes/KeyframedConeRenderable.hpp"
+#include "../include/texturing/TexturedMeshRenderable.hpp"
+
 
 #include "../include/lighting/LightedConeRenderable.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -83,6 +85,21 @@ void initialize_penguin_scene(Viewer &viewer) {
     sapin->bindTrunk(sapin);
     glm::mat4 translationM = glm::translate(glm::mat4(1.0), glm::vec3(2.0, 0.0, 0.0));
     sapin->setParentTransform(translationM);
+
+    //TEST
+    ShaderProgramPtr texShader
+            = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
+                                              "../shaders/textureFragment.glsl");
+    MaterialPtr pearl = Material::Pearl();
+    TexturedMeshRenderablePtr bunny =
+            std::make_shared<TexturedMeshRenderable>(
+                    texShader, "../meshes/BodyTux.obj", "../textures/texBody.png");
+    bunny->setMaterial(pearl);
+    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(0, 4, 1.0));
+    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
+    bunny->setParentTransform( parentTransformation );
+    viewer.addRenderable(bunny);
 
     viewer.addRenderable(sapin);
     viewer.getCamera().setViewMatrix(
