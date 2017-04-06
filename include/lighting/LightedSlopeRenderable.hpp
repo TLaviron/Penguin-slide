@@ -11,7 +11,7 @@ class LightedSlopeRenderable : public SlopeRenderable, public Materiable
 {
 public:
     ~LightedSlopeRenderable();
-    LightedSlopeRenderable(ShaderProgramPtr program, double inclinaison,BasicTerrainGenerator terrain,const MaterialPtr& material);
+    LightedSlopeRenderable(ShaderProgramPtr program,BasicTerrainGenerator terrain,const MaterialPtr& material);
 
 protected:
     void do_draw();

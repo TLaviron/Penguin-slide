@@ -7,8 +7,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-LightedSlopeRenderable::LightedSlopeRenderable(ShaderProgramPtr program, double inclinaison,BasicTerrainGenerator terrain, const MaterialPtr& material)
-        : SlopeRenderable(program,inclinaison,terrain), Materiable(material)
+LightedSlopeRenderable::LightedSlopeRenderable(ShaderProgramPtr program,BasicTerrainGenerator terrain, const MaterialPtr& material)
+        : SlopeRenderable(program,terrain), Materiable(material)
 {
 }
 

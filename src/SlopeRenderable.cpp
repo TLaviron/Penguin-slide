@@ -4,7 +4,7 @@
 
 #include "../include/SlopeRenderable.hpp"
 
-SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclinaison, BasicTerrainGenerator terrain) :
+SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram, BasicTerrainGenerator terrain) :
         HierarchicalRenderable(shaderProgram)
 {
     int initx=20;
@@ -53,7 +53,8 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
             glm::vec3 tany(0,terrain.getY(tmp[1]+1) - terrain.getY(tmp[1]),0);
             glm::vec3 tan(glm::normalize(tanx + tany + glm::cross(tan1,tan2)));
             m_normals.push_back(tan);
-            m_colors.push_back(glm::vec4(tan[0],tan[1],tan[2],1.0));
+//            m_colors.push_back(glm::vec4(tan[0],tan[1],tan[2],1.0));
+            m_colors.push_back(glm::vec4(1.0,1.0,1.0,1.0));
 //            m_colors.push_back(randomColor());
             if (i!=0 && i != n*(x-1)){
                 if (debut ||(j != 0 && j != (y-1)*n) ) {

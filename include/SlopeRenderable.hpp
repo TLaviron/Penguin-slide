@@ -29,7 +29,7 @@ class SlopeRenderable : public HierarchicalRenderable
 public:
     ~SlopeRenderable();
     SlopeRenderable();
-    SlopeRenderable( ShaderProgramPtr program, double inclinaison, BasicTerrainGenerator terrain);
+    SlopeRenderable( ShaderProgramPtr program, BasicTerrainGenerator terrain);
 
 protected:
     void do_draw();
