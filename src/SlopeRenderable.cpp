@@ -7,17 +7,20 @@
 SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclinaison, BasicTerrainGenerator terrain) :
         HierarchicalRenderable(shaderProgram)
 {
-
-    int x = 100;
-    int y = 100;
-    int n = 10; // discretisation nécessairement pair
+    int initx=20;
+    int inity=100;
+    int x = 2*initx;
+    int y = 2*inity;
+    int n = 20; // discretisation nécessairement pair
     std::vector<glm::vec3> spline1(x+2);
     std::vector<glm::vec3> spline2(y+2);
     std::vector<glm::vec3> herm1((x-1)*n + 1);
     std::vector<glm::vec3> herm2((y-1)*n + 1);
+    std::vector<glm::vec3> hermtan1((x-1)*n + 1);
+    std::vector<glm::vec3> hermtan2((y-1)*n + 1);
     // points de controle du spline
     for (int k = 0; k < x+2; ++k) {
-        spline1[k] = glm::vec3(k,0,random(-terrain.getVariation(), terrain.getVariation()));
+        spline1[k] = glm::vec3(k-initx,0,random(-terrain.getVariation(), terrain.getVariation()));
     }
     for (int k = 0; k < y+2; ++k) {
         spline2[k] = glm::vec3(0,k,random(-terrain.getVariation(), terrain.getVariation()));
@@ -29,14 +32,29 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
     for (int k = 0; k < (y-1)*n + 1; ++k) {
         herm2[k] = hermiteInterp(spline2, ((float) k) / n );
     }
+    for (int k = 0; k < (x-1)*n + 1; ++k) {
+        hermtan1[k] = hermiteTangent(spline1, ((float) k) / n );
+    }
+    for (int k = 0; k < (y-1)*n + 1; ++k) {
+        hermtan2[k] = hermiteTangent(spline2, ((float) k) / n );
+    }
 
     //création des faces
     int debut = 0;
     int current_vertex = 0;
     for (int i = 0; i < n*(x-1)+1; ++i) {
         for (int j = debut; j < (y-1)*n + 1 ; j+=2) {
-            m_positions.push_back(herm1[i] + herm2[j]);
-            m_colors.push_back(randomColor());
+            glm::vec3 tmp(herm1[i][0] + herm2[j][0],herm1[i][1] + herm2[j][1],herm1[i][2] * herm2[j][2]);
+            tmp[2] +=terrain.getX(tmp[0])+terrain.getY(tmp[1]);
+            m_positions.push_back(tmp);
+            glm::vec3 tan1(hermtan1[i][0],hermtan1[i][1],hermtan1[i][2]*herm2[j][2]);
+            glm::vec3 tan2(hermtan2[j][0],hermtan2[j][1],hermtan1[j][2]*herm2[i][2]);
+            glm::vec3 tanx(terrain.getX(tmp[0]+1) - terrain.getX(tmp[0]),0,0);
+            glm::vec3 tany(0,terrain.getY(tmp[1]+1) - terrain.getY(tmp[1]),0);
+            glm::vec3 tan(glm::normalize(tanx + tany + glm::cross(tan1,tan2)));
+            m_normals.push_back(tan);
+            m_colors.push_back(glm::vec4(tan[0],tan[1],tan[2],1.0));
+//            m_colors.push_back(randomColor());
             if (i!=0 && i != n*(x-1)){
                 if (debut ||(j != 0 && j != (y-1)*n) ) {
                     m_index.push_back(glm::ivec3(current_vertex, current_vertex - ((y-1) * (n / 2) +1),
@@ -47,7 +65,6 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
                     m_index.push_back(glm::ivec3(current_vertex,(current_vertex-((y-1)*(n/2)+1)) + 1,current_vertex + ((y-1)*(n/2)+1) ));
                 }else{
                     m_index.push_back(glm::ivec3(current_vertex,current_vertex-((y-1)*(n/2)+1),current_vertex+((y-1)*(n/2)+1) -1 ));
-
                 }
             }
             current_vertex++;

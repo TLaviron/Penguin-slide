@@ -19,7 +19,7 @@ void initialize_decor_scene(Viewer &viewer) {
     FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
     viewer.addRenderable(frame);
 
-    BasicTerrainGenerator terrain(0.5);
+    BasicTerrainGenerator terrain(0.75);
     SlopeRenderablePtr slope = std::make_shared<SlopeRenderable>(flatShader,20,terrain);
     viewer.addRenderable(slope);
 
