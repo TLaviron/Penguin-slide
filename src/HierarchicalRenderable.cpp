@@ -36,6 +36,24 @@ void HierarchicalRenderable::setLocalTransform(const glm::mat4& localTransform)
     m_localTransform = localTransform;
 }
 
+const GeometricTransformation & HierarchicalRenderable::getParentStaticTransform() const{
+	return m_parentStaticTransform;
+}
+
+void HierarchicalRenderable::setParentTransform(const GeometricTransformation & parentTransform){
+	m_parentStaticTransform = parentTransform;
+	setParentTransform(parentTransform.toMatrix());
+}
+
+const GeometricTransformation & HierarchicalRenderable::getLocalStaticTransform() const{
+	return m_localStaticTransform;
+}
+
+void HierarchicalRenderable::setLocalTransform(const GeometricTransformation & localTransform){
+	m_localStaticTransform = localTransform;
+	setLocalTransform(localTransform.toMatrix());
+}
+
 void HierarchicalRenderable::updateModelMatrix()
 {
     // TODO: compute the model matrix of the instance,

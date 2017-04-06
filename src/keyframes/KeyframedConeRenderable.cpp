@@ -24,15 +24,17 @@ KeyframedConeRenderable::~KeyframedConeRenderable() {
 void KeyframedConeRenderable::shake(float time, float duration, float angle) {
     float dt = duration / SHAKE_RESOLUTION;
     float curtime = time;
+    const GeometricTransformation localTransform = getLocalStaticTransform();
     for (int i = 0; i < SHAKE_RESOLUTION; i++, curtime += dt) {
         float angleRatio = sin(2 * M_PI * i / float(SHAKE_RESOLUTION));
         //update with current localTransform?
         addLocalTransformKeyframe(curtime,
-                GeometricTransformation(glm::vec3(0, 0, 0),
-                        glm::quat(angleRatio * angle, glm::vec3(0, 0, 1)), glm::vec3(1, 1, 1)));
+                GeometricTransformation(localTransform.getTranslation(),
+                        glm::normalize(glm::quat(angleRatio * angle, glm::vec3(0, 0, 1)) * localTransform.getOrientation()),
+						localTransform.getScale()));
     }
-    addLocalTransformKeyframe(curtime, GeometricTransformation(glm::vec3(0, 0, 0),
-                        glm::quat(0, glm::vec3(0, 0, 1)), glm::vec3(1, 1, 1)));
+    addLocalTransformKeyframe(curtime, GeometricTransformation(localTransform.getTranslation(),
+                        glm::normalize(glm::quat(0, glm::vec3(0, 0, 1)) * localTransform.getOrientation()), localTransform.getScale()));
 }
 
 void KeyframedConeRenderable::do_animate(float time) {

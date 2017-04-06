@@ -69,6 +69,7 @@ protected:
 
 
 private:
+
     KeyframeCollection m_localKeyframes; /*!< A collection of keyframes for the local transformation of renderable. */
     KeyframeCollection m_parentKeyframes; /*!< A collection of keyframes for the parent transformation of renderable. */
 };

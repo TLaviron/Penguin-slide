@@ -30,6 +30,7 @@ void initialize_penguin_scene(Viewer &viewer) {
 
     //Define a transformation
     glm::mat4 parentTransformation, localTransformation;
+    GeometricTransformation parentGeoTransform, localGeoTransform;
 
     //Define a directional light for the whole scene
     glm::vec3 d_direction = glm::normalize(glm::vec3(0.0, 0.0, -1.0));
@@ -72,9 +73,9 @@ void initialize_penguin_scene(Viewer &viewer) {
             glm::vec4(1, 1, 1, 0), glm::vec4(0, 0.5, 0, 0), glm::vec4(0, 0.5, 0, 0),
             glm::vec4(0, 0, 0, 0), 8, 0.1);
 
-    localTransformation = GeometricTransformation(glm::vec3(-1, 0, 0),
-            glm::quat(glm::vec3(0, 0, 0)), glm::vec3(2, 2, 0.5)).toMatrix();
-    leaves->setLocalTransform(localTransformation);
+    localGeoTransform = GeometricTransformation(glm::vec3(-1, 0, 0),
+            glm::quat(glm::vec3(0, 0, 0)), glm::vec3(2, 2, 0.5));
+    leaves->setLocalTransform(localGeoTransform);
     leaves->shake(2, 2, 0.3);
     viewer.addRenderable(leaves);
 
