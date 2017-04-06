@@ -8,38 +8,26 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
         HierarchicalRenderable(shaderProgram)
 {
 
-    int x = 5;
-    int y = 5;
+    int x = 100;
+    int y = 100;
     int n = 10; // discretisation nécessairement pair
-    std::vector<glm::vec3> spline1(x);
-    std::vector<glm::vec3> spline2(y);
+    std::vector<glm::vec3> spline1(x+2);
+    std::vector<glm::vec3> spline2(y+2);
     std::vector<glm::vec3> herm1((x-1)*n + 1);
     std::vector<glm::vec3> herm2((y-1)*n + 1);
     // points de controle du spline
-    for (int k = 0; k < x; ++k) {
+    for (int k = 0; k < x+2; ++k) {
         spline1[k] = glm::vec3(k,0,random(-terrain.getVariation(), terrain.getVariation()));
     }
-    for (int k = 0; k < y; ++k) {
+    for (int k = 0; k < y+2; ++k) {
         spline2[k] = glm::vec3(0,k,random(-terrain.getVariation(), terrain.getVariation()));
     }
     // calcul de l'interpolation des points de la spline
     for (int k = 0; k < (x-1)*n + 1; ++k) {
-        if(k>n && k<(x-2)*n + 1 ){
-            herm1[k] = hermiteInterp(spline1, ((float) k) / n -1.0);
-        }else if(k<=n){
-            herm1[k] = glm::vec3(((float) k)/n,0.0f,spline1[1][2] + (spline1[1][2] - spline1[0][2])* ((float) (k%n))/n);
-        }else {
-            herm1[k] = glm::vec3(((float) k)/n,0.0f,spline1[x-2][2]+ (spline1[x-1][2] - spline1[x-2][2])* ((float) (k%n))/n);
-        }
+        herm1[k] = hermiteInterp(spline1, ((float) k) / n );
     }
     for (int k = 0; k < (y-1)*n + 1; ++k) {
-        if(k>n && k<(y-2)*n+1 ){
-            herm2[k] = hermiteInterp(spline2, ((float) k) / n - 1.0);
-        } else if(k<=n) {
-            herm2[k] = glm::vec3(0.0f,((float) k)/n,spline2[0][2] + (spline2[1][2] - spline2[0][2])* ((float) (k%n))/n);
-        } else {
-            herm2[k] = glm::vec3(0.0f,(((float) k)/n),spline2[y-2][2] + (spline2[y-1][2] - spline2[y-2][2])* ((float) (k%n))/n);
-        }
+        herm2[k] = hermiteInterp(spline2, ((float) k) / n );
     }
 
     //création des faces
@@ -50,7 +38,7 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram , double inclina
             m_positions.push_back(herm1[i] + herm2[j]);
             m_colors.push_back(randomColor());
             if (i!=0 && i != n*(x-1)){
-                if (debut ||(j != 0 && j != n*y -2) ) {
+                if (debut ||(j != 0 && j != (y-1)*n) ) {
                     m_index.push_back(glm::ivec3(current_vertex, current_vertex - ((y-1) * (n / 2) +1),
                                                  current_vertex + ((y-1) * (n / 2)+1) - 1));
                     m_index.push_back(glm::ivec3(current_vertex, (current_vertex - ((y-1) * (n / 2)+1)) + 1,
