@@ -7,8 +7,8 @@
 SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram, BasicTerrainGenerator terrain) :
         HierarchicalRenderable(shaderProgram)
 {
-    int initx=20;
-    int inity=100;
+    int initx=40;
+    int inity=80;
     int x = 2*initx;
     int y = 2*inity;
     int n = 20; // discretisation nécessairement pair

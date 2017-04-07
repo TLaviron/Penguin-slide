@@ -15,14 +15,22 @@ BasicTerrainGenerator::~BasicTerrainGenerator() {
 }
 
 float BasicTerrainGenerator::getX(float x) const {
-    if (x < -10)
-        return -2*x-20;
-    else if (x > 10)
-        return 2*x-20;
-    // else
+    if (x < -14 || x > 14) {
+        return 16;
+    } else if (x < -10)
+        return (x + 10) * (x + 10);
+    else if (x > 10){
+        return (x - 10) * (x - 10);
+    }
     return 0;
 }
 
 float BasicTerrainGenerator::getY(float y) const {
-    return -2*y;
+    if (y<10) {
+        return 0;
+    }else if(y>70) {
+        return -30;
+    }else {
+        return -(y-10)*0.50;
+    }
 }

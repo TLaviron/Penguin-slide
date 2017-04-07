@@ -64,7 +64,7 @@ void initialize_decor_scene(Viewer &viewer) {
     viewer.addRenderable(pointLightRenderable1);
     MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
                                                           glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)), glm::vec3(0.0,0.0,0.0), 0.2);
-    BasicTerrainGenerator terrain(2.0);
+    BasicTerrainGenerator terrain(1.1);
     LightedSlopeRenderablePtr slope = std::make_shared<LightedSlopeRenderable>(phongShader,terrain,slopeMaterial);
     slope->setMaterial(slopeMaterial);
     viewer.addRenderable(slope);
