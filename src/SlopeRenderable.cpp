@@ -54,7 +54,7 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram, BasicTerrainGen
             glm::vec3 tan(glm::normalize(tanx + tany + glm::cross(tan1,tan2)));
             m_normals.push_back(tan);
 //            m_colors.push_back(glm::vec4(tan[0],tan[1],tan[2],1.0));
-            m_colors.push_back(glm::vec4(1.0,1.0,1.0,1.0));
+            m_colors.push_back(glm::vec4(1.0,1.0,1.0,0.0));
 //            m_colors.push_back(randomColor());
             if (i!=0 && i != n*(x-1)){
                 if (debut ||(j != 0 && j != (y-1)*n) ) {
@@ -90,36 +90,48 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram, BasicTerrainGen
 
 void SlopeRenderable::do_draw()
 {
+    //Location
     int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(m_model));
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
-    int colorLocation  = m_shaderProgram->getAttributeLocation("vColor");
+    int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
     int normalLocation = m_shaderProgram->getAttributeLocation("vNormal");
 
+    //Send data to GPU
     if (modelLocation != ShaderProgram::null_location) {
         glcheck(glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(getModelMatrix())));
     }
 
-
-    glEnableVertexAttribArray(positionLocation);
-    glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer);
-    glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    glEnableVertexAttribArray(colorLocation);
-    glBindBuffer(GL_ARRAY_BUFFER, m_cBuffer);
-    glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    glcheck(glEnableVertexAttribArray(normalLocation));
-    glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
-    glcheck(glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
+    if (positionLocation != ShaderProgram::null_location) {
+        //Activate location
+        glcheck(glEnableVertexAttribArray(positionLocation));
+        //Bind buffer
+        glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
+        //Specify internal format
+        glcheck(glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
+    }
+    if (colorLocation != ShaderProgram::null_location) {
+        glcheck(glEnableVertexAttribArray(colorLocation));
+        glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_cBuffer));
+        glcheck(glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)0));
+    }
+    if (normalLocation != ShaderProgram::null_location) {
+        glcheck(glEnableVertexAttribArray(normalLocation));
+        glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
+        glcheck(glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
+    }
 
     glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
     glcheck(glDrawElements(GL_TRIANGLES, m_index.size()*3, GL_UNSIGNED_INT, (void*)0));
-//release
-    glDisableVertexAttribArray(positionLocation);
-    glDisableVertexAttribArray(colorLocation);
-    glcheck(glDisableVertexAttribArray(normalLocation));
 
+    if (positionLocation != ShaderProgram::null_location) {
+        glcheck(glDisableVertexAttribArray(positionLocation));
+    }
+    if (colorLocation != ShaderProgram::null_location) {
+        glcheck(glDisableVertexAttribArray(colorLocation));
+    }
+    if (normalLocation != ShaderProgram::null_location) {
+        glcheck(glDisableVertexAttribArray(normalLocation));
+    }
 }
 
 void SlopeRenderable::do_animate(float time) {}

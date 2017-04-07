@@ -20,7 +20,9 @@ void initialize_decor_scene(Viewer &viewer) {
     viewer.addShaderProgram(flatShader);
     FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
     viewer.addRenderable(frame);
-
+    ShaderProgramPtr phongShader = std::make_shared<ShaderProgram>("../shaders/phongVertex.glsl",
+                                                                   "../shaders/phongFragment.glsl");
+    viewer.addShaderProgram(phongShader);
     //Define a transformation
     glm::mat4 parentTransformation, localTransformation;
     GeometricTransformation parentGeoTransform, localGeoTransform;
@@ -46,9 +48,9 @@ void initialize_decor_scene(Viewer &viewer) {
 
     // add a point light
     p_position = glm::vec3(-2.0, 5.0, 5.0);
-    p_ambient = glm::vec3(0.1, 0.1, 0.1);
-    p_diffuse = glm::vec3(1.0, 1.0, 1.0);
-    p_specular = glm::vec3(1.0, 1.0, 1.0);
+    p_ambient = glm::vec3(1.0,1.0,1.0);
+    p_diffuse = glm::vec3(0.5,0.5,0.5);
+    p_specular = glm::vec3(0.1,0.1,0.1);
     p_constant = 1.0;
     p_linear = 1e-1;
     p_quadratic = 0;
@@ -60,9 +62,11 @@ void initialize_decor_scene(Viewer &viewer) {
     pointLightRenderable1->setLocalTransform(localTransformation);
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
-
-    BasicTerrainGenerator terrain(0.75);
-    LightedSlopeRenderablePtr slope = std::make_shared<LightedSlopeRenderable>(flatShader,terrain,Material::Emerald());
+    MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
+                                                          glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)), glm::vec3(0.0,0.0,0.0), 0.2);
+    BasicTerrainGenerator terrain(2.0);
+    LightedSlopeRenderablePtr slope = std::make_shared<LightedSlopeRenderable>(phongShader,terrain,slopeMaterial);
+    slope->setMaterial(slopeMaterial);
     viewer.addRenderable(slope);
 
 }

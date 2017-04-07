@@ -28,7 +28,6 @@ class SlopeRenderable : public HierarchicalRenderable
 {
 public:
     ~SlopeRenderable();
-    SlopeRenderable();
     SlopeRenderable( ShaderProgramPtr program, BasicTerrainGenerator terrain);
 
 protected:
