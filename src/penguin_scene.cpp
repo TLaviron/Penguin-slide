@@ -148,7 +148,6 @@ void initialize_penguin_scene(Viewer &viewer) {
     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
     parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    bunny->setParentTransform( parentTransformation );
     TuxRH->setParentTransform( parentTransformation );
     viewer.addRenderable(TuxRH);
     MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
