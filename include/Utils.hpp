@@ -39,4 +39,5 @@ glm::vec3 & hermiteInterp(std::vector<glm::vec3> &points, float t);
 
 glm::vec3 & hermiteTangent(std::vector<glm::vec3> &points, float t);
 
+glm::quat quatAxisAngle(float angle, glm::vec3 axis);
 #endif //UTILS

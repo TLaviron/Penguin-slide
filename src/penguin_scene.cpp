@@ -5,6 +5,7 @@
  *      Author: ekhalyocthor
  */
 
+#include "../include/Utils.hpp"
 #include "../include/Viewer.hpp"
 #include "../include/FrameRenderable.hpp"
 #include "../include/ConeRenderable.hpp"
@@ -78,15 +79,15 @@ void initialize_penguin_scene(Viewer &viewer) {
             glm::vec4(0, 0, 0, 0), 8, 0.1);
 
     localGeoTransform = GeometricTransformation(glm::vec3(-1, 0, 0),
-            glm::quat(glm::vec3(0, 0, 0)), glm::vec3(2, 2, 0.5));
+            quatAxisAngle(M_PI/2, glm::vec3(1, 0, 0)), glm::vec3(2, 2, 0.5));
     leaves->setLocalTransform(localGeoTransform);
     leaves->shake(2, 2, 0.3);
     viewer.addRenderable(leaves);
 
     PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
     sapin->bindTrunk(sapin);
-    glm::mat4 translationM = glm::translate(glm::mat4(1.0), glm::vec3(2.0, 0.0, 0.0));
-    sapin->setParentTransform(translationM);
+    sapin->setParentTransform(glm::vec3(2.0, 0.0, 0.0));
+    sapin->fell(0, glm::vec3(1, 0, 0), 5);
 
     //TEST
     ShaderProgramPtr texShader

@@ -84,3 +84,11 @@ glm::vec3 & hermiteTangent(std::vector<glm::vec3> &points, float t) {
     }
     return bezierContPt[0] = glm::normalize(bezierContPt[0]);
 }
+
+
+glm::quat quatAxisAngle(float angle, glm::vec3 axis){
+	float half = angle/2;
+	float sinA = sin(half);
+	glm::quat out(cos(half), axis*sinA);
+	return out;
+}

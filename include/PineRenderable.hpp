@@ -9,7 +9,7 @@
 #define INCLUDE_PINERENDERABLE_HPP_
 
 #include "../include/HierarchicalRenderable.hpp"
-#include "../include/lighting/LightedConeRenderable.hpp"
+#include "../include/keyframes/KeyframedConeRenderable.hpp"
 #include <vector>
 
 class PineRenderable;
@@ -32,13 +32,22 @@ public:
      */
     void bindTrunk(PineRenderablePtr thisTree);
 
+    /**
+     * @brief Add a falling animation to the tree.
+     *
+     * @param time The starting time of the animation
+     * @param direction The direction the tree is falling towards.
+     * @param duration The duration of the animation
+     */
+    void fell(float time, glm::vec3 direction, float duration = 2.0);
+
 protected:
     void do_draw();
     void do_animate(float time);
 
 private:
-    LightedConeRenderablePtr m_trunk;
-    std::vector<LightedConeRenderablePtr> m_leaves;
+    KeyframedConeRenderablePtr m_trunk;
+    std::vector<KeyframedConeRenderablePtr> m_leaves;
 };
 
 typedef std::shared_ptr<PineRenderable> PineRenderablePtr;

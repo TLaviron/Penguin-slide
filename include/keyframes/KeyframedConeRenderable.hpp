@@ -31,7 +31,7 @@ public:
      * @param duration The duration of the animation
      * @param angle Maximum rotation of cone around it's axis
      */
-    void shake(float time, float duration, float angle);
+    void shake(float time, float duration, float angle, glm::vec3 axis= glm::vec3(0, 0, 1), bool local=true);
 
 protected:
     // void do_draw();

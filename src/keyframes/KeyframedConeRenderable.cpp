@@ -5,6 +5,7 @@
  *      Author: ekhalyocthor
  */
 
+#include "../../include/Utils.hpp"
 #include "../../include/keyframes/KeyframedConeRenderable.hpp"
 #include "../../include/keyframes/GeometricTransformation.hpp"
 #include <glm/gtc/type_ptr.hpp>
@@ -21,20 +22,29 @@ KeyframedConeRenderable::KeyframedConeRenderable(ShaderProgramPtr program,
 KeyframedConeRenderable::~KeyframedConeRenderable() {
 }
 
-void KeyframedConeRenderable::shake(float time, float duration, float angle) {
-    float dt = duration / SHAKE_RESOLUTION;
+void KeyframedConeRenderable::shake(float time, float duration, float angle, glm::vec3 axis, bool local) {
+	//void (*addDynamicKeyframe)(float, const GeometricTransformation &);
+	auto addDynamicKeyframe = &KeyframedConeRenderable::addLocalTransformKeyframe;
+    GeometricTransformation staticTransform;
+	if (local){
+		staticTransform = getLocalStaticTransform();
+		addDynamicKeyframe = &KeyframedConeRenderable::addLocalTransformKeyframe;
+	} else {
+		staticTransform = getParentStaticTransform();
+		addDynamicKeyframe = &KeyframedConeRenderable::addParentTransformKeyframe;
+	}
+
+	float dt = duration / SHAKE_RESOLUTION;
     float curtime = time;
-    const GeometricTransformation localTransform = getLocalStaticTransform();
     for (int i = 0; i < SHAKE_RESOLUTION; i++, curtime += dt) {
         float angleRatio = sin(2 * M_PI * i / float(SHAKE_RESOLUTION));
-        //update with current localTransform?
-        addLocalTransformKeyframe(curtime,
-                GeometricTransformation(localTransform.getTranslation(),
-                        glm::normalize(glm::quat(angleRatio * angle, glm::vec3(0, 0, 1)) * localTransform.getOrientation()),
-						localTransform.getScale()));
+        (this->*addDynamicKeyframe)(curtime,
+                GeometricTransformation(staticTransform.getTranslation(),
+                        staticTransform.getOrientation() * quatAxisAngle(angleRatio * angle, axis),
+						staticTransform.getScale()));
     }
-    addLocalTransformKeyframe(curtime, GeometricTransformation(localTransform.getTranslation(),
-                        glm::normalize(glm::quat(0, glm::vec3(0, 0, 1)) * localTransform.getOrientation()), localTransform.getScale()));
+    (this->*addDynamicKeyframe)(curtime, GeometricTransformation(staticTransform.getTranslation(),
+                        staticTransform.getOrientation() * quatAxisAngle(0, glm::vec3(0, 0, 1)), staticTransform.getScale()));
 }
 
 void KeyframedConeRenderable::do_animate(float time) {
