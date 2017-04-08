@@ -93,7 +93,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     MaterialPtr pearl = Material::Pearl();
     TexturedMeshRenderablePtr bunny =
             std::make_shared<TexturedMeshRenderable>(
-                    texShader, "../meshes/BodyTux.obj", "../textures/texBody.png");
+                    texShader, "../tux/fulltux.obj", "../tux/fullbody.png");
     bunny->setMaterial(pearl);
     parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(0, 4, 1.0));
     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
