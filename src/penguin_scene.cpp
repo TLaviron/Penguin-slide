@@ -9,12 +9,14 @@
 #include "../include/FrameRenderable.hpp"
 #include "../include/ConeRenderable.hpp"
 #include "../include/PineRenderable.hpp"
+#include "../include/SlopeRenderable.hpp"
+#include "../include/BasicTerrainGenerator.hpp"
 #include "../include/lighting/Lights.hpp"
 #include "../include/lighting/DirectionalLightRenderable.hpp"
 #include "../include/lighting/PointLightRenderable.hpp"
 #include "../include/keyframes/KeyframedConeRenderable.hpp"
 #include "../include/texturing/TexturedMeshRenderable.hpp"
-
+#include "../include/lighting/LightedSlopeRenderable.hpp"
 
 #include "../include/lighting/LightedConeRenderable.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -148,12 +150,21 @@ void initialize_penguin_scene(Viewer &viewer) {
     parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
     TuxRH->setParentTransform( parentTransformation );
     viewer.addRenderable(TuxRH);
+    MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
+                                                           glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)),
+                                                           glm::vec3(0.0,0.0,0.0), 0.2);
+    BasicTerrainGenerator terrain(0.7);
+    LightedSlopeRenderablePtr slope = std::make_shared<LightedSlopeRenderable>(phongShader,terrain,slopeMaterial);
+    slope->setMaterial(slopeMaterial);
+    viewer.addRenderable(slope);
+
 
     viewer.addRenderable(sapin);
     viewer.getCamera().setViewMatrix(
             glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
     viewer.startAnimation();
     viewer.setAnimationLoop(true, 5);
+
 
 }
 
