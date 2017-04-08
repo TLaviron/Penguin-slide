@@ -15,7 +15,7 @@ BasicTerrainGenerator::~BasicTerrainGenerator() {
 }
 
 float BasicTerrainGenerator::getX(float x,float y) const {
-    if (y<0){
+    if (y<0 || y>170){
         return 0;
     }
     if (y<20){
@@ -25,6 +25,15 @@ float BasicTerrainGenerator::getX(float x,float y) const {
             return (x + 10) * (x + 10)*(y/20);
         else if (x > 10){
             return (x - 10) * (x - 10)*(y/20);
+        }
+    }
+    if (y>150){
+        if (x < -14 || x > 14) {
+            return ((170-y)*16.0)/20.0;
+        } else if (x < -10)
+            return (x + 10) * (x + 10)*((170-y)/20);
+        else if (x > 10){
+            return (x - 10) * (x - 10)*((170-y)/20);
         }
     }
     if (x < -14 || x > 14) {
@@ -41,10 +50,14 @@ float BasicTerrainGenerator::getX(float x,float y) const {
 float BasicTerrainGenerator::getY(float y) const {
     if (y<20) {
         return 0;
-    }else if(y>70) {
-        return -25;
-    }else {
-        return -(y-20)*0.50;
+    }else if(y>150) {
+        return -89;
+    }else if (y<50){
+        return -(y-20)*0.8;
+    } else if (y<120){
+        return -24 -(y-50)*0.50;
+    }else{
+        return -59 -(y-120)*1.0;
     }
 }
 

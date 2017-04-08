@@ -10,8 +10,8 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram, BasicTerrainGen
     int initx=40;
     int inity=30;
     int x = 2*initx;
-    int y = 120;
-    int n = 20; // discretisation nécessairement pair
+    int y = 230;
+    int n = 10; // discretisation nécessairement pair
     std::vector<glm::vec3> spline1(x+2);
     std::vector<glm::vec3> spline2(y+2);
     std::vector<glm::vec3> herm1((x-1)*n + 1);
@@ -55,7 +55,6 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram, BasicTerrainGen
             glm::vec3 tany(0,terrain.getY(mem[1]+1) - terrain.getY(mem[1]),0);
             glm::vec3 tan(glm::normalize(tanx + tany + glm::cross(tan1,tan2)));
             m_normals.push_back(tan);
-//            m_colors.push_back(glm::vec4(tan[0],tan[1],tan[2],1.0));
             m_colors.push_back(glm::vec4(1.0,1.0,1.0,0.0));
 //            m_colors.push_back(randomColor());
             if (i!=0 && i != n*(x-1)){
