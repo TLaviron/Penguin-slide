@@ -109,7 +109,7 @@ void initialize_penguin_scene(Viewer &viewer) {
 
     TexturedMeshRenderablePtr TuxRF =
             std::make_shared<TexturedMeshRenderable>(
-                    texShader, "../tux/RightFoot.obj", "../tux/RightFoot.png");
+                    texShader, "../tux/BetterRightFoot.obj", "../tux/BetterRightFoot.png");
     TuxRF->setMaterial(pearl);
     parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(0.8, 4.2, 1.0));
     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
