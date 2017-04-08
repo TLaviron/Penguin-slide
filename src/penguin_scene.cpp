@@ -90,6 +90,8 @@ void initialize_penguin_scene(Viewer &viewer) {
     ShaderProgramPtr texShader
             = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
                                               "../shaders/textureFragment.glsl");
+    viewer.addShaderProgram(texShader);
+
     MaterialPtr pearl = Material::Pearl();
     TexturedMeshRenderablePtr bunny =
             std::make_shared<TexturedMeshRenderable>(
