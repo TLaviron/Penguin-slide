@@ -33,11 +33,11 @@ PineRenderable::PineRenderable(ShaderProgramPtr shaderProgram, float height, flo
     float leafHeight = height * 0.8 / nbLeaves;
     float currentRadius = radius / 5;
     float drad = (radius - currentRadius) / (nbLeaves - 1);
-    float leafAngle = M_PI / 5; // 2 * number of 'points' to a leaf cone
+    float leafAngle = M_PI / 5;
 
     glm::vec3 translate(0, 0, height);
     glm::vec3 scale(currentRadius, currentRadius, leafHeight);
-    glm::quat leafRot = glm::normalize(glm::quat(leafAngle, glm::vec3(0, 0, 1)));
+    glm::quat leafRot = quatAxisAngle(leafAngle, glm::vec3(0, 0, 1));
     m_leaves.resize(nbLeaves);
     m_leaves[0] = std::make_shared<KeyframedConeRenderable>(shaderProgram, leafMaterial, snowWhite,
             pineGreen, snowWhite,
@@ -66,15 +66,16 @@ void PineRenderable::bindTrunk(PineRenderablePtr thisTree) {
 }
 
 void PineRenderable::fell(float time, glm::vec3 direction, float duration){
+	int sign = -1;
 	for (KeyframedConeRenderablePtr leaf: m_leaves){
-		leaf->shake(time, duration/8, 0.15);
-		leaf->shake(time + duration/8, duration/8, 0.1);
-		leaf->shake(time + duration/4, duration/8, 0.05);
+		leaf->shake(time, duration/8, (sign = -sign) * 0.21);
+		leaf->shake(time + duration/8, duration/8, sign * 0.14);
+		leaf->shake(time + duration/4, duration/8, sign * 0.07);
 	}
 	glm::vec3 trunkShakeAxis = glm::normalize(glm::cross(direction, glm::vec3(0,0,1)));
-	m_trunk->shake(time, duration/8, 0.09, trunkShakeAxis, false);
-	m_trunk->shake(time + duration/8, duration/8, 0.06, trunkShakeAxis, false);
-	m_trunk->shake(time + duration/4, duration/8, 0.03, trunkShakeAxis, false);
+	m_trunk->shake(time, duration/8, 0.06, trunkShakeAxis, false);
+	m_trunk->shake(time + duration/8, duration/8, 0.04, trunkShakeAxis, false);
+	m_trunk->shake(time + duration/4, duration/8, 0.02, trunkShakeAxis, false);
 }
 
 void PineRenderable::do_draw() {
