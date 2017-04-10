@@ -8,6 +8,7 @@
 #include "../include/PineRenderable.hpp"
 #include "../include/lighting/Material.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "../include/Utils.hpp"
 
 PineRenderable::PineRenderable(ShaderProgramPtr shaderProgram, float height, float radius,
         unsigned int nbLeaves) :
