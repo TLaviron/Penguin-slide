@@ -67,16 +67,31 @@ void PineRenderable::bindTrunk(PineRenderablePtr thisTree) {
 }
 
 void PineRenderable::fell(float time, glm::vec3 direction, float duration){
-	int sign = -1;
-	for (KeyframedConeRenderablePtr leaf: m_leaves){
-		leaf->shake(time, duration/8, (sign = -sign) * 0.21);
-		leaf->shake(time + duration/8, duration/8, sign * 0.14);
-		leaf->shake(time + duration/4, duration/8, sign * 0.07);
-	}
-	glm::vec3 trunkShakeAxis = glm::normalize(glm::cross(direction, glm::vec3(0,0,1)));
-	m_trunk->shake(time, duration/8, 0.06, trunkShakeAxis, false);
-	m_trunk->shake(time + duration/8, duration/8, 0.04, trunkShakeAxis, false);
-	m_trunk->shake(time + duration/4, duration/8, 0.02, trunkShakeAxis, false);
+    int sign = -1;
+    for (KeyframedConeRenderablePtr leaf : m_leaves) {
+        leaf->shake(time, duration / 8, (sign = -sign) * 0.21);
+        leaf->shake(time + duration / 8, duration / 8, sign * 0.14);
+        leaf->shake(time + duration / 4, duration / 8, sign * 0.07);
+    }
+    glm::vec3 trunkShakeAxis = glm::normalize(glm::cross(direction, glm::vec3(0, 0, 1)));
+    m_trunk->shake(time, duration / 8, 0.06, trunkShakeAxis, false);
+    m_trunk->shake(time + duration / 8, duration / 8, 0.04, trunkShakeAxis, false);
+    m_trunk->shake(time + duration / 4, duration / 8, 0.02, trunkShakeAxis, false);
+
+    float curFallTime = (time + duration / 4);
+    float fallDt = (3 * duration) / (4 * (FALL_RESOLUTION - 1));
+    const GeometricTransformation staticTransform = getParentStaticTransform();
+    for (int i = 0; i < FALL_RESOLUTION; i++) {
+        addParentTransformKeyframe(curFallTime,
+                GeometricTransformation(staticTransform.getTranslation(),
+                        quatAxisAngle(
+                                (1 - cos((i * M_PI) / (2 * (FALL_RESOLUTION - 1)))) * (M_PI / 2),
+                        trunkShakeAxis) * staticTransform.getOrientation(),
+                        staticTransform.getScale()));
+        curFallTime += fallDt;
+
+    }
+
 }
 
 void PineRenderable::do_draw() {
@@ -84,5 +99,10 @@ void PineRenderable::do_draw() {
 }
 
 void PineRenderable::do_animate(float time) {
-
+    if (hasLocalTransform()) {
+        setLocalTransform(interpLocalTransform(time));
+    }
+    if (hasParentTransform()) {
+        setParentTransform(interpParentTransform(time));
+    }
 }
