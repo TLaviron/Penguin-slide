@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../include/Viewer.hpp"
 #include "../include/FrameRenderable.hpp"
+#include "../include/keyframes/Keyframable.hpp"
 #include "../include/keyframes/KeyframedMeshRenderable.hpp"
 
 
@@ -28,9 +29,22 @@ public:
     void bindMembers(PenguinLightedRenderablePtr thisPenguin);
 
 /**
- * @brief make walk Tux
+ * make walk Tux
+ * @param viewer
+ * @param texShader
+ * @param time
+ * @param position
  */
-    void walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, glm::vec3 position,glm::vec3 orientation, float distance);
+    void walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, glm::vec3 position);
+/**
+ * make jump Tux
+ * @param viewer
+ * @param texShader
+ * @param time
+ * @param position
+ */
+    void jumpTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, glm::vec3 position);
+
 
     KeyframedMeshRenderablePtr getLF();
 
