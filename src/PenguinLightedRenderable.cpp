@@ -3,6 +3,7 @@
 //
 
 #include "../include/PenguinLightedRenderable.hpp"
+#include <glm/gtx/quaternion.hpp>
 
 
 PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Viewer &viewer) :
@@ -64,6 +65,9 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Vi
     HierarchicalRenderable::addChild(Body, LH);
     HierarchicalRenderable::addChild(Body, RF);
     HierarchicalRenderable::addChild(Body, LF);
+
+    m_status = PENGUIN_STATUS_STARTING;
+    m_particle = std::make_shared<Particle>(glm::vec3(0, 0, 0), glm::vec3(0), 5, 0.7);
 
 
 }
@@ -141,6 +145,32 @@ void PenguinLightedRenderable::do_draw(){
 
 }
 
+void PenguinLightedRenderable::beforeAnimate(float time){
+    glm::vec3 velocityDirection, yAxis(0, 1, 0), zAxis(0, 0, 1);
+    glm::vec3 newUp;
+    glm::quat rot;
+
+	switch(m_status){
+	case PENGUIN_STATUS_STARTING:
+	case PENGUIN_STATUS_RECOVERING:
+		break;// fully keyframed, nothing to do
+	case PENGUIN_STATUS_SLIDING:
+		velocityDirection = glm::normalize(m_particle->getVelocity());
+
+		// compute quaternion to align yAxis with velocityDirection
+		rot = glm::rotation(yAxis, velocityDirection);
+		newUp = rot * glm::vec3(0,0,1);
+		rot = glm::rotation(newUp, glm::vec3(0, 0, 1)) * rot;
+		setParentTransform(GeometricTransformation(m_particle->getPosition(),
+		        rot, getParentStaticTransform().getScale()));
+		break;
+	case PENGUIN_STATUS_COLIDING:
+		break;
+	default:
+		break;
+	}
+}
+
 PenguinLightedRenderable::~PenguinLightedRenderable(){
 
 }
@@ -167,4 +197,16 @@ KeyframedMeshRenderablePtr PenguinLightedRenderable::getBody(){
 
 void PenguinLightedRenderable::bindMembers(PenguinLightedRenderablePtr thisPenguin){
     HierarchicalRenderable::addChild(thisPenguin,Body);
+}
+
+void PenguinLightedRenderable::setStatus(PenguinStatus status){
+    m_status = status;
+}
+
+PenguinStatus PenguinLightedRenderable::getStatus(){
+    return m_status;
+}
+
+const ParticlePtr & PenguinLightedRenderable::getParticle(){
+    return m_particle;
 }

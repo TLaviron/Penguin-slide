@@ -74,6 +74,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
 
+    /*
     KeyframedConeRenderablePtr leaves = std::make_shared<KeyframedConeRenderable>(phongShader,
             Material::Emerald(),
             glm::vec4(1, 1, 1, 0), glm::vec4(0, 0.5, 0, 0), glm::vec4(0, 0.5, 0, 0),
@@ -84,6 +85,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     leaves->setLocalTransform(localGeoTransform);
     leaves->shake(2, 2, 0.3);
     viewer.addRenderable(leaves);
+    */
 
     PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
     sapin->bindTrunk(sapin);
@@ -100,6 +102,14 @@ void initialize_penguin_scene(Viewer &viewer) {
     Tux->walkTux(viewer,texShader,0.0,glm::vec3(1.0,0.0,0.0));
     Tux->walkTux(viewer,texShader,4.0,glm::vec3(3.0,0.0,0.0));
     Tux->jumpTux(viewer,texShader,8.0,glm::vec3(5.0,0.0,0.0));
+
+
+    PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
+    otherTux->bindMembers(otherTux);
+    otherTux->setStatus(PENGUIN_STATUS_SLIDING);
+    ParticlePtr tuxParticle = otherTux->getParticle();
+    tuxParticle->setFixed(true);
+    tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
 
     MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
                                                            glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)),

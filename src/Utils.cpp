@@ -5,6 +5,7 @@
 #include <random>
 #include <glm/gtx/color_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/norm.hpp>
 
 using namespace std;
 
@@ -87,8 +88,25 @@ glm::vec3 & hermiteTangent(std::vector<glm::vec3> &points, float t) {
 
 
 glm::quat quatAxisAngle(float angle, glm::vec3 axis){
-	float half = angle/2;
-	float sinA = sin(half);
-	glm::quat out(cos(half), axis*sinA);
-	return out;
+    float half = angle/2;
+    float sinA = sin(half);
+    glm::quat out(cos(half), axis*sinA);
+    return out;
 }
+/*
+glm::quat rotationBetweenVect(glm::vec3 & origin, glm::vec3 & destination){
+    origin = glm::normalize(origin);
+    destination = glm::normalize(destination);
+
+    float cosTheta = dot(origin, destination);
+    glm::vec3 rotationAxis;
+
+    if (cosTheta < -1 + 0.001f){
+        rotationAxis = glm::cross(glm::vec3(1, 0, 0), origin);
+        if (glm::gtx::norm::length2(rotationAxis) < 0.01)
+            rotationAxis = glm::cross(glm::vec3(0, 1, 0), origin);
+        glm::rotation(orig, dest)
+    }
+
+
+}*/
