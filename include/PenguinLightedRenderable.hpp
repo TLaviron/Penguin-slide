@@ -1,40 +1,60 @@
-#ifndef INCLUDE_PENGUINRENDERABLE_HPP_
-#define INCLUDE_PENGUINRENDERABLE_HPP_
+#ifndef INCLUDE_PENGUINLIGHTEDRENDERABLE_HPP_
+#define INCLUDE_PENGUINLIGHTEDRENDERABLE_HPP_
 
 #include "../include/texturing/TexturedMeshRenderable.hpp"
 #include "../include/keyframes/GeometricTransformation.hpp"
+#include "../include/Utils.hpp"
+#include "../include/lighting/Material.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include "../include/Viewer.hpp"
+#include "../include/FrameRenderable.hpp"
+#include "../include/keyframes/KeyframedMeshRenderable.hpp"
 
 
-class PenguinRenderable;
-typedef std::shared_ptr<PenguinRenderable> PenguinRenderablePtr;
 
-class PenguinRenderable: public TexturedMeshRenderable {
+
+class PenguinLightedRenderable;
+typedef std::shared_ptr<PenguinLightedRenderable> PenguinLightedRenderablePtr;
+
+class PenguinLightedRenderable: public HierarchicalRenderable {
 public:
-    PenguinRenderable(ShaderProgramPtr shaderProgram);
-    ~PenguinRenderable();
+    PenguinLightedRenderable(ShaderProgramPtr texShader,Viewer &viewer);
+    ~PenguinLightedRenderable();
 
     /**
      * @brief Bind the penguin's limbs to the body
      * @param thisPenguin smart pointer to the penguin's body
      */
-    void bindMembers(PenguinRenderablePtr thisPenguin);
+    void bindMembers(PenguinLightedRenderablePtr thisPenguin);
 
-    TexturedMeshRenderablePtr getLF();
+/**
+ * @brief make walk Tux
+ */
+    void walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, glm::vec3 position,glm::vec3 orientation, float distance);
 
-    TexturedMeshRenderablePtr getRF();
+    KeyframedMeshRenderablePtr getLF();
 
-    TexturedMeshRenderablePtr getLH();
+    KeyframedMeshRenderablePtr getRF();
 
-    TexturedMeshRenderablePtr getRH();
+    KeyframedMeshRenderablePtr getLH();
+
+    KeyframedMeshRenderablePtr getRH();
+
+    KeyframedMeshRenderablePtr getBody();
+
+protected:
+    void do_draw();
+    void do_animate( float time );
 
 private:
-    TexturedMeshRenderablePtr LF;
-    TexturedMeshRenderablePtr RF;
-    TexturedMeshRenderablePtr LH;
-    TexturedMeshRenderablePtr RH;
+    KeyframedMeshRenderablePtr Body;
+    KeyframedMeshRenderablePtr LF;
+    KeyframedMeshRenderablePtr RF;
+    KeyframedMeshRenderablePtr LH;
+    KeyframedMeshRenderablePtr RH;
 
 };
 
-typedef std::shared_ptr<PenguinRenderable> PenguinRenderablePtr;
+typedef std::shared_ptr<PenguinLightedRenderable> PenguinLightedRenderablePtr;
 
 #endif /* INCLUDE_PENGUINRENDERABLE_HPP_ */

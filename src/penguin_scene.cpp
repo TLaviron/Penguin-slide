@@ -12,6 +12,7 @@
 #include "../include/PineRenderable.hpp"
 #include "../include/SlopeRenderable.hpp"
 #include "../include/BasicTerrainGenerator.hpp"
+#include "../include/PenguinLightedRenderable.hpp"
 #include "../include/lighting/Lights.hpp"
 #include "../include/lighting/DirectionalLightRenderable.hpp"
 #include "../include/lighting/PointLightRenderable.hpp"
@@ -94,63 +95,11 @@ void initialize_penguin_scene(Viewer &viewer) {
             = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
                                               "../shaders/textureFragment.glsl");
     viewer.addShaderProgram(texShader);
+    PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
+    Tux->bindMembers(Tux);
+    Tux->walkTux(viewer,texShader,0.0,glm::vec3(1.0,1.0,0.0),glm::vec3(0.0,1.0,0.0),2.0);
+    Tux->walkTux(viewer,texShader,4.0,glm::vec3(1.0,3.0,0.0),glm::vec3(0.0,1.0,0.0),2.0);
 
-    MaterialPtr pearl = Material::Pearl();
-
-    TexturedMeshRenderablePtr TuxBody =
-            std::make_shared<TexturedMeshRenderable>(
-                    texShader, "../tux/TuxBody.obj", "../tux/TuxBody.png");
-    TuxBody->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(0, 4.5, 2.35));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    TuxBody->setParentTransform( parentTransformation );
-    viewer.addRenderable(TuxBody);
-
-    TexturedMeshRenderablePtr TuxRF =
-            std::make_shared<TexturedMeshRenderable>(
-                    texShader, "../tux/RightFoot.obj", "../tux/RightFoot.png");
-    TuxRF->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(0.8, 4.2, 1.0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    TuxRF->setParentTransform( parentTransformation );
-    viewer.addRenderable(TuxRF);
-
-    TexturedMeshRenderablePtr TuxLF =
-            std::make_shared<TexturedMeshRenderable>(
-                    texShader, "../tux/LeftFoot.obj", "../tux/leftFoot.png");
-    TuxLF->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(-0.7, 4.2, 1.0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    TuxLF->setParentTransform( parentTransformation );
-    viewer.addRenderable(TuxLF);
-
-    TexturedMeshRenderablePtr TuxLH =
-            std::make_shared<TexturedMeshRenderable>(
-                    texShader, "../tux/LeftHand.obj", "../tux/LeftHand.png");
-    TuxLH->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(-1.03, 4, 2.3));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    TuxLH->setParentTransform( parentTransformation );
-    viewer.addRenderable(TuxLH);
-
-    TexturedMeshRenderablePtr TuxRH =
-            std::make_shared<TexturedMeshRenderable>(
-                    texShader, "../tux/RightHand.obj", "../tux/RightHand.png");
-    TuxRH->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(1.09, 4, 2.3));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-    TuxRH->setParentTransform( parentTransformation );
-    viewer.addRenderable(TuxRH);
     MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
                                                            glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)),
                                                            glm::vec3(0.0,0.0,0.0), 0.2);
@@ -164,7 +113,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.getCamera().setViewMatrix(
             glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
     viewer.startAnimation();
-    viewer.setAnimationLoop(true, 5);
+    viewer.setAnimationLoop(true, 8);
 
 
 }
