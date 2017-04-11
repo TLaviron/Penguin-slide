@@ -69,17 +69,17 @@ void PineRenderable::bindTrunk(PineRenderablePtr thisTree) {
 void PineRenderable::fell(float time, glm::vec3 direction, float duration){
     int sign = -1;
     for (KeyframedConeRenderablePtr leaf : m_leaves) {
-        leaf->shake(time, duration / 8, (sign = -sign) * 0.21);
-        leaf->shake(time + duration / 8, duration / 8, sign * 0.14);
-        leaf->shake(time + duration / 4, duration / 8, sign * 0.07);
+        leaf->shake(time, duration / 16, (sign = -sign) * 0.21);
+        leaf->shake(time + duration / 16, duration / 4, sign * 0.14);
+        leaf->shake(time + duration / 8, duration / 4, sign * 0.07);
     }
     glm::vec3 trunkShakeAxis = glm::normalize(glm::cross(glm::vec3(0, 0, 1), direction));
-    m_trunk->shake(time, duration / 8, 0.06, trunkShakeAxis, false);
-    m_trunk->shake(time + duration / 8, duration / 8, 0.04, trunkShakeAxis, false);
-    m_trunk->shake(time + duration / 4, duration / 8, 0.02, trunkShakeAxis, false);
+    m_trunk->shake(time, duration / 16, 0.06, trunkShakeAxis, false);
+    m_trunk->shake(time + duration / 16, duration / 16, 0.04, trunkShakeAxis, false);
+    m_trunk->shake(time + duration / 8, duration / 16, 0.02, trunkShakeAxis, false);
 
-    float curFallTime = (time + duration / 4);
-    float fallDt = (3 * duration) / (4 * (FALL_RESOLUTION - 1));
+    float curFallTime = (time + duration / 8);
+    float fallDt = (3 * duration) / (8 * (FALL_RESOLUTION - 1));
     const GeometricTransformation staticTransform = getParentStaticTransform();
     float n = FALL_RESOLUTION -1;
     for (int i = 0; i < FALL_RESOLUTION; i++) {
@@ -90,9 +90,16 @@ void PineRenderable::fell(float time, glm::vec3 direction, float duration){
                         trunkShakeAxis) * staticTransform.getOrientation(),
                         staticTransform.getScale()));
         curFallTime += fallDt;
-
     }
+    addParentTransformKeyframe(time + (3 * duration) / 4,
+            GeometricTransformation(staticTransform.getTranslation(),
+                    quatAxisAngle((M_PI / 2), trunkShakeAxis) * staticTransform.getOrientation(),
+                    staticTransform.getScale()));
 
+    addParentTransformKeyframe(time + duration,
+            GeometricTransformation(staticTransform.getTranslation(),
+                    quatAxisAngle((M_PI / 2), trunkShakeAxis) * staticTransform.getOrientation(),
+                    staticTransform.getScale() * glm::vec3(0, 0, 1)));
 }
 
 void PineRenderable::do_draw() {

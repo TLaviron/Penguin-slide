@@ -90,7 +90,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
     sapin->bindTrunk(sapin);
     sapin->setParentTransform(GeometricTransformation(glm::vec3(2.0, 0.0, 0.0)));
-    sapin->fell(0, glm::vec3(1, 0, 0), 2);
+    sapin->fell(0, glm::vec3(1, 0, 0), 4);
 
     //TEST
     ShaderProgramPtr texShader
@@ -99,9 +99,11 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addShaderProgram(texShader);
     PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
     Tux->bindMembers(Tux);
-    Tux->walkTux(viewer,texShader,0.0,glm::vec3(1.0,0.0,0.0));
-    Tux->walkTux(viewer,texShader,4.0,glm::vec3(3.0,0.0,0.0));
-    Tux->jumpTux(viewer,texShader,8.0,glm::vec3(5.0,0.0,0.0));
+
+    viewer.addRenderable(Tux);
+    Tux->walkTux(viewer,texShader,0.0,2);
+    Tux->walkTux(viewer,texShader,2.0,2);
+    Tux->jumpTux(viewer,texShader,4.0,1);
 
 
     PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);

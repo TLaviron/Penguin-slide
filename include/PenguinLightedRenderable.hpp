@@ -42,7 +42,7 @@ public:
  * @param time
  * @param position
  */
-    void walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, glm::vec3 position);
+    void walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration);
 /**
  * make jump Tux
  * @param viewer
@@ -50,7 +50,7 @@ public:
  * @param time
  * @param position
  */
-    void jumpTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, glm::vec3 position);
+    void jumpTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration);
 
 
     KeyframedMeshRenderablePtr getLF();

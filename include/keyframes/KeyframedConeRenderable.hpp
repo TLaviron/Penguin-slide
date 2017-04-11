@@ -38,8 +38,6 @@ protected:
     void do_animate(float time);
 
 private:
-    KeyframeCollection m_localKeyframes; /*!< A collection of keyframes for the local transformation of renderable. */
-    KeyframeCollection m_parentKeyframes; /*!< A collection of keyframes for the parent transformation of renderable. */
 };
 
 typedef std::shared_ptr<KeyframedConeRenderable> KeyframedConeRenderablePtr;

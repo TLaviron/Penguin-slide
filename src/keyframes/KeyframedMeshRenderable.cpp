@@ -19,23 +19,13 @@ KeyframedMeshRenderable::~KeyframedMeshRenderable()
 {
 }
 
-void KeyframedMeshRenderable::addParentTransformKeyframe(float time, const GeometricTransformation& transformation)
-{
-    m_parentKeyframes.add(time, transformation);
-}
-
-void KeyframedMeshRenderable::addLocalTransformKeyframe(float time, const GeometricTransformation& transformation)
-{
-    m_localKeyframes.add(time, transformation);
-}
-
 void KeyframedMeshRenderable::do_animate(float time)
 {
     //Assign the interpolated transformations from the keyframes to the local/parent transformations.
-    if (!m_localKeyframes.empty()) {
-        setLocalTransform(m_localKeyframes.interpolateTransformation(time));
+    if (hasLocalTransform()) {
+        setLocalTransform(interpLocalTransform(time));
     }
-    if (!m_parentKeyframes.empty()) {
-        setParentTransform(m_parentKeyframes.interpolateTransformation(time));
+    if (hasParentTransform()) {
+        setParentTransform(interpParentTransform(time));
     }
 }
