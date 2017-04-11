@@ -3,12 +3,13 @@
 
 #include "../texturing/TexturedMeshRenderable.hpp"
 #include "KeyframeCollection.hpp"
+#include "Keyframable.hpp"
 
 #include <glm/glm.hpp>
 
 class GeometricTransformation;
 
-class KeyframedMeshRenderable : public TexturedMeshRenderable
+class KeyframedMeshRenderable : public TexturedMeshRenderable, Keyframable
 {
 public:
     KeyframedMeshRenderable(ShaderProgramPtr program,const std::string& meshFilename,

@@ -97,8 +97,9 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addShaderProgram(texShader);
     PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
     Tux->bindMembers(Tux);
-    Tux->walkTux(viewer,texShader,0.0,glm::vec3(1.0,1.0,0.0),glm::vec3(0.0,1.0,0.0),2.0);
-    Tux->walkTux(viewer,texShader,4.0,glm::vec3(1.0,3.0,0.0),glm::vec3(0.0,1.0,0.0),2.0);
+    Tux->walkTux(viewer,texShader,0.0,glm::vec3(1.0,0.0,0.0));
+    Tux->walkTux(viewer,texShader,4.0,glm::vec3(3.0,0.0,0.0));
+    Tux->jumpTux(viewer,texShader,8.0,glm::vec3(5.0,0.0,0.0));
 
     MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
                                                            glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)),
@@ -113,7 +114,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.getCamera().setViewMatrix(
             glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
     viewer.startAnimation();
-    viewer.setAnimationLoop(true, 8);
+    viewer.setAnimationLoop(true, 12);
 
 
 }
