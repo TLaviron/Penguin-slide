@@ -9,14 +9,17 @@
 #define INCLUDE_PINERENDERABLE_HPP_
 
 #include "../include/HierarchicalRenderable.hpp"
+#include "../include/keyframes/Keyframable.hpp"
 #include "../include/keyframes/KeyframedConeRenderable.hpp"
 #include <vector>
+
+#define FALL_RESOLUTION 10
 
 class PineRenderable;
 typedef std::shared_ptr<PineRenderable> PineRenderablePtr;
 
 
-class PineRenderable: public HierarchicalRenderable {
+class PineRenderable: public HierarchicalRenderable, Keyframable {
 public:
     PineRenderable(ShaderProgramPtr shaderProgram, float height, float radius,
             unsigned int nbLeaves = 7);
