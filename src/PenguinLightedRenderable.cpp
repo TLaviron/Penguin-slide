@@ -65,7 +65,6 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Vi
     HierarchicalRenderable::addChild(Body, RF);
     HierarchicalRenderable::addChild(Body, LF);
 
-
 }
 
 void PenguinLightedRenderable::walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, glm::vec3 position){
