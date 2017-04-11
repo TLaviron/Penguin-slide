@@ -108,10 +108,17 @@ void initialize_penguin_scene(Viewer &viewer) {
 
     PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
     otherTux->bindMembers(otherTux);
+    GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
+    tuxTransform.setTranslation(glm::vec3(0));
+    tuxTransform.setOrientation(glm::quat());
+    otherTux->setParentTransform(tuxTransform);
+
+    otherTux->updateModelMatrix();
     otherTux->setStatus(PENGUIN_STATUS_SLIDING);
     ParticlePtr tuxParticle = otherTux->getParticle();
     tuxParticle->setFixed(true);
     tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
+    viewer.addRenderable(otherTux);
 
     MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
                                                            glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)),

@@ -30,12 +30,8 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Vi
 
     Body->setMaterial(pearl);
 
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(0, 4.5, 2.35));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(0,1,0));
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
     setParentTransform(GeometricTransformation(glm::vec3(0, 4.5, 2.35), quatAxisAngle(float(M_PI_2), glm::vec3(1,0,0)) * quatAxisAngle(float(M_PI_2), glm::vec3(0,1,0)), glm::vec3(2,2,2)));
-    Body->setParentTransform( parentTransformation );
+    Body->setParentTransform(GeometricTransformation());
 
     RF->setMaterial(pearl);
     parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(-0.1, -0.68, 0.35));
@@ -144,7 +140,7 @@ void PenguinLightedRenderable::do_draw(){
 
 void PenguinLightedRenderable::beforeAnimate(float time){
     glm::vec3 velocityDirection, yAxis(0, 1, 0), zAxis(0, 0, 1);
-    glm::vec3 newUp;
+    glm::vec3 newRightSide;
     glm::quat rot;
 
 	switch(m_status){
@@ -154,10 +150,12 @@ void PenguinLightedRenderable::beforeAnimate(float time){
 	case PENGUIN_STATUS_SLIDING:
 		velocityDirection = glm::normalize(m_particle->getVelocity());
 
-		// compute quaternion to align yAxis with velocityDirection
+		// compute quaternion to align penguin yAxis (head) with velocityDirection
+		// we also need nose facing downward, which means the penguin's right side (+z)
+		// has to be aligned with cross(velocityDirection, z)
 		rot = glm::rotation(yAxis, velocityDirection);
-		newUp = rot * glm::vec3(0,0,1);
-		rot = glm::rotation(newUp, glm::vec3(0, 0, 1)) * rot;
+		newRightSide = rot * zAxis;
+		rot = glm::rotation(newRightSide, glm::cross(velocityDirection, zAxis)) * rot;
 		setParentTransform(GeometricTransformation(m_particle->getPosition(),
 		        rot, getParentStaticTransform().getScale()));
 		break;
