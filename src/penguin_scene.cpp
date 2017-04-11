@@ -90,7 +90,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
     sapin->bindTrunk(sapin);
     sapin->setParentTransform(GeometricTransformation(glm::vec3(2.0, 0.0, 0.0)));
-    sapin->fell(0, glm::vec3(1, 0, 0), 5);
+    sapin->fell(0, glm::vec3(1, 0, 0), 2);
 
     //TEST
     ShaderProgramPtr texShader
