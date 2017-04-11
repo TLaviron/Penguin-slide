@@ -23,6 +23,16 @@
 #include "../include/keyframes/KeyframedConeRenderable.hpp"
 #include "../include/texturing/TexturedMeshRenderable.hpp"
 #include "../include/lighting/LightedSlopeRenderable.hpp"
+#include "../include/dynamics/DynamicSystem.hpp"
+#include "../include/dynamics/DampingForceField.hpp"
+#include "../include/dynamics/ConstantForceField.hpp"
+#include "../include/dynamics/SpringForceField.hpp"
+#include "../include/dynamics/EulerExplicitSolver.hpp"
+#include "../include/dynamics_rendering/DynamicSystemRenderable.hpp"
+#include "../include/dynamics/Particle.hpp"
+#include "../include/dynamics_rendering/ConstantForceFieldRenderable.hpp"
+#include "../include/dynamics_rendering/ParticleRenderable.hpp"
+#include "../include/SnowflakeLightedRenderable.hpp"
 
 #include "../include/lighting/LightedConeRenderable.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -32,11 +42,20 @@ void initialize_snowflake_scene(Viewer &viewer) {
     ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>("../shaders/flatVertex.glsl",
                                                                   "../shaders/flatFragment.glsl");
     viewer.addShaderProgram(flatShader);
+
     FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
     viewer.addRenderable(frame);
-    ShaderProgramPtr phongShader = std::make_shared<ShaderProgram>("../shaders/phongVertex.glsl",
-                                                                   "../shaders/phongFragment.glsl");
-    viewer.addShaderProgram(phongShader);
+
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemPtr system = std::make_shared<DynamicSystem>();
+    EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+
+
+    DynamicSystemRenderablePtr systemRenderable = std::make_shared<DynamicSystemRenderable>(system);
+    viewer.addRenderable(systemRenderable);
+
 
     //Define a transformation
     glm::mat4 parentTransformation, localTransformation;
@@ -82,19 +101,38 @@ void initialize_snowflake_scene(Viewer &viewer) {
             = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
                                               "../shaders/textureFragment.glsl");
     viewer.addShaderProgram(texShader);
-    MaterialPtr pearl = Material::Pearl();
 
     //TEST
-    TexturedMeshRenderablePtr sf =
-            std::make_shared<TexturedMeshRenderable>(
-                    texShader, "../snowflake/snowflakemini.obj", "../snowflake/SnowflakeText.png");
-    sf->setMaterial(pearl);
-//    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(0, 4, 1.0));
-//    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0));
-//    parentTransformation = glm::scale( parentTransformation, glm::vec3(2,2,2));
-//    sf->setParentTransform( parentTransformation );
-    viewer.addRenderable(sf);
+//    TexturedMeshRenderablePtr sf =
+//            std::make_shared<TexturedMeshRenderable>(
+//                    texShader, "../snowflake/snowflakemini.obj", "../snowflake/SnowflakeText.png");
+//    sf->setMaterial(pearl);
+//
+//    glm::vec3 px,pv;
+//    float pm, pr;
+//
+//    px = glm::vec3(0.0, 0.0, 1.0);
+//    pv = glm::vec3(0.0, 0.0, 0.0);
+//    pr = 0.1;
+//    pm = 1.0;
+//    ParticlePtr sfParticle = std::make_shared<Particle>(px, pv, pm, pr);
+//    system->addParticle(sfParticle);
+//
+//    ParticleRenderablePtr particleRenderable = std::make_shared<ParticleRenderable>(flatShader, sfParticle);
+//    HierarchicalRenderable::addChild(systemRenderable, particleRenderable);
+//
+//    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
+//    system->addForceField(gravityForceField);
 
+    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader, viewer);
+    SF->bindSF(SF);
+
+    ParticlePtr sfParticle = SF->getParticle();
+    system->addParticle(sfParticle);
+    HierarchicalRenderable::addChild(systemRenderable, SF);
+
+    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
+    system->addForceField(gravityForceField);
 
     viewer.getCamera().setViewMatrix(
             glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
