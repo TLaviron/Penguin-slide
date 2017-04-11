@@ -10,8 +10,15 @@
 #include "../include/FrameRenderable.hpp"
 #include "../include/keyframes/Keyframable.hpp"
 #include "../include/keyframes/KeyframedMeshRenderable.hpp"
+#include "../include/dynamics/Particle.hpp"
 
 
+typedef enum {
+	PENGUIN_STATUS_STARTING,
+	PENGUIN_STATUS_SLIDING,
+	PENGUIN_STATUS_COLIDING,
+	PENGUIN_STATUS_RECOVERING
+} PenguinStatus;
 
 
 class PenguinLightedRenderable;
@@ -56,16 +63,53 @@ public:
 
     KeyframedMeshRenderablePtr getBody();
 
+    void setStatus(PenguinStatus status);
+
+    PenguinStatus getStatus();
+
+    const ParticlePtr & getParticle();
+
 protected:
     void do_draw();
     void do_animate( float time );
+    void beforeAnimate(float time);
 
 private:
+    /**
+     * Tux's body
+     */
     KeyframedMeshRenderablePtr Body;
+
+    /**
+     * Tux's left foot
+     */
     KeyframedMeshRenderablePtr LF;
+
+    /**
+     * Tux's right foot
+     */
     KeyframedMeshRenderablePtr RF;
+
+    /**
+     * Tux's left flipper
+     */
     KeyframedMeshRenderablePtr LH;
+
+    /**
+     * Tux's left flipper
+     */
     KeyframedMeshRenderablePtr RH;
+
+
+    /**
+     * Particle used for the dynamic system
+     */
+    ParticlePtr m_particle;
+
+    /**
+     * Status of the penguin.
+     */
+    PenguinStatus m_status;
 
 };
 
