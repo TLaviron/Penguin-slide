@@ -105,6 +105,7 @@ void initialize_snowflake_scene(Viewer &viewer) {
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
 
+
     //TEST
 
 //    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader, glm::vec3(0, 0, 5));
