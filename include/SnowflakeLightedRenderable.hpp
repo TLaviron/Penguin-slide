@@ -18,7 +18,7 @@ typedef std::shared_ptr<SnowflakeLightedRenderable> SnowflakeLightedRenderablePt
 
 class SnowflakeLightedRenderable: public TexturedMeshRenderable{
 public:
-    SnowflakeLightedRenderable(ShaderProgramPtr texShader);
+    SnowflakeLightedRenderable(ShaderProgramPtr texShader, glm::vec3 position);
     ~SnowflakeLightedRenderable();
 
     const ParticlePtr & getParticle();
