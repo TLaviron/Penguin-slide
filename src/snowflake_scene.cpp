@@ -104,28 +104,6 @@ void initialize_snowflake_scene(Viewer &viewer) {
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
 
-    //TEST
-//    TexturedMeshRenderablePtr sf =
-//            std::make_shared<TexturedMeshRenderable>(
-//                    texShader, "../snowflake/snowflakemini.obj", "../snowflake/SnowflakeText.png");
-//    sf->setMaterial(pearl);
-//
-//    glm::vec3 px,pv;
-//    float pm, pr;
-//
-//    px = glm::vec3(0.0, 0.0, 1.0);
-//    pv = glm::vec3(0.0, 0.0, 0.0);
-//    pr = 0.1;
-//    pm = 1.0;
-//    ParticlePtr sfParticle = std::make_shared<Particle>(px, pv, pm, pr);
-//    system->addParticle(sfParticle);
-//
-//    ParticleRenderablePtr particleRenderable = std::make_shared<ParticleRenderable>(flatShader, sfParticle);
-//    HierarchicalRenderable::addChild(systemRenderable, particleRenderable);
-//
-//    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
-//    system->addForceField(gravityForceField);
-
     SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader);
     ParticlePtr sfParticle = SF->getParticle();
     system->addParticle(sfParticle);

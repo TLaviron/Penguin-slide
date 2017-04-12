@@ -20,9 +20,11 @@ void SnowflakeLightedRenderable::do_animate(float time) {
 }
 
 void SnowflakeLightedRenderable::do_draw() {
+    const float& pRadius = m_particle->getRadius();
     const glm::vec3& pPosition = m_particle->getPosition();
+    glm::mat4 scale = glm::scale(glm::mat4(1.0), glm::vec3(pRadius));
     glm::mat4 translate = glm::translate(glm::mat4(1.0), glm::vec3(pPosition));
-    setLocalTransform(translate);
+    setLocalTransform(translate*scale);
     TexturedMeshRenderable::do_draw();
 }
 

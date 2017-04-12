@@ -19,6 +19,17 @@
 #include "../include/keyframes/KeyframedConeRenderable.hpp"
 #include "../include/texturing/TexturedMeshRenderable.hpp"
 #include "../include/lighting/LightedSlopeRenderable.hpp"
+#include "../include/dynamics/DynamicSystem.hpp"
+#include "../include/dynamics/DampingForceField.hpp"
+#include "../include/dynamics/ConstantForceField.hpp"
+#include "../include/dynamics/SpringForceField.hpp"
+#include "../include/dynamics/EulerExplicitSolver.hpp"
+#include "../include/dynamics_rendering/DynamicSystemRenderable.hpp"
+#include "../include/dynamics/Particle.hpp"
+#include "../include/dynamics_rendering/ConstantForceFieldRenderable.hpp"
+#include "../include/dynamics_rendering/ParticleRenderable.hpp"
+#include "../include/SnowflakeLightedRenderable.hpp"
+
 
 #include "../include/lighting/LightedConeRenderable.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -33,6 +44,11 @@ void initialize_penguin_scene(Viewer &viewer) {
     ShaderProgramPtr phongShader = std::make_shared<ShaderProgram>("../shaders/phongVertex.glsl",
             "../shaders/phongFragment.glsl");
     viewer.addShaderProgram(phongShader);
+
+    ShaderProgramPtr texShader
+            = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
+                                              "../shaders/textureFragment.glsl");
+    viewer.addShaderProgram(texShader);
 
     //Define a transformation
     glm::mat4 parentTransformation, localTransformation;
@@ -86,17 +102,13 @@ void initialize_penguin_scene(Viewer &viewer) {
     leaves->shake(2, 2, 0.3);
     viewer.addRenderable(leaves);
     */
-
+//pine
     PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
     sapin->bindTrunk(sapin);
     sapin->setParentTransform(GeometricTransformation(glm::vec3(2.0, 0.0, 0.0)));
     sapin->fell(0, glm::vec3(1, 0, 0), 4);
 
-    //TEST
-    ShaderProgramPtr texShader
-            = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
-                                              "../shaders/textureFragment.glsl");
-    viewer.addShaderProgram(texShader);
+//Penguin
     PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
     Tux->bindMembers(Tux);
 
@@ -106,20 +118,21 @@ void initialize_penguin_scene(Viewer &viewer) {
     Tux->jumpTux(viewer,texShader,4.0,1);
 
 
-    PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
-    otherTux->bindMembers(otherTux);
-    GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
-    tuxTransform.setTranslation(glm::vec3(0));
-    tuxTransform.setOrientation(glm::quat());
-    otherTux->setParentTransform(tuxTransform);
+//    PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
+//    otherTux->bindMembers(otherTux);
+//    GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
+//    tuxTransform.setTranslation(glm::vec3(0));
+//    tuxTransform.setOrientation(glm::quat());
+//    otherTux->setParentTransform(tuxTransform);
 
-    otherTux->updateModelMatrix();
-    otherTux->setStatus(PENGUIN_STATUS_SLIDING);
-    ParticlePtr tuxParticle = otherTux->getParticle();
-    tuxParticle->setFixed(true);
-    tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
-    viewer.addRenderable(otherTux);
+//    otherTux->updateModelMatrix();
+//    otherTux->setStatus(PENGUIN_STATUS_SLIDING);
+//    ParticlePtr tuxParticle = otherTux->getParticle();
+//    tuxParticle->setFixed(true);
+//    tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
+//    viewer.addRenderable(otherTux);
 
+    //slope
     MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
                                                            glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)),
                                                            glm::vec3(0.0,0.0,0.0), 0.2);
@@ -127,6 +140,28 @@ void initialize_penguin_scene(Viewer &viewer) {
     LightedSlopeRenderablePtr slope = std::make_shared<LightedSlopeRenderable>(phongShader,terrain,slopeMaterial);
     slope->setMaterial(slopeMaterial);
     viewer.addRenderable(slope);
+//snow
+
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemPtr system = std::make_shared<DynamicSystem>();
+    EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+
+
+    DynamicSystemRenderablePtr systemRenderable = std::make_shared<DynamicSystemRenderable>(system);
+    viewer.addRenderable(systemRenderable);
+
+
+    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader);
+    ParticlePtr sfParticle = SF->getParticle();
+    system->addParticle(sfParticle);
+    HierarchicalRenderable::addChild(systemRenderable, SF);
+
+    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
+    ConstantForceFieldPtr frottement = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,+8.5} );
+    system->addForceField(gravityForceField);
+    system->addForceField(frottement);
 
 
     viewer.addRenderable(sapin);
