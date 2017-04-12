@@ -62,6 +62,12 @@ float BasicTerrainGenerator::getY(float y) const {
 }
 
 float BasicTerrainGenerator::getVirage(float y) const {
+    if(y>130){
+        return(12-(1/(y-129)));
+    }
+    if (y>90){
+        return(-9 + ((y-90)*(y-90)/80));
+    }
     if (y>60){
         return (-9) + (10/(y-59));
     }

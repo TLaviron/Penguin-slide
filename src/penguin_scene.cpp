@@ -151,13 +151,16 @@ void initialize_penguin_scene(Viewer &viewer) {
 
     DynamicSystemRenderablePtr systemRenderable = std::make_shared<DynamicSystemRenderable>(system);
     viewer.addRenderable(systemRenderable);
+    SnowflakeLightedRenderablePtr SF;
 
-
-    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader, glm::vec3(0, 0, 5));
-    ParticlePtr sfParticle = SF->getParticle();
-    system->addParticle(sfParticle);
-    HierarchicalRenderable::addChild(systemRenderable, SF);
-
+    for (int i = -3; i < 3; ++i) {
+        for (int j = 0; j < 5; ++j) {
+        SF = std::make_shared<SnowflakeLightedRenderable>(texShader, glm::vec3(2*i, 2*j, random(5.0f,10.0f)));
+        ParticlePtr sfParticle = SF->getParticle();
+        system->addParticle(sfParticle);
+        HierarchicalRenderable::addChild(systemRenderable, SF);
+        }
+    }
     ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
     ConstantForceFieldPtr frottement = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,+8.5} );
     system->addForceField(gravityForceField);
