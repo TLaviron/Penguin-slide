@@ -11,6 +11,9 @@
 #include "../include/keyframes/Keyframable.hpp"
 #include "../include/keyframes/KeyframedMeshRenderable.hpp"
 #include "../include/dynamics/Particle.hpp"
+#include "../include/dynamics/DynamicSystem.hpp"
+#include "../include/dynamics/ConstantForceField.hpp"
+#include "../include/dynamics/ControlledForceField.hpp"
 
 
 typedef enum {
@@ -26,7 +29,7 @@ typedef std::shared_ptr<PenguinLightedRenderable> PenguinLightedRenderablePtr;
 
 class PenguinLightedRenderable: public HierarchicalRenderable {
 public:
-    PenguinLightedRenderable(ShaderProgramPtr texShader,Viewer &viewer);
+    PenguinLightedRenderable(ShaderProgramPtr texShader,DynamicSystemPtr dynamicSystem);
     ~PenguinLightedRenderable();
 
     /**
@@ -120,6 +123,17 @@ private:
      * Status of the penguin.
      */
     PenguinStatus m_status;
+
+
+    /**
+     * Steering force applied to the penguin
+     */
+    ConstantForceFieldPtr m_force;
+
+    /**
+     * Renderable to control the steering force
+     */
+    ControlledForceFieldPtr m_forceController;
 
 };
 

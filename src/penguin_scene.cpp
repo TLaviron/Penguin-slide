@@ -51,6 +51,18 @@ void initialize_penguin_scene(Viewer &viewer) {
                                               "../shaders/textureFragment.glsl");
     viewer.addShaderProgram(texShader);
 
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemPtr system = std::make_shared<DynamicSystem>();
+    EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+
+    //Create a renderable associated to the dynamic system
+    //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
+    //It also handles some of the key/mouse events
+    DynamicSystemRenderablePtr systemRenderable = std::make_shared<DynamicSystemRenderable>(system);
+    viewer.addRenderable(systemRenderable);
+
     //Define a transformation
     glm::mat4 parentTransformation, localTransformation;
     GeometricTransformation parentGeoTransform, localGeoTransform;
@@ -110,7 +122,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     sapin->fell(0, glm::vec3(1, 0, 0), 4);
 
 //Penguin
-    PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
+    PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader, system);
     Tux->bindMembers(Tux);
 
     viewer.addRenderable(Tux);
@@ -120,19 +132,19 @@ void initialize_penguin_scene(Viewer &viewer) {
     //Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
 
 
-//    PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,viewer);
-//    otherTux->bindMembers(otherTux);
-//    GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
-//    tuxTransform.setTranslation(glm::vec3(0));
-//    tuxTransform.setOrientation(glm::quat());
-//    otherTux->setParentTransform(tuxTransform);
+    PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
+    otherTux->bindMembers(otherTux);
+    GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
+    tuxTransform.setTranslation(glm::vec3(0));
+    tuxTransform.setOrientation(glm::quat());
+    otherTux->setParentTransform(tuxTransform);
 
-//    otherTux->updateModelMatrix();
-//    otherTux->setStatus(PENGUIN_STATUS_SLIDING);
-//    ParticlePtr tuxParticle = otherTux->getParticle();
-//    tuxParticle->setFixed(true);
-//    tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
-//    viewer.addRenderable(otherTux);
+    otherTux->updateModelMatrix();
+    otherTux->setStatus(PENGUIN_STATUS_SLIDING);
+    ParticlePtr tuxParticle = otherTux->getParticle();
+    tuxParticle->setFixed(false);
+    tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
+    viewer.addRenderable(otherTux);
 
     //slope
     MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
@@ -144,15 +156,6 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addRenderable(slope);
 //snow
 
-    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
-    DynamicSystemPtr system = std::make_shared<DynamicSystem>();
-    EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
-    system->setSolver(solver);
-    system->setDt(0.01);
-
-
-    DynamicSystemRenderablePtr systemRenderable = std::make_shared<DynamicSystemRenderable>(system);
-    viewer.addRenderable(systemRenderable);
 //    SnowflakeLightedRenderablePtr SF;
 //
 //    for (int i = -3; i < 3; ++i) {
@@ -166,7 +169,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     SnowballRenderablePtr SF;
     glm::vec3 pv(0.0, 0.0, 0.0);
     glm::vec3 px(0.0, 0.0, 0.0);
-    float pm = 1.0, pr = 0.15;
+    float pm = 0.1, pr = 0.15;
     ParticlePtr particle;
     for (int i = -5; i < 5; ++i) {
         for (int j = 0; j < 10; ++j) {
@@ -178,7 +181,7 @@ void initialize_penguin_scene(Viewer &viewer) {
         }
     }
     ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
-    ConstantForceFieldPtr frottement = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,+8.5} );
+    DampingForceFieldPtr frottement = std::make_shared<DampingForceField>(system->getParticles(), 0.5 );
     system->addForceField(gravityForceField);
     system->addForceField(frottement);
 

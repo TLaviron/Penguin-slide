@@ -6,9 +6,10 @@
 #include <glm/gtx/quaternion.hpp>
 
 
-PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Viewer &viewer) :
+PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,DynamicSystemPtr dynamicSystem) :
     HierarchicalRenderable(texShader){
 
+    //Loading the differents parts of the penguin
     glm::mat4 parentTransformation, localTransformation;
 
     MaterialPtr pearl = Material::Pearl();
@@ -28,6 +29,7 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Vi
     RH = std::make_shared<KeyframedMeshRenderable>(
                     texShader, "../tux/RightHand.obj", "../tux/RightHand.png");
 
+    // placing the different parts together
     Body->setMaterial(pearl);
 
     setParentTransform(GeometricTransformation(glm::vec3(0, 4.5, 2.35), quatAxisAngle(float(M_PI_2), glm::vec3(1,0,0)) * quatAxisAngle(float(M_PI_2), glm::vec3(0,1,0)), glm::vec3(2,2,2)));
@@ -49,13 +51,23 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Vi
     parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(-0.29,-0.1 ,0.56));
     RH->setParentTransform( parentTransformation );
 
+    //link the parts
     HierarchicalRenderable::addChild(Body, RH);
     HierarchicalRenderable::addChild(Body, LH);
     HierarchicalRenderable::addChild(Body, RF);
     HierarchicalRenderable::addChild(Body, LF);
 
+    //physics initializing
     m_status = PENGUIN_STATUS_STARTING;
     m_particle = std::make_shared<Particle>(glm::vec3(0, 0, 0), glm::vec3(0), 5, 0.7);
+
+    dynamicSystem->addParticle(m_particle);
+    //assume only tux is in the list, might need to change this
+    m_force = std::make_shared<ConstantForceField>(dynamicSystem->getParticles(), glm::vec3(0,0,0));
+    dynamicSystem->addForceField(m_force);
+
+    m_forceController = std::make_shared<ControlledForceField>(texShader, m_force);
+
 
 }
 
@@ -212,6 +224,8 @@ void PenguinLightedRenderable::beforeAnimate(float time){
 		rot = glm::rotation(newRightSide, glm::cross(velocityDirection, zAxis)) * rot;
 		setParentTransform(GeometricTransformation(m_particle->getPosition(),
 		        rot, getParentStaticTransform().getScale()));
+
+		m_forceController->updateForce(velocityDirection);
 		break;
 	case PENGUIN_STATUS_COLIDING:
 		break;
