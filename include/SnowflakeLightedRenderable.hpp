@@ -16,14 +16,11 @@
 class SnowflakeLightedRenderable;
 typedef std::shared_ptr<SnowflakeLightedRenderable> SnowflakeLightedRenderablePtr;
 
-class SnowflakeLightedRenderable: public HierarchicalRenderable {
+class SnowflakeLightedRenderable: public TexturedMeshRenderable{
 public:
-    SnowflakeLightedRenderable(ShaderProgramPtr texShader, Viewer &viewer);
+    SnowflakeLightedRenderable(ShaderProgramPtr texShader);
     ~SnowflakeLightedRenderable();
 
-    void bindSF(SnowflakeLightedRenderablePtr thisSnowflake);
-
-    KeyframedMeshRenderablePtr getSnowflake();
     const ParticlePtr & getParticle();
 
 protected:
@@ -31,7 +28,6 @@ protected:
     void do_animate( float time );
 
 private:
-    KeyframedMeshRenderablePtr snowflake;
     ParticlePtr m_particle;
 
 };

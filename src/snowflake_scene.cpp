@@ -43,6 +43,13 @@ void initialize_snowflake_scene(Viewer &viewer) {
                                                                   "../shaders/flatFragment.glsl");
     viewer.addShaderProgram(flatShader);
 
+
+    ShaderProgramPtr texShader
+            = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
+                                              "../shaders/textureFragment.glsl");
+    viewer.addShaderProgram(texShader);
+
+
     FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
     viewer.addRenderable(frame);
 
@@ -97,11 +104,6 @@ void initialize_snowflake_scene(Viewer &viewer) {
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
 
-    ShaderProgramPtr texShader
-            = std::make_shared<ShaderProgram>("../shaders/textureVertex.glsl",
-                                              "../shaders/textureFragment.glsl");
-    viewer.addShaderProgram(texShader);
-
     //TEST
 //    TexturedMeshRenderablePtr sf =
 //            std::make_shared<TexturedMeshRenderable>(
@@ -124,9 +126,7 @@ void initialize_snowflake_scene(Viewer &viewer) {
 //    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
 //    system->addForceField(gravityForceField);
 
-    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader, viewer);
-    SF->bindSF(SF);
-
+    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader);
     ParticlePtr sfParticle = SF->getParticle();
     system->addParticle(sfParticle);
     HierarchicalRenderable::addChild(systemRenderable, SF);

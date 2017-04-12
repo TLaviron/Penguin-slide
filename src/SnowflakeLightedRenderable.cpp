@@ -4,19 +4,11 @@
 
 #include "../include/SnowflakeLightedRenderable.hpp"
 
-SnowflakeLightedRenderable::SnowflakeLightedRenderable(ShaderProgramPtr texShader, Viewer &viewer) :
-    HierarchicalRenderable(texShader) {
-
+SnowflakeLightedRenderable::SnowflakeLightedRenderable(ShaderProgramPtr texShader) :
+    TexturedMeshRenderable(texShader,"../snowflake/snowflakemini.obj", "../snowflake/SnowflakeText.png") {
     MaterialPtr pearl = Material::Pearl();
-
-    snowflake = std::make_shared<KeyframedMeshRenderable>(
-            texShader, "../snowflake/snowflakemini.obj", "../snowflake/SnowflakeText.png");
-
-    snowflake->setMaterial(pearl);
-    viewer.addRenderable(snowflake);
-
+    setMaterial(pearl);
     m_particle = std::make_shared<Particle>(glm::vec3(0), glm::vec3(0), 0.1, 0.3);
-
 }
 
 SnowflakeLightedRenderable::~SnowflakeLightedRenderable() {
@@ -28,17 +20,13 @@ void SnowflakeLightedRenderable::do_animate(float time) {
 }
 
 void SnowflakeLightedRenderable::do_draw() {
-
+    const glm::vec3& pPosition = m_particle->getPosition();
+    glm::mat4 translate = glm::translate(glm::mat4(1.0), glm::vec3(pPosition));
+    setLocalTransform(translate);
+    TexturedMeshRenderable::do_draw();
 }
 
-KeyframedMeshRenderablePtr SnowflakeLightedRenderable::getSnowflake() {
-    return snowflake;
-}
 
 const ParticlePtr& SnowflakeLightedRenderable::getParticle() {
     return m_particle;
-}
-
-void SnowflakeLightedRenderable::bindSF(SnowflakeLightedRenderablePtr thisSnowflake) {
-    HierarchicalRenderable::addChild(thisSnowflake, snowflake);
 }
