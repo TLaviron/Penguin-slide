@@ -1,25 +1,27 @@
-#include "./../../include/dynamics_rendering/ParticleRenderable.hpp"
-#include "./../../include/gl_helper.hpp"
-#include "./../../include/log.hpp"
-#include "./../../include/Utils.hpp"
+//
+// Created by clemenre on 4/12/17.
+//
+#include "../include/SnowballRenderable.hpp"
+#include "../include/gl_helper.hpp"
+#include "../include/log.hpp"
+#include "../include/Utils.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-ParticleRenderable::~ParticleRenderable()
-{
+SnowballRenderable::~SnowballRenderable() {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));
     glcheck(glDeleteBuffers(1, &m_nBuffer));
 }
 
-ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticlePtr particle) :
-    HierarchicalRenderable(shaderProgram),
+SnowballRenderable::SnowballRenderable(ShaderProgramPtr program, ParticlePtr particle) :
+    HierarchicalRenderable(program),
     m_particle(particle),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
-    double radius = 0.5;
+    double radius = 0.2;
     int thetaStep = 10;
     int phiStep = 5;
 
@@ -36,17 +38,17 @@ ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticleP
             glm::vec3 faceNormal(1, 0, 0);
             std::array<glm::vec3,3> vTriangles;
             vTriangles[0] = center
-                + glm::vec3(radius * cos(curr_theta) * sin(curr_phi),
-                            radius * sin(curr_theta) * sin(curr_phi),
-                            radius * cos(curr_phi));
+                            + glm::vec3(radius * cos(curr_theta) * sin(curr_phi),
+                                        radius * sin(curr_theta) * sin(curr_phi),
+                                        radius * cos(curr_phi));
             vTriangles[1] = center
-                + glm::vec3(radius * cos(next_theta) * sin(curr_phi),
-                            radius * sin(next_theta) * sin(curr_phi),
-                            radius * cos(curr_phi));
+                            + glm::vec3(radius * cos(next_theta) * sin(curr_phi),
+                                        radius * sin(next_theta) * sin(curr_phi),
+                                        radius * cos(curr_phi));
             vTriangles[2] = center
-                + glm::vec3(radius * cos(next_theta) * sin(next_phi),
-                            radius * sin(next_theta) * sin(next_phi),
-                            radius * cos(next_phi));
+                            + glm::vec3(radius * cos(next_theta) * sin(next_phi),
+                                        radius * sin(next_theta) * sin(next_phi),
+                                        radius * cos(next_phi));
             faceNormal = -glm::normalize(glm::cross(vTriangles[1]-vTriangles[0], vTriangles[2]-vTriangles[0]));
 
             m_positions.push_back(vTriangles[0]);
@@ -60,17 +62,17 @@ ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticleP
             m_colors.push_back(glm::vec4(1,1,1,1.0));
 
             vTriangles[0] = center
-                + glm::vec3(radius * cos(curr_theta) * sin(curr_phi),
-                            radius * sin(curr_theta) * sin(curr_phi),
-                            radius * cos(curr_phi));
+                            + glm::vec3(radius * cos(curr_theta) * sin(curr_phi),
+                                        radius * sin(curr_theta) * sin(curr_phi),
+                                        radius * cos(curr_phi));
             vTriangles[1] = center
-                + glm::vec3(radius * cos(next_theta) * sin(next_phi),
-                            radius * sin(next_theta) * sin(next_phi),
-                            radius * cos(next_phi));
+                            + glm::vec3(radius * cos(next_theta) * sin(next_phi),
+                                        radius * sin(next_theta) * sin(next_phi),
+                                        radius * cos(next_phi));
             vTriangles[2] = center
-                + glm::vec3(radius * cos(curr_theta) * sin(next_phi),
-                            radius * sin(curr_theta) * sin(next_phi),
-                            radius * cos(next_phi));
+                            + glm::vec3(radius * cos(curr_theta) * sin(next_phi),
+                                        radius * sin(curr_theta) * sin(next_phi),
+                                        radius * cos(next_phi));
             faceNormal = -glm::normalize(glm::cross( vTriangles[1]-vTriangles[0], vTriangles[2]-vTriangles[0] ));
 
             m_positions.push_back(vTriangles[0]);
@@ -97,10 +99,11 @@ ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticleP
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_STATIC_DRAW));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
+
 }
 
-void ParticleRenderable::do_draw()
-{
+
+void SnowballRenderable::do_draw() {
     //Update the parent and local transform matrix to position the geometric data according to the particle's data.
     const float& pRadius = m_particle->getRadius();
     const glm::vec3& pPosition = m_particle->getPosition();
@@ -150,5 +153,6 @@ void ParticleRenderable::do_draw()
     }
 }
 
-void ParticleRenderable::do_animate(float time)
-{}
+void SnowballRenderable::do_animate(float time) {
+
+}

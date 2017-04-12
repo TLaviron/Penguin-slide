@@ -5,7 +5,7 @@
 #include "../include/SnowflakeLightedRenderable.hpp"
 
 SnowflakeLightedRenderable::SnowflakeLightedRenderable(ShaderProgramPtr texShader, glm::vec3 position) :
-    TexturedMeshRenderable(texShader,"../snowflake/snowflakemini.obj", "../snowflake/SnowflakeText.png") {
+    TexturedMeshRenderable(texShader,"../snowflake/whitesf.obj", "../snowflake/snowText.png") {
     setParentTransform(glm::translate(glm::mat4(1.0), position));
     MaterialPtr pearl = Material::Pearl();
     setMaterial(pearl);
