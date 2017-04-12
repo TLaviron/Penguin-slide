@@ -130,6 +130,60 @@ void PenguinLightedRenderable::jumpTux(Viewer& viewer, const ShaderProgramPtr& t
     RF->addLocalTransformKeyframe(2*timeStep+time, GeometricTransformation(glm::vec3(0.0,0.0,0.0), glm::normalize(glm::angleAxis(-float(M_PI)/4, z))));
     m_particle->setPosition(position);
 }
+
+void PenguinLightedRenderable::collisionTux(Viewer &viewer, const ShaderProgramPtr &texShader, float time,
+                                            float duration, glm::vec3 dirProjection) {
+    float timeStep = duration / 3;
+    glm::vec3 position = m_particle->getPosition();
+
+    glm::vec3 velocityDirection, yAxis(0, 1, 0), zAxis(0, 0, 1);
+    glm::vec3 newRightSide;
+    glm::quat rot;
+
+    velocityDirection = glm::normalize(m_particle->getVelocity());
+
+    rot = glm::rotation(yAxis, velocityDirection);
+    newRightSide = rot * zAxis;
+    rot = glm::rotation(newRightSide, glm::cross(velocityDirection, -zAxis)) * rot;
+
+//    setParentTransform(GeometricTransformation(m_particle->getPosition(),
+//                                               rot, getParentStaticTransform().getScale()));
+
+    //Here tux should be aligned with its original velocity, facing the sun and praising it like a good sun knight should
+
+    //We will make a crushed look on our poor tux
+
+    Body->addParentTransformKeyframe(0*timeStep+time, GeometricTransformation(position ,
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/2, zAxis))) );
+
+
+    //Below Tux should spread its foot a bit because he is goddamn stuck !
+    Body->addParentTransformKeyframe(1*timeStep+time, GeometricTransformation(position,
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/2, zAxis)), glm::vec3(0.9,1.0,1.1)) );
+
+    Body->addParentTransformKeyframe(2*timeStep+time, GeometricTransformation(position,
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/2, zAxis))) );
+
+    //Here tux will jump out of the snow
+    Body->addParentTransformKeyframe(3*timeStep+time, GeometricTransformation(position + glm::vec3(0.0,1.0,0.0),
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/2, zAxis))) );
+
+    //Here Tux should spread its feet and hands a bit because he is goddamn stuck !
+    LF->addLocalTransformKeyframe(1.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(float(M_PI)/6, yAxis))));
+    LF->addLocalTransformKeyframe(2.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(0.0f, glm::vec3(0.0)))));
+    RF->addLocalTransformKeyframe(1.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(float(M_PI)/6, -yAxis))));
+    RF->addLocalTransformKeyframe(2.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(0.0f, glm::vec3(0.0)))));
+    RH->addLocalTransformKeyframe(1.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(float(M_PI)/8,zAxis))));
+    RH->addLocalTransformKeyframe(2.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(0.0f, zAxis))));
+    LH->addLocalTransformKeyframe(1.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(float(M_PI)/8,zAxis))));
+    LH->addLocalTransformKeyframe(2.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(0.0f, zAxis))));
+
+
+
+
+}
+
+
 void PenguinLightedRenderable::do_animate(float time){
 
 }

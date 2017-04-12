@@ -52,6 +52,16 @@ public:
  */
     void jumpTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration);
 
+    /**
+     * make animation after a collision with a pine.
+     * @param viewer
+     * @param texShader
+     * @param time
+     * @param duration
+     * @param dirProjection the direction of the Tux's projection
+     */
+    void collisionTux(Viewer& viewer, const ShaderProgramPtr& texShader, float time, float duration, glm::vec3 dirProjection);
+
 
     KeyframedMeshRenderablePtr getLF();
 
