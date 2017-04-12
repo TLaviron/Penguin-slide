@@ -153,7 +153,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addRenderable(systemRenderable);
 
 
-    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader);
+    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader, glm::vec3(0, 0, 5));
     ParticlePtr sfParticle = SF->getParticle();
     system->addParticle(sfParticle);
     HierarchicalRenderable::addChild(systemRenderable, SF);

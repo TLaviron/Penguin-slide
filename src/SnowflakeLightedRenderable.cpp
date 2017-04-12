@@ -4,11 +4,12 @@
 
 #include "../include/SnowflakeLightedRenderable.hpp"
 
-SnowflakeLightedRenderable::SnowflakeLightedRenderable(ShaderProgramPtr texShader) :
+SnowflakeLightedRenderable::SnowflakeLightedRenderable(ShaderProgramPtr texShader, glm::vec3 position) :
     TexturedMeshRenderable(texShader,"../snowflake/snowflakemini.obj", "../snowflake/SnowflakeText.png") {
+    setParentTransform(glm::translate(glm::mat4(1.0), position));
     MaterialPtr pearl = Material::Pearl();
     setMaterial(pearl);
-    m_particle = std::make_shared<Particle>(glm::vec3(0), glm::vec3(0), 0.1, 0.3);
+    m_particle = std::make_shared<Particle>(position, glm::vec3(0), 0.1, 0.3);
 }
 
 SnowflakeLightedRenderable::~SnowflakeLightedRenderable() {

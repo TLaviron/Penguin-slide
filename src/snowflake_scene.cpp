@@ -104,13 +104,16 @@ void initialize_snowflake_scene(Viewer &viewer) {
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
 
-    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader);
+    SnowflakeLightedRenderablePtr SF = std::make_shared<SnowflakeLightedRenderable>(texShader, glm::vec3(0, 0, 5));
     ParticlePtr sfParticle = SF->getParticle();
     system->addParticle(sfParticle);
     HierarchicalRenderable::addChild(systemRenderable, SF);
 
     ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
     system->addForceField(gravityForceField);
+    ConstantForceFieldPtr frottements = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0.2,0,8.5} );
+    system->addForceField(frottements);
+
 
     viewer.getCamera().setViewMatrix(
             glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
