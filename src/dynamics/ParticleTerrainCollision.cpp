@@ -55,7 +55,7 @@ void ParticleTerrainCollision::do_solveCollision(){
     } else {
         glm::quat rotBounce = glm::rotation(vDir, directionalTangent); // align only
         rotBounce *= rotBounce;//reflection
-        m_p->setVelocity(rotBounce * v);
+        m_p->setVelocity(m_restitution * rotBounce * v);
         glm::vec3 newPosition = impact + rotBounce * (pPos-impact);
         newPosition.z += m_p->getRadius();
         m_p->setPosition(newPosition);

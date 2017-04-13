@@ -10,6 +10,8 @@
 #include "Solver.hpp"
 #include "../Camera.hpp"
 
+#include "../SlopeRenderable.hpp"
+
 /**@brief A dynamic system.
  *
  * This class represents a dynamic system made of particles, force fields and
@@ -40,6 +42,13 @@ private:
      * The set of obstacles that would repel the particles after collisions.
      */
     std::vector<PlanePtr> m_planeObstacles;
+
+    /**
+     * @brief The fixed terrain as an obstacle
+     *
+     * The terrain with variable geometry that is used as a floor.
+     */
+    SlopeRenderablePtr m_terrain;
 
     /**@brief The solver of the dynamic system.
      *
@@ -162,6 +171,9 @@ public:
      */
     void setForceFields(const std::vector<ForceFieldPtr> &forceFields);
 
+    void setTerrain(const SlopeRenderablePtr & terrain);
+
+    const SlopeRenderablePtr & getTerrain();
 
     /**@brief Compute a simulation step for this system.
      *
