@@ -131,13 +131,17 @@ void initialize_penguin_scene(Viewer &viewer) {
     Tux->bindMembers(Tux);
     Tux->bindForceController(systemRenderable);
 
+    GeometricTransformation transform = Tux->getParentStaticTransform();
+    transform.setOrientation(quatAxisAngle(M_PI/2, glm::vec3(0, 0, 1)) * transform.getOrientation());
+    Tux->setParentTransform(transform);
+
     viewer.addRenderable(Tux);
     Tux->walkTux(viewer,texShader,0.0,2);
-    Tux->walkTux(viewer,texShader,2.0,2);
-    Tux->jumpTux(viewer,texShader,4.0,1);
+    //Tux->walkTux(viewer,texShader,2.0,2);
+    //Tux->jumpTux(viewer,texShader,4.0,1);
     //Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
 
-
+/*
     PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
     otherTux->bindMembers(otherTux);
     otherTux->bindForceController(systemRenderable);
@@ -152,7 +156,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     tuxParticle->setFixed(false);
     tuxParticle->setVelocity(glm::vec3(-0.2, 4, 2));
     viewer.addRenderable(otherTux);
-
+*/
 
 
 //snow
@@ -180,7 +184,7 @@ void initialize_penguin_scene(Viewer &viewer) {
 
 
     viewer.getCamera().setViewMatrix(
-            glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
+            glm::lookAt(glm::vec3(0, 5, 3), glm::vec3(0, 10, 0), glm::vec3(0, 0, 1)));
     viewer.startAnimation();
 }
 
