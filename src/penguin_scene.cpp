@@ -114,13 +114,13 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addRenderable(slope);
     system->setTerrain(slope);
 //pine forest
-    int nForest = 40;
+    int nForest = 80;
     std::vector<PineRenderablePtr> forest(nForest);
 
     for (int i = 0; i <nForest ; ++i) {
         forest[i] = std::make_shared<PineRenderable>(phongShader, random(4,7), random(1.4,1.8));
         forest[i]->bindTrunk(forest[i]);
-        forest[i]->setParentTransform(GeometricTransformation(slope->get(random(-10,10),random(-30,130))));
+        forest[i]->setParentTransform(GeometricTransformation(slope->get(random(-35,35),random(-20,200))));
         viewer.addRenderable(forest[i]);
 
     }
