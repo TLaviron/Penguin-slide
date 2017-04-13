@@ -1,0 +1,271 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 							                   PREAMBULE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+%--- Packages génériques ---%
+
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[babel=true]{csquotes}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{pdfpages}
+%\usepackage{animate}
+
+%--- Structure de la page ---%
+
+\usepackage{fancyheadings}
+
+\topmargin -1.5 cm
+\oddsidemargin -0.5 cm
+\evensidemargin -0.5 cm
+\textwidth 17 cm
+\setlength{\headwidth}{\textwidth}
+\textheight 24 cm
+\pagestyle{fancy}
+\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\sl ENSIMAG 2A}}
+\chead[\fancyplain{}{{\sl }}]{\fancyplain{}{{TP de Graphiques 3D}}}
+\rhead[\fancyplain{}{}]{\fancyplain{}{ Thierry L. Vançon S.  Clément R.}}
+\lfoot{\fancyplain{}{}}
+\cfoot{\fancyplain{}{}}
+\cfoot{\thepage }
+\rfoot{\fancyplain{}{}}
+
+%--- Style de la zone de code ---%
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{tabularx}
+\usepackage{float}
+
+\lstset{upquote=true,
+  columns=flexible,
+  keepspaces=true,
+  breaklines,
+  breakindent=0pt,
+  basicstyle=\ttfamily,
+  commentstyle=\color[rgb]{0,0.6,0},
+  language=Scilab,
+  alsoletter=\),
+}
+
+\lstset{classoffset=0,
+  keywordstyle=\color{violet!75},
+  deletekeywords={zeros,disp},
+  classoffset=1,
+  keywordstyle=\color{cyan},
+  morekeywords={zeros,disp},
+}
+
+\lstset{extendedchars=true,
+  literate={0}{{\color{brown!75}0}}1
+  {1}{{\color{brown!75}1}}1
+  {2}{{\color{brown!75}2}}1
+  {3}{{\color{brown!75}3}}1
+  {4}{{\color{brown!75}4}}1
+  {5}{{\color{brown!75}5}}1
+  {6}{{\color{brown!75}6}}1
+  {7}{{\color{brown!75}7}}1
+  {8}{{\color{brown!75}8}}1
+  {9}{{\color{brown!75}9}}1
+  {(}{{\color{blue!50}(}}1
+  {)}{{\color{blue!50})}}1
+  {[}{{\color{blue!50}[}}1
+  {]}{{\color{blue!50}]}}1
+  {-}{{\color{gray}-}}1
+  {+}{{\color{gray}+}}1
+  {=}{{\color{gray}=}}1
+  {:}{{\color{orange!50!yellow}:}}1
+  {é}{{\'e}}1
+  {è}{{\`e}}1
+  {à}{{\`a}}1
+  {ç}{{\c{c}}}1
+  {œ}{{\oe}}1
+  {ù}{{\`u}}1
+  {É}{{\'E}}1
+  {È}{{\`E}}1
+  {À}{{\`A}}1
+  {Ç}{{\c{C}}}1
+  {Œ}{{\OE}}1
+  {Ê}{{\^E}}1
+  {ê}{{\^e}}1
+  {î}{{\^i}}1
+  {ô}{{\^o}}1
+  {û}{{\^u}}1
+}
+
+%--- Raccourcis commande ---%
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\A}{\mathbf{A}}
+\newcommand{\B}{\mathbf{B}}
+\newcommand{\C}{\mathbf{C}}
+\newcommand{\D}{\mathbf{D}}
+\newcommand{\ub}{\mathbf{u}}
+
+%--- Mode correction et incréments automatiques ---%
+
+\usepackage{framed}
+\usepackage{ifthen}
+\usepackage{comment}
+
+\newcounter{Nbquestion}
+
+\newcommand*\question{%
+  \stepcounter{Nbquestion}%
+  \textbf{Question \theNbquestion. }}
+
+\newboolean{enseignant}
+\setboolean{enseignant}{false}
+
+\definecolor{shadecolor}{gray}{0.80}
+
+\ifthenelse{
+  \boolean{enseignant}}{
+  \newenvironment{correction}{\begin{shaded}}{\end{shaded}}
+}
+{
+  \excludecomment{correction}
+}
+
+%--- Style de l'encadré des réponses ---%
+
+\mdfsetup{leftmargin=12pt}
+\mdfsetup{skipabove=\topskip,skipbelow=\topskip}
+
+\tikzset{
+  warningsymbol/.style={
+    rectangle,draw=green,
+    fill=white,scale=1,
+    overlay}}
+\global\mdfdefinestyle{exampledefault}{
+  hidealllines=true,leftline=true,
+  innerrightmargin=0.0em,
+  innerleftmargin=0.3em,
+  leftmargin=0.0em,
+  linecolor=green,
+  backgroundcolor=green!20,
+  middlelinewidth=4pt,
+  innertopmargin=\topskip,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EN-TETE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{\textbf{TP1 de Traitement d'Image}}
+\author{
+  \begin{tabular}{ccc}
+    \textsc{Laviron T.} & \textsc{Vançon S.} & \textsc{Clément R.}\\
+\end{tabular}}
+\date{\small \today}
+
+\makeatletter
+\def\thetitle{\@title}
+\def\theauthor{\@author}
+\def\thedate{\@date}
+\makeatother
+
+\usepackage{etoolbox}
+\usepackage{titling}
+\setlength{\droptitle}{-7em}
+
+\setlength{\parindent}{0cm}
+
+\makeatletter
+% patch pour le bug concernant les parenthèses fermantes d'après http://tex.stackexchange.com/q/69472
+\patchcmd{\lsthk@SelectCharTable}{%
+  \lst@ifbreaklines\lst@Def{`)}{\lst@breakProcessOther)}\fi}{}{}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CORPS DU DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+    \maketitle
+
+    \section*{\bf Objectifs du TP de Graphiques 3D}
+    \paragraph{}
+    Le but de ce TP est d'implémenter une scène utilisant de la neige.
+    Nous avons décidé de réaliser un petit jeu où nous allons contrôler un pingouin.
+    Celui-ci devra rejoindre son papa pingouin qui se trouve à la fin d'une piste de glisse pour pingouin.
+    Il devra éviter les objets qui lui bloqueront son chemin et arriver auprès de son papa pingouin pour aller réaliser
+    sa séance de natation synchronisée.
+
+    \section{Premières idées et réalisations}
+
+    \paragraph{}
+    Nous avons tout d'abord pensé à réaliser un jeu avec un pingouin lorsque le thème de la neige a été annoncé.
+    Ayant très rapidement en tête la très célèbre musique du "Papa pingouin" nous avons très rapidement trouvé notre gameplay.
+    Le petit pingouin devra donc traverser une piste remplie d'obstacles pour rejoindre son papa.
+    Les obstacles présents dans notre jeu sont pour le moment des sapins, présents un peu partout sur la piste (car oui, il y a des sapins en arctique).
+
+    \paragraph{}
+    Nous avons commencé par réaliser trois tâches en parallèles (c'est à la mode en ce moment) :
+
+    \paragraph{}
+    La première était la récupération d'un pingouin, mais celui-ci devait être charismatique puisqu'il va être notre personnage principal.
+    Nous avons donc trouvé une template 3D du célèbre Tux sur l'Internet puis nous l'avons adapté à nos besoins : nous l'avons coloré puis découpé en petit morceaux (nous sommes diaboliques).
+    Les différentes parties sont ensuite correctement remontées dans notre programme OpenGL pour obtenir notre pingouin final (trouvable dans le dossier \textit{./tux}).
+    Les découpes ont servis à réaliser les animations, que nous détaillerons un peu plus tard.
+
+    \paragraph{}
+    La deuxième était la création des sapins.
+    Nous avons commencé par réaliser des primitives de cônes et donc un renderable associé (disponible dans \textit{./src/ConeRenderable.cpp}).
+    Ensuite nous avons réunis plusieurs de ces cônes pour créer un tronc et des étages de feuilles.
+    Des animations ont ensuite été rajouté, celles-ci seront décrites prochainement.
+    [DETAILS TECHNIQUES]
+
+    \paragraph{}
+    La troisième était la création de la piste.
+    Nous avions besoin d'une piste plutôt longue, avec des ondulations. Ainsi nous avons refusé de juste afficher un plan incliné.
+    Nous nous sommes rabattu sur une double interpolation hermitienne (une dans la direction de l'axe X, l'autre sur l'axe Y) pour obtenir des effets courbés et donc des bosses, pour rajouter du réalisme à notre piste.
+    [DETAILS TECHNIQUES]
+
+    \newpage
+    \section{Améliorations}
+
+    \paragraph{}
+    Afin d'améliorer notre projet (et surtout de le rendre jouable), nous avons dû réaliser plusieurs ajouts: les animations et la physique (non quantique car les pingouins qui se téléportent, c'est difficile à debugger).
+
+    \subsection{Les animations}
+
+    \paragraph{}
+    Le tout premier objet à être animé lors de notre projet a été le sapin. En effet, un des but de son existence est de disparaitre.
+    Nous avons ainsi pensé à réaliser une animation suite à la collision entre un sapin et notre pingouin.
+    Le choc, extrêmement violent, va faire trembler le sapin plusieurs fois, et finira par le faire tomber définitivement (ensuite la magie opère et l'arbre disparait).
+    Nous avons donc plusieurs keyframes pour animer tout celà : une où l'arbre est penché vers la gauche, une autre vers la droite, pour réaliser l'effet de tremblement.
+    Ensuite il y a plusieurs keyframe pour réaliser la chute de l'arbre.
+    Celui-ci chute suivant la fonction $y=x^3$, ce qui nous permet d'avoir une vitesse initiale de chute lente, puis d'accélerer afin de se rapprocher le plus possible du monde réel.
+
+    \paragraph{}
+    Nous avons ensuite animé le pingouin (il faut que le bébé pingouin montre à son papa qu'il est en pleine forme).
+    Les premières animations nous servent à positionner correctement le pingouin en position de glisse, au sommet de la piste.
+    Il y a au début une animation de marche, où le corps de notre pingouin va dandiner (car il est content de pouvoir descendre une piste, nous n'avons pas beaucoup cette chance cette année).
+    Il va donc incliner légèrement ses pieds, ses nageoires et pencher son corps sur chaque côté alternativement.\\
+    Il y a ensuite une animation de saut où notre protagoniste prend de l'élan, et réaliser un bond, en tendant ses pieds.
+    Cette animation nous permet d'avoir le pingouin sur le ventre (il est conny que les pingouins glisse sur le ventre), parallèle à la piste, en position de départ.
+    Elle nous permet aussi de passer notre pingouin en "mode jouable" (il est assimilé à une particule à ce moment) ce qui va nous permettre de le déplacer.
+
+
+    \subsection{La physique}
+    
+
+
+
+
+
+
+\end{document}
+% Fin du document LaTex
