@@ -118,7 +118,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     std::vector<PineRenderablePtr> forest(nForest);
 
     for (int i = 0; i <nForest ; ++i) {
-        forest[i] = std::make_shared<PineRenderable>(phongShader, random(4,7), random(1.4,1.8));
+        forest[i] = std::make_shared<PineRenderable>(phongShader, random(4,7), random(1.4,1.8), int(random(5,10)));
         forest[i]->bindTrunk(forest[i]);
         forest[i]->setParentTransform(GeometricTransformation(slope->get(random(-35,35),random(-20,200))));
         viewer.addRenderable(forest[i]);
@@ -147,7 +147,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     otherTux->bindMembers(otherTux);
     otherTux->bindForceController(systemRenderable);
     GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
-    tuxTransform.setTranslation(glm::vec3(0));
+    tuxTransform.setTranslation(glm::vec3(1, 1, 1));
     tuxTransform.setOrientation(glm::quat());
     otherTux->setParentTransform(tuxTransform);
 
@@ -155,7 +155,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     otherTux->setStatus(PENGUIN_STATUS_SLIDING);
     ParticlePtr tuxParticle = otherTux->getParticle();
     tuxParticle->setFixed(false);
-    tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
+    tuxParticle->setVelocity(glm::vec3(-0.2, 4, 2));
     viewer.addRenderable(otherTux);
 
 

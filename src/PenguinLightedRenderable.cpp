@@ -280,9 +280,9 @@ void PenguinLightedRenderable::beforeAnimate(float time){
             // compute quaternion to align penguin yAxis (head) with velocityDirection
             // we also need nose facing downward, which means the penguin's right side (+z)
             // has to be aligned with cross(velocityDirection, z)
-            rot = glm::rotation(yAxis, velocityDirection);
+            rot = glm::normalize(glm::rotation(yAxis, velocityDirection));
             newRightSide = rot * zAxis;
-            rot = glm::rotation(newRightSide, glm::cross(velocityDirection, zAxis)) * rot;
+            rot = glm::normalize(glm::rotation(newRightSide, glm::cross(velocityDirection, zAxis))) * rot;
             setParentTransform(GeometricTransformation(m_particle->getPosition(),
                                                        rot, getParentStaticTransform().getScale()));
 
