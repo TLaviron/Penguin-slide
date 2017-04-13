@@ -138,6 +138,10 @@ private:
      */
     ControlledForceFieldPtr m_forceController;
 
+    /**
+     * Date set to change status (to sliding, usually)
+     */
+    float scheduleStatusChange;
 };
 
 typedef std::shared_ptr<PenguinLightedRenderable> PenguinLightedRenderablePtr;

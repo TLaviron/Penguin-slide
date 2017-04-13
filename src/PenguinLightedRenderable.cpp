@@ -60,7 +60,7 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
     //physics initializing
     m_status = PENGUIN_STATUS_STARTING;
     m_particle = std::make_shared<Particle>(glm::vec3(0, 0, 0), glm::vec3(0), 5, 0.7);
-
+    m_particle->setFixed(true);
     dynamicSystem->addParticle(m_particle);
 
     std::vector<ParticlePtr> particleList;
@@ -70,6 +70,7 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
 
     m_forceController = std::make_shared<ControlledForceField>(texShader, m_force);
 
+    scheduleStatusChange = -1;
 }
 
 void PenguinLightedRenderable::walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration){
@@ -141,7 +142,12 @@ void PenguinLightedRenderable::jumpTux(Viewer& viewer, const ShaderProgramPtr& t
     LF->addLocalTransformKeyframe(2*timeStep+time, GeometricTransformation(glm::vec3(0.0,0.0,0.0), glm::normalize(glm::angleAxis(-float(M_PI)/4, z))));
     RF->addLocalTransformKeyframe(0.0+time, GeometricTransformation(glm::vec3(0.0,0.0,0.0), glm::normalize(glm::angleAxis(0.0f, z))));
     RF->addLocalTransformKeyframe(2*timeStep+time, GeometricTransformation(glm::vec3(0.0,0.0,0.0), glm::normalize(glm::angleAxis(-float(M_PI)/4, z))));
+
+    // update position
     m_particle->setPosition(position);
+    m_particle->setVelocity(glm::vec3(0, 1, 0)); //could be oriented...
+    scheduleStatusChange = time+duration;
+
 }
 
 void PenguinLightedRenderable::collisionTux(Viewer &viewer, const ShaderProgramPtr &texShader, float time,
@@ -206,6 +212,17 @@ void PenguinLightedRenderable::do_draw(){
 }
 
 void PenguinLightedRenderable::beforeAnimate(float time){
+    if (scheduleStatusChange > 0 && time > scheduleStatusChange){
+        m_particle->setFixed(false);
+        scheduleStatusChange = -1;
+        m_status = PENGUIN_STATUS_SLIDING;
+        // remove all keyframes to get the animation right
+        Body->clear();
+        RF->clear();
+        LF->clear();
+        RH->clear();
+        LH->clear();
+    }
     glm::vec3 velocityDirection, yAxis(0, 1, 0), zAxis(0, 0, 1);
     glm::vec3 newRightSide;
     glm::quat rot;

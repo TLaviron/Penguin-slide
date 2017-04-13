@@ -47,6 +47,10 @@ bool KeyframeCollection::empty() const
     return m_keyframes.empty();
 }
 
+void KeyframeCollection::clear(){
+    m_keyframes.clear();
+}
+
 std::array< KeyframeCollection::Keyframe, 2 > KeyframeCollection::getBoundingKeyframes(float time) const
 {
     std::array<KeyframeCollection::Keyframe, 2> result {

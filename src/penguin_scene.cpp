@@ -127,12 +127,13 @@ void initialize_penguin_scene(Viewer &viewer) {
 //Penguin
     PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader, system);
     Tux->bindMembers(Tux);
+    Tux->bindForceController(systemRenderable);
 
     viewer.addRenderable(Tux);
     Tux->walkTux(viewer,texShader,0.0,2);
     Tux->walkTux(viewer,texShader,2.0,2);
     Tux->jumpTux(viewer,texShader,4.0,1);
-    Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
+    //Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
 
 
     PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
@@ -170,6 +171,10 @@ void initialize_penguin_scene(Viewer &viewer) {
 //        HierarchicalRenderable::addChild(systemRenderable, SF);
 //        }
 //    }
+    // this needs to be after the penguin(s) has been created
+    ConstantForceFieldPtr gravity = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3(0, 0, -10));
+    system->addForceField(gravity);
+
     //Initialize another dynamic system for the snow
     DynamicSystemPtr systemSnow = std::make_shared<DynamicSystem>();
     EulerExplicitSolverPtr solverSnow = std::make_shared<EulerExplicitSolver>();
@@ -204,7 +209,6 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.getCamera().setViewMatrix(
             glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
     viewer.startAnimation();
-    viewer.setAnimationLoop(true, 12);
 }
 
 

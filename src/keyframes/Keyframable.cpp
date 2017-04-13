@@ -24,6 +24,12 @@ void Keyframable::addLocalTransformKeyframe(float time,
     m_localKeyframes.add(time, transformation);
 }
 
+void Keyframable::clear(){
+    m_localKeyframes.clear();
+    m_parentKeyframes.clear();
+}
+
+
 bool Keyframable::hasLocalTransform() {
     return !m_localKeyframes.empty();
 }

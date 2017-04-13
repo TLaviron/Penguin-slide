@@ -34,6 +34,11 @@ public:
      */
     void addLocalTransformKeyframe(float time, const GeometricTransformation& transformation);
 
+    /**
+     * @brief Removes all keyframes transforms
+     */
+    void clear();
+
 protected:
     /**
      * @brief Tests the the presence of keyframes for local transform

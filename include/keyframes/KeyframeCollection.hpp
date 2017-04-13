@@ -50,6 +50,11 @@ public:
      */
     bool empty() const;
 
+    /**
+     * @brief Removes all the keyframes in the collection
+     */
+    void clear();
+
 private:
     /**
      * \brief Definition of a keyframe.
