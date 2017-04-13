@@ -69,6 +69,9 @@ public:
     void collisionTux(Viewer& viewer, const ShaderProgramPtr& texShader, float time, float duration, glm::vec3 dirProjection);
 
 
+    void generateSnow(Viewer& viewer, ShaderProgramPtr flatShader,
+                      DynamicSystemPtr systemSnow, DynamicSystemRenderablePtr systemSnowRenderable);
+
     KeyframedMeshRenderablePtr getLF();
 
     KeyframedMeshRenderablePtr getRF();

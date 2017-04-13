@@ -4,10 +4,11 @@
 
 #include "../include/PenguinLightedRenderable.hpp"
 #include <glm/gtx/quaternion.hpp>
-
+#include "../include/SnowballRenderable.hpp"
+#include "glm/ext.hpp"
 
 PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,DynamicSystemPtr dynamicSystem) :
-    HierarchicalRenderable(texShader){
+        HierarchicalRenderable(texShader){
 
     //Loading the differents parts of the penguin
     glm::mat4 parentTransformation, localTransformation;
@@ -15,19 +16,19 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
     MaterialPtr pearl = Material::Pearl();
 
     Body = std::make_shared<KeyframedMeshRenderable>(
-                    texShader, "../tux/TuxBody.obj", "../tux/TuxBody.png");
+            texShader, "../tux/TuxBody.obj", "../tux/TuxBody.png");
 
     RF = std::make_shared<KeyframedMeshRenderable>(
-                    texShader, "../tux/RightFoot.obj", "../tux/RightFoot.png");
+            texShader, "../tux/RightFoot.obj", "../tux/RightFoot.png");
 
     LF = std::make_shared<KeyframedMeshRenderable>(
-                    texShader, "../tux/LeftFoot.obj", "../tux/leftFoot.png");
+            texShader, "../tux/LeftFoot.obj", "../tux/leftFoot.png");
 
     LH = std::make_shared<KeyframedMeshRenderable>(
-                    texShader, "../tux/LeftHand.obj", "../tux/LeftHand.png");
+            texShader, "../tux/LeftHand.obj", "../tux/LeftHand.png");
 
     RH = std::make_shared<KeyframedMeshRenderable>(
-                    texShader, "../tux/RightHand.obj", "../tux/RightHand.png");
+            texShader, "../tux/RightHand.obj", "../tux/RightHand.png");
 
     // placing the different parts together
     Body->setMaterial(pearl);
@@ -82,16 +83,16 @@ void PenguinLightedRenderable::walkTux(Viewer& viewer, const ShaderProgramPtr& t
                                                                        glm::normalize(glm::angleAxis(0.0f, glm::vec3(0.0,0.0,0.0)))) );
     position += glm::vec3(0.5,0.0,0.0);
     Body->addParentTransformKeyframe(1*timeStep+time, GeometricTransformation(position,
-                                                                       glm::normalize(glm::angleAxis(float(M_PI)/16, glm::vec3(0.0,1.0,0.2)))) );
+                                                                              glm::normalize(glm::angleAxis(float(M_PI)/16, glm::vec3(0.0,1.0,0.2)))) );
     position += glm::vec3(0.5,0.0,0.0);
     Body->addParentTransformKeyframe(2*timeStep+time, GeometricTransformation(position,
-                                                                       glm::normalize(glm::angleAxis(0.0f, glm::vec3(0.0,1.0,0.2)))) );
+                                                                              glm::normalize(glm::angleAxis(0.0f, glm::vec3(0.0,1.0,0.2)))) );
     position += glm::vec3(0.5,0.0,0.0);
     Body->addParentTransformKeyframe(3*timeStep+time, GeometricTransformation(position,
-                                                                       glm::normalize(glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,1.0,0.2)))) );
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,1.0,0.2)))) );
     position += glm::vec3(0.5,0.0,0.0);
     Body->addParentTransformKeyframe(4*timeStep+time, GeometricTransformation(position,
-                                                                       glm::normalize(glm::angleAxis(0.0f, glm::vec3(0.0,1.0,0.2)))) );
+                                                                              glm::normalize(glm::angleAxis(0.0f, glm::vec3(0.0,1.0,0.2)))) );
 
 
     glm::vec3 z(0.0,0.0,1.0);
@@ -125,16 +126,16 @@ void PenguinLightedRenderable::jumpTux(Viewer& viewer, const ShaderProgramPtr& t
     float timeStep = duration / 3;
     glm::vec3 position = m_particle->getPosition();
     Body->addParentTransformKeyframe(0*timeStep+time, GeometricTransformation(position ,
-                                                                       glm::normalize(glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,0.0,1.0)))) );
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,0.0,1.0)))) );
     position += glm::vec3(0.5,0.25,0.0);
     Body->addParentTransformKeyframe(1*timeStep+time, GeometricTransformation(position,
-                                                                       glm::normalize(glm::angleAxis(-float(M_PI)/8, glm::vec3(0.0,0.0,1.0)))) );
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/8, glm::vec3(0.0,0.0,1.0)))) );
     position += glm::vec3(0.5,0.25,0.0);
     Body->addParentTransformKeyframe(2*timeStep+time, GeometricTransformation(position,
-                                                                       glm::normalize(glm::angleAxis(-float(M_PI)/4, glm::vec3(0.0,0.0,1.0)))) );
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/4, glm::vec3(0.0,0.0,1.0)))) );
     position += glm::vec3(0.5,0.0,0.0);
     Body->addParentTransformKeyframe(3*timeStep+time, GeometricTransformation(position,
-                                                                       glm::normalize(glm::angleAxis(-float(M_PI)/2, glm::vec3(0.0,0.0,1.0)))) );
+                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/2, glm::vec3(0.0,0.0,1.0)))) );
 
     glm::vec3 z(0.0,0.0,1.0);
     //Movement of feet and hands
@@ -185,7 +186,7 @@ void PenguinLightedRenderable::collisionTux(Viewer &viewer, const ShaderProgramP
 
     //Here tux will jump out of the snow
     Body->addParentTransformKeyframe(3*timeStep+time, GeometricTransformation(position + glm::vec3(0.0,1.0,0.0),
-                                                                              glm::normalize(glm::angleAxis(-float(M_PI)/2, zAxis))) );
+                                                                              glm::normalize(glm::angleAxis(float(M_PI)/2, zAxis))) );
 
     //Here Tux should spread its feet and hands a bit because he is goddamn stuck !
     LF->addLocalTransformKeyframe(1.0*timeStep+time, GeometricTransformation(glm::vec3(0), glm::normalize(glm::angleAxis(float(M_PI)/6, yAxis))));
@@ -200,6 +201,28 @@ void PenguinLightedRenderable::collisionTux(Viewer &viewer, const ShaderProgramP
 
 
 
+}
+
+
+void PenguinLightedRenderable::generateSnow(Viewer &viewer, ShaderProgramPtr shader,
+                                            DynamicSystemPtr systemSnow, DynamicSystemRenderablePtr systemSnowRenderable)
+{
+
+    SnowballRenderablePtr SF;
+    ParticlePtr particle;
+    glm::vec3 pv(0.0);
+    glm::vec3 px(0.0);
+    float pm = 0.1, pr = 0.15;
+
+    for (int i = -5; i < 5; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            px = glm::vec3(2*i, 2*j, random(5.0f, 20.0f));
+            particle = std::make_shared<Particle>(px, pv, pm, pr);
+            SF = std::make_shared<SnowballRenderable>(shader, particle);
+            systemSnow->addParticle(particle);
+            HierarchicalRenderable::addChild(systemSnowRenderable, SF);
+        }
+    }
 }
 
 
@@ -227,29 +250,29 @@ void PenguinLightedRenderable::beforeAnimate(float time){
     glm::vec3 newRightSide;
     glm::quat rot;
 
-	switch(m_status){
-	case PENGUIN_STATUS_STARTING:
-	case PENGUIN_STATUS_RECOVERING:
-		break;// fully keyframed, nothing to do
-	case PENGUIN_STATUS_SLIDING:
-		velocityDirection = glm::normalize(m_particle->getVelocity());
+    switch(m_status){
+        case PENGUIN_STATUS_STARTING:
+        case PENGUIN_STATUS_RECOVERING:
+            break;// fully keyframed, nothing to do
+        case PENGUIN_STATUS_SLIDING:
+            velocityDirection = glm::normalize(m_particle->getVelocity());
 
-		// compute quaternion to align penguin yAxis (head) with velocityDirection
-		// we also need nose facing downward, which means the penguin's right side (+z)
-		// has to be aligned with cross(velocityDirection, z)
-		rot = glm::rotation(yAxis, velocityDirection);
-		newRightSide = rot * zAxis;
-		rot = glm::rotation(newRightSide, glm::cross(velocityDirection, zAxis)) * rot;
-		setParentTransform(GeometricTransformation(m_particle->getPosition(),
-		        rot, getParentStaticTransform().getScale()));
+            // compute quaternion to align penguin yAxis (head) with velocityDirection
+            // we also need nose facing downward, which means the penguin's right side (+z)
+            // has to be aligned with cross(velocityDirection, z)
+            rot = glm::rotation(yAxis, velocityDirection);
+            newRightSide = rot * zAxis;
+            rot = glm::rotation(newRightSide, glm::cross(velocityDirection, zAxis)) * rot;
+            setParentTransform(GeometricTransformation(m_particle->getPosition(),
+                                                       rot, getParentStaticTransform().getScale()));
 
-		m_forceController->updateForce(velocityDirection);
-		break;
-	case PENGUIN_STATUS_COLIDING:
-		break;
-	default:
-		break;
-	}
+            m_forceController->updateForce(velocityDirection);
+            break;
+        case PENGUIN_STATUS_COLIDING:
+            break;
+        default:
+            break;
+    }
 }
 
 PenguinLightedRenderable::~PenguinLightedRenderable(){

@@ -8,6 +8,7 @@
 #include "Particle.hpp"
 #include "Plane.hpp"
 #include "Solver.hpp"
+#include "../Camera.hpp"
 
 /**@brief A dynamic system.
  *
@@ -78,8 +79,13 @@ private:
      */
     float m_restitution;
 
+    Camera m_cam ;
+
+    bool m_isSnowDynamicSystem;
+
+
 public:
-    DynamicSystem();
+    DynamicSystem(Camera camera, bool isSnowDynamic);
     virtual ~DynamicSystem();
 
     /**@brief Add a particle to the system.
@@ -197,6 +203,8 @@ public:
      * Clear the system, i.e. empty the particles, force fields and plane obstacles.
      */
     void clear();
+
+    Camera getCamera();
 
 private:
     void detectCollisions();

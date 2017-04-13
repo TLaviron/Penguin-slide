@@ -52,7 +52,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addShaderProgram(texShader);
 
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
-    DynamicSystemPtr system = std::make_shared<DynamicSystem>();
+    DynamicSystemPtr system = std::make_shared<DynamicSystem>(viewer.getCamera(), false);
     EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
     system->setSolver(solver);
     system->setDt(0.01);
@@ -132,8 +132,8 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addRenderable(Tux);
     Tux->walkTux(viewer,texShader,0.0,2);
     Tux->walkTux(viewer,texShader,2.0,2);
-    Tux->jumpTux(viewer,texShader,4.0,1);
-    //Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
+    //Tux->jumpTux(viewer,texShader,4.0,1);
+    Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
 
 
     PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
@@ -176,7 +176,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     system->addForceField(gravity);
 
     //Initialize another dynamic system for the snow
-    DynamicSystemPtr systemSnow = std::make_shared<DynamicSystem>();
+    DynamicSystemPtr systemSnow = std::make_shared<DynamicSystem>(viewer.getCamera(), true);
     EulerExplicitSolverPtr solverSnow = std::make_shared<EulerExplicitSolver>();
     systemSnow->setSolver(solverSnow);
     systemSnow->setDt(0.01);
@@ -186,20 +186,22 @@ void initialize_penguin_scene(Viewer &viewer) {
     //It also handles some of the key/mouse events
     DynamicSystemRenderablePtr systemSnowRenderable = std::make_shared<DynamicSystemRenderable>(systemSnow);
     viewer.addRenderable(systemSnowRenderable);
-    SnowballRenderablePtr SF;
-    glm::vec3 pv(0.0, 0.0, 0.0);
-    glm::vec3 px(0.0, 0.0, 0.0);
-    float pm = 0.1, pr = 0.15;
-    ParticlePtr particle;
-    for (int i = -5; i < 5; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            px = glm::vec3(2*i, 2*j, random(5.0f,10.0f));
-            particle = std::make_shared<Particle>(px, pv, pm, pr);
-            SF = std::make_shared<SnowballRenderable>(flatShader,particle);
-            systemSnow->addParticle(particle);
-            HierarchicalRenderable::addChild(systemSnowRenderable, SF);
-        }
-    }
+//    SnowballRenderablePtr SF;
+//    glm::vec3 pv(0.0, 0.0, 0.0);
+//    glm::vec3 px(0.0, 0.0, 0.0);
+//    float pm = 0.1, pr = 0.15;
+//    ParticlePtr particle;
+//    for (int i = -5; i < 5; ++i) {
+//        for (int j = 0; j < 10; ++j) {
+//            px = glm::vec3(2*i, 2*j, random(5.0f,10.0f));
+//            particle = std::make_shared<Particle>(px, pv, pm, pr);
+//            SF = std::make_shared<SnowballRenderable>(flatShader,particle);
+//            systemSnow->addParticle(particle);
+//            HierarchicalRenderable::addChild(systemSnowRenderable, SF);
+//        }
+//    }
+    Tux->generateSnow(viewer, flatShader, systemSnow, systemSnowRenderable);
+
     ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(systemSnow->getParticles(), glm::vec3{0,0,-10} );
     DampingForceFieldPtr frottement = std::make_shared<DampingForceField>(systemSnow->getParticles(), 0.5 );
     systemSnow->addForceField(gravityForceField);

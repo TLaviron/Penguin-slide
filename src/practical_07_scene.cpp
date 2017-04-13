@@ -41,7 +41,7 @@ void initialize_practical_07_scene(Viewer& viewer, unsigned int scene_to_load)
     viewer.addRenderable(frame);
 
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
-    DynamicSystemPtr system = std::make_shared<DynamicSystem>();
+    DynamicSystemPtr system = std::make_shared<DynamicSystem>(viewer.getCamera(), true);
     EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
     system->setSolver(solver);
     system->setDt(0.01);

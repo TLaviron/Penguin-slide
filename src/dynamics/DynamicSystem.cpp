@@ -9,16 +9,21 @@
 #include "./../../include/dynamics/ParticlePlaneCollision.hpp"
 #include "./../../include/dynamics/ParticleParticleCollision.hpp"
 
-
-DynamicSystem::DynamicSystem() :
-    m_dt(0.1), m_restitution(1.0), m_handleCollisions(true)
-{
+DynamicSystem::DynamicSystem(Camera camera, bool isSnowSystem) {
+    m_dt = 0.1;
+    m_restitution = 1.0;
+    m_handleCollisions = true;
+    m_cam = camera;
+    m_isSnowDynamicSystem = isSnowSystem;
 }
 
 DynamicSystem::~DynamicSystem()
 {
 }
 
+Camera DynamicSystem::getCamera() {
+    return m_cam;
+}
 const std::vector<ParticlePtr>& DynamicSystem::getParticles() const
 {
     return m_particles;
@@ -130,6 +135,49 @@ void DynamicSystem::solveCollisions()
 
 void DynamicSystem::computeSimulationStep()
 {
+    if (m_isSnowDynamicSystem) {
+        glm::vec3 positionCamera = m_cam.getPosition();
+
+        float px, py, pz;
+        float dx, dy, dz;
+        glm::vec3 posPart(0.0);
+        for (ParticlePtr p : m_particles) {
+            px = p->getPosition().x;
+            py = p->getPosition().y;
+            pz = p->getPosition().z;
+
+            dx = positionCamera.x - px;
+            dy = positionCamera.y - py;
+            dz = positionCamera.z - pz;
+
+
+            if (-5.0 > dx) {
+                posPart = glm::vec3(dx / 10.0, py, pz);
+                p->setPosition(posPart);
+            } else if (dx > 5.0) {
+                posPart = glm::vec3(dx / 10, py, pz);
+                p->setPosition(posPart);
+            }
+
+            if (-5.0 > dy) {
+                posPart = glm::vec3(px, dy / 10.0, pz);
+                p->setPosition(posPart);
+            } else if (dy > 5.0) {
+                posPart = glm::vec3(px, dy / 10.0, pz);
+                p->setPosition(posPart);
+            }
+
+            if (-5.0 > dz) {
+                posPart = glm::vec3(px, py, dz / 10.0);
+                p->setPosition(posPart);
+            } else if (dz > 5.0) {
+                posPart = glm::vec3(px, py, dz / 10.0);
+                p->setPosition(posPart);
+            }
+
+        }
+    }
+
     //Reset the force for each particle
     for (ParticlePtr p : m_particles) {
         p->setForce(glm::vec3(0.0, 0.0, 0.0));
