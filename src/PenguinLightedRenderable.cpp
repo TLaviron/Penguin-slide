@@ -224,11 +224,11 @@ void PenguinLightedRenderable::generateSnow(Viewer &viewer, ShaderProgramPtr sha
     ParticlePtr particle;
     glm::vec3 pv(0.0);
     glm::vec3 px(0.0);
-    float pm = 0.1, pr = 0.15;
+    float pm = 0.1, pr = 0.2;
 
-    for (int i = -5; i < 5; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            px = glm::vec3(2*i, 2*j, random(5.0f, 20.0f));
+    for (int i = -10; i < 10; ++i) {
+        for (int j = -10; j < 10; ++j) {
+            px = glm::vec3(i, j, random(0.0f, 25.0f));
             particle = std::make_shared<Particle>(px, pv, pm, pr);
             SF = std::make_shared<SnowballRenderable>(shader, particle);
             systemSnow->addParticle(particle);

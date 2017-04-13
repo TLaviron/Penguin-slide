@@ -52,7 +52,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addShaderProgram(texShader);
 
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
-    DynamicSystemPtr system = std::make_shared<DynamicSystem>(viewer.getCamera(), false);
+    DynamicSystemPtr system = std::make_shared<DynamicSystem>(&(viewer.getCamera()), false);
     EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
     system->setSolver(solver);
     system->setDt(0.01);
@@ -120,8 +120,8 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addRenderable(Tux);
     Tux->walkTux(viewer,texShader,0.0,2);
     Tux->walkTux(viewer,texShader,2.0,2);
-    //Tux->jumpTux(viewer,texShader,4.0,1);
-    Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
+    Tux->jumpTux(viewer,texShader,4.0,1);
+//    Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
 
 
     PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
@@ -153,7 +153,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     system->addForceField(gravity);
 
     //Initialize another dynamic system for the snow
-    DynamicSystemPtr systemSnow = std::make_shared<DynamicSystem>(viewer.getCamera(), true);
+    DynamicSystemPtr systemSnow = std::make_shared<DynamicSystem>(&(viewer.getCamera()), true);
     EulerExplicitSolverPtr solverSnow = std::make_shared<EulerExplicitSolver>();
     systemSnow->setSolver(solverSnow);
     systemSnow->setDt(0.01);

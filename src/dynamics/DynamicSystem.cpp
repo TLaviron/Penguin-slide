@@ -9,7 +9,7 @@
 #include "./../../include/dynamics/ParticlePlaneCollision.hpp"
 #include "./../../include/dynamics/ParticleParticleCollision.hpp"
 
-DynamicSystem::DynamicSystem(Camera camera, bool isSnowSystem) {
+DynamicSystem::DynamicSystem(Camera* camera, bool isSnowSystem) {
     m_dt = 0.1;
     m_restitution = 1.0;
     m_handleCollisions = true;
@@ -22,7 +22,7 @@ DynamicSystem::~DynamicSystem()
 }
 
 Camera DynamicSystem::getCamera() {
-    return m_cam;
+    return (*m_cam);
 }
 const std::vector<ParticlePtr>& DynamicSystem::getParticles() const
 {
@@ -104,7 +104,7 @@ void DynamicSystem::detectCollisions()
         for (PlanePtr o : m_planeObstacles) {
             if (testParticlePlane(p, o)) {
                 ParticlePlaneCollisionPtr c =
-                    std::make_shared<ParticlePlaneCollision>(p,o,m_restitution);
+                        std::make_shared<ParticlePlaneCollision>(p,o,m_restitution);
                 m_collisions.push_back(c);
             }
         }
@@ -117,7 +117,7 @@ void DynamicSystem::detectCollisions()
             ParticlePtr p2 = m_particles[j];
             if (testParticleParticle(p1,p2)) {
                 ParticleParticleCollisionPtr c =
-                    std::make_shared<ParticleParticleCollision>(p1,p2,m_restitution);
+                        std::make_shared<ParticleParticleCollision>(p1,p2,m_restitution);
                 m_collisions.push_back(c);
             }
         }
@@ -136,45 +136,48 @@ void DynamicSystem::solveCollisions()
 void DynamicSystem::computeSimulationStep()
 {
     if (m_isSnowDynamicSystem) {
-        glm::vec3 positionCamera = m_cam.getPosition();
+        glm::vec3 positionCamera = m_cam->getPosition();
 
         float px, py, pz;
         float dx, dy, dz;
         glm::vec3 posPart(0.0);
         for (ParticlePtr p : m_particles) {
+            bool set = false;
             px = p->getPosition().x;
             py = p->getPosition().y;
             pz = p->getPosition().z;
-
+            posPart = glm::vec3(p->getPosition());
             dx = positionCamera.x - px;
             dy = positionCamera.y - py;
             dz = positionCamera.z - pz;
 
 
-            if (-5.0 > dx) {
-                posPart = glm::vec3(dx / 10.0, py, pz);
-                p->setPosition(posPart);
-            } else if (dx > 5.0) {
-                posPart = glm::vec3(dx / 10, py, pz);
-                p->setPosition(posPart);
+            if (-10.0 > dx) {
+                set = true;
+                posPart += glm::vec3(-px + positionCamera.x - 20 + dx,0.0,0.0);
+            } else if (dx > 10.0){
+                set = true;
+                posPart += glm::vec3(-px + positionCamera.x +20 -dx ,0.0,0.0);
             }
 
-            if (-5.0 > dy) {
-                posPart = glm::vec3(px, dy / 10.0, pz);
-                p->setPosition(posPart);
-            } else if (dy > 5.0) {
-                posPart = glm::vec3(px, dy / 10.0, pz);
-                p->setPosition(posPart);
+            if (-10.0 > dy) {
+                set = true;
+                posPart += glm::vec3(0.0,-py + positionCamera.y -20 +dy, 0.0);
+            } else if(dy > 10.0){
+                set = true;
+                posPart += glm::vec3(0.0,-py + positionCamera.y +20 - dy, 0.0);
             }
 
-            if (-5.0 > dz) {
-                posPart = glm::vec3(px, py, dz / 10.0);
-                p->setPosition(posPart);
-            } else if (dz > 5.0) {
-                posPart = glm::vec3(px, py, dz / 10.0);
+            if (-25.0 > dz ) {
+                set = true;
+                posPart += glm::vec3(0.0, 0.0, -pz + positionCamera.z - 25 +dz );
+            }else if( dz > 5.0){
+                set = true;
+                posPart += glm::vec3(0.0, 0.0, -pz + positionCamera.z + 25 -dz);
+            }
+            if (set) {
                 p->setPosition(posPart);
             }
-
         }
     }
 
