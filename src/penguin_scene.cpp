@@ -40,8 +40,8 @@ void initialize_penguin_scene(Viewer &viewer) {
     ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>("../shaders/flatVertex.glsl",
                                                                   "../shaders/flatFragment.glsl");
     viewer.addShaderProgram(flatShader);
-    FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
-    viewer.addRenderable(frame);
+//    FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
+//    viewer.addRenderable(frame);
     ShaderProgramPtr phongShader = std::make_shared<ShaderProgram>("../shaders/phongVertex.glsl",
                                                                    "../shaders/phongFragment.glsl");
     viewer.addShaderProgram(phongShader);
@@ -105,18 +105,6 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
 
-    /*
-    KeyframedConeRenderablePtr leaves = std::make_shared<KeyframedConeRenderable>(phongShader,
-            Material::Emerald(),
-            glm::vec4(1, 1, 1, 0), glm::vec4(0, 0.5, 0, 0), glm::vec4(0, 0.5, 0, 0),
-            glm::vec4(0, 0, 0, 0), 8, 0.1);
-
-    localGeoTransform = GeometricTransformation(glm::vec3(-1, 0, 0),
-            quatAxisAngle(M_PI/2, glm::vec3(1, 0, 0)), glm::vec3(2, 2, 0.5));
-    leaves->setLocalTransform(localGeoTransform);
-    leaves->shake(2, 2, 0.3);
-    viewer.addRenderable(leaves);
-    */
 //pine
     PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
     sapin->bindTrunk(sapin);
@@ -160,17 +148,6 @@ void initialize_penguin_scene(Viewer &viewer) {
     slope->setMaterial(slopeMaterial);
     viewer.addRenderable(slope);
 //snow
-
-//    SnowflakeLightedRenderablePtr SF;
-//
-//    for (int i = -3; i < 3; ++i) {
-//        for (int j = 0; j < 5; ++j) {
-//        SF = std::make_shared<SnowflakeLightedRenderable>(texShader, glm::vec3(2*i, 2*j, random(5.0f,10.0f)));
-//        ParticlePtr sfParticle = SF->getParticle();
-//        system->addParticle(sfParticle);
-//        HierarchicalRenderable::addChild(systemRenderable, SF);
-//        }
-//    }
     // this needs to be after the penguin(s) has been created
     ConstantForceFieldPtr gravity = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3(0, 0, -10));
     system->addForceField(gravity);
