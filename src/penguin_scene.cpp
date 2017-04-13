@@ -56,8 +56,8 @@ void initialize_penguin_scene(Viewer &viewer) {
     EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
     system->setSolver(solver);
     system->setDt(0.01);
-
-    system->setRestitution(1);
+    system->setCollisionsDetection(true);
+    system->setRestitution(0.9);
 
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
@@ -121,7 +121,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     Tux->walkTux(viewer,texShader,0.0,2);
     Tux->walkTux(viewer,texShader,2.0,2);
     Tux->jumpTux(viewer,texShader,4.0,1);
-//    Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
+    //Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
 
 
     PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);

@@ -139,6 +139,7 @@ void DynamicSystem::detectCollisions()
             if (testParticleTerrain(p, m_terrain)){
                 ParticleTerrainCollisionPtr c =
                         std::make_shared<ParticleTerrainCollision>(p, m_terrain, m_restitution);
+                m_collisions.push_back(c);
             }
         }
     }
