@@ -104,8 +104,27 @@ void initialize_penguin_scene(Viewer &viewer) {
     pointLightRenderable1->setLocalTransform(localTransformation);
     viewer.addPointLight(pointLight1);
     viewer.addRenderable(pointLightRenderable1);
+//slope
+    MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
+                                                           glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)),
+                                                           glm::vec3(0.0,0.0,0.0), 0.2);
+    BasicTerrainGenerator terrain(0.7);
+    LightedSlopeRenderablePtr slope = std::make_shared<LightedSlopeRenderable>(phongShader,terrain,slopeMaterial);
+    slope->setMaterial(slopeMaterial);
+    viewer.addRenderable(slope);
+    system->setTerrain(slope);
+//pine forest
+    int nForest = 40;
+    std::vector<PineRenderablePtr> forest(nForest);
 
-//pine
+    for (int i = 0; i <nForest ; ++i) {
+        forest[i] = std::make_shared<PineRenderable>(phongShader, random(4,7), random(1.4,1.8));
+        forest[i]->bindTrunk(forest[i]);
+        forest[i]->setParentTransform(GeometricTransformation(slope->get(random(-10,10),random(-30,130))));
+        viewer.addRenderable(forest[i]);
+
+    }
+
     PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
     sapin->bindTrunk(sapin);
     sapin->setParentTransform(GeometricTransformation(glm::vec3(2.0, 0.0, 0.0)));
@@ -139,15 +158,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
     viewer.addRenderable(otherTux);
 
-    //slope
-    MaterialPtr slopeMaterial = std::make_shared<Material>(glm::vec3(glm::vec4(1.0,1.0,1.0,0.0)),
-                                                           glm::vec3(glm::vec4(0.5,0.5,0.5,0.0)),
-                                                           glm::vec3(0.0,0.0,0.0), 0.2);
-    BasicTerrainGenerator terrain(0.7);
-    LightedSlopeRenderablePtr slope = std::make_shared<LightedSlopeRenderable>(phongShader,terrain,slopeMaterial);
-    slope->setMaterial(slopeMaterial);
-    viewer.addRenderable(slope);
-    system->setTerrain(slope);
+
 
 //snow
     // this needs to be after the penguin(s) has been created
