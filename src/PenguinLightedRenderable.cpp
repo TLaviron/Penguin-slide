@@ -62,12 +62,13 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
     m_particle = std::make_shared<Particle>(glm::vec3(0, 0, 0), glm::vec3(0), 5, 0.7);
 
     dynamicSystem->addParticle(m_particle);
-    //assume only tux is in the list, might need to change this
-    m_force = std::make_shared<ConstantForceField>(dynamicSystem->getParticles(), glm::vec3(0,0,0));
+
+    std::vector<ParticlePtr> particleList;
+    particleList.push_back(m_particle);
+    m_force = std::make_shared<ConstantForceField>(particleList, glm::vec3(0,0,-10));
     dynamicSystem->addForceField(m_force);
 
     m_forceController = std::make_shared<ControlledForceField>(texShader, m_force);
-
 
 }
 
@@ -260,6 +261,10 @@ KeyframedMeshRenderablePtr PenguinLightedRenderable::getBody(){
 
 void PenguinLightedRenderable::bindMembers(PenguinLightedRenderablePtr thisPenguin){
     HierarchicalRenderable::addChild(thisPenguin,Body);
+}
+
+void PenguinLightedRenderable::bindForceController(DynamicSystemRenderablePtr systemRenderable){
+    HierarchicalRenderable::addChild(systemRenderable, m_forceController);
 }
 
 void PenguinLightedRenderable::setStatus(PenguinStatus status){

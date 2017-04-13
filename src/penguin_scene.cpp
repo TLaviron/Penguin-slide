@@ -57,6 +57,8 @@ void initialize_penguin_scene(Viewer &viewer) {
     system->setSolver(solver);
     system->setDt(0.01);
 
+    system->setRestitution(1);
+
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
     //It also handles some of the key/mouse events
@@ -120,6 +122,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     sapin->bindTrunk(sapin);
     sapin->setParentTransform(GeometricTransformation(glm::vec3(2.0, 0.0, 0.0)));
     sapin->fell(0, glm::vec3(1, 0, 0), 4);
+    viewer.addRenderable(sapin);
 
 //Penguin
     PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader, system);
@@ -129,11 +132,12 @@ void initialize_penguin_scene(Viewer &viewer) {
     Tux->walkTux(viewer,texShader,0.0,2);
     Tux->walkTux(viewer,texShader,2.0,2);
     Tux->jumpTux(viewer,texShader,4.0,1);
-    //Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
+    Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
 
 
     PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
     otherTux->bindMembers(otherTux);
+    otherTux->bindForceController(systemRenderable);
     GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
     tuxTransform.setTranslation(glm::vec3(0));
     tuxTransform.setOrientation(glm::quat());
@@ -166,6 +170,17 @@ void initialize_penguin_scene(Viewer &viewer) {
 //        HierarchicalRenderable::addChild(systemRenderable, SF);
 //        }
 //    }
+    //Initialize another dynamic system for the snow
+    DynamicSystemPtr systemSnow = std::make_shared<DynamicSystem>();
+    EulerExplicitSolverPtr solverSnow = std::make_shared<EulerExplicitSolver>();
+    systemSnow->setSolver(solverSnow);
+    systemSnow->setDt(0.01);
+
+    //Create a renderable associated to the dynamic system
+    //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
+    //It also handles some of the key/mouse events
+    DynamicSystemRenderablePtr systemSnowRenderable = std::make_shared<DynamicSystemRenderable>(systemSnow);
+    viewer.addRenderable(systemSnowRenderable);
     SnowballRenderablePtr SF;
     glm::vec3 pv(0.0, 0.0, 0.0);
     glm::vec3 px(0.0, 0.0, 0.0);
@@ -176,23 +191,20 @@ void initialize_penguin_scene(Viewer &viewer) {
             px = glm::vec3(2*i, 2*j, random(5.0f,10.0f));
             particle = std::make_shared<Particle>(px, pv, pm, pr);
             SF = std::make_shared<SnowballRenderable>(flatShader,particle);
-            system->addParticle(particle);
-            HierarchicalRenderable::addChild(systemRenderable, SF);
+            systemSnow->addParticle(particle);
+            HierarchicalRenderable::addChild(systemSnowRenderable, SF);
         }
     }
-    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3{0,0,-10} );
-    DampingForceFieldPtr frottement = std::make_shared<DampingForceField>(system->getParticles(), 0.5 );
-    system->addForceField(gravityForceField);
-    system->addForceField(frottement);
+    ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(systemSnow->getParticles(), glm::vec3{0,0,-10} );
+    DampingForceFieldPtr frottement = std::make_shared<DampingForceField>(systemSnow->getParticles(), 0.5 );
+    systemSnow->addForceField(gravityForceField);
+    systemSnow->addForceField(frottement);
 
 
-    viewer.addRenderable(sapin);
     viewer.getCamera().setViewMatrix(
             glm::lookAt(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1)));
     viewer.startAnimation();
     viewer.setAnimationLoop(true, 12);
-
-
 }
 
 

@@ -14,6 +14,7 @@
 #include "../include/dynamics/DynamicSystem.hpp"
 #include "../include/dynamics/ConstantForceField.hpp"
 #include "../include/dynamics/ControlledForceField.hpp"
+#include "../include/dynamics_rendering/DynamicSystemRenderable.hpp"
 
 
 typedef enum {
@@ -37,6 +38,8 @@ public:
      * @param thisPenguin smart pointer to the penguin's body
      */
     void bindMembers(PenguinLightedRenderablePtr thisPenguin);
+
+    void bindForceController(DynamicSystemRenderablePtr systemRenderable);
 
 /**
  * make walk Tux
