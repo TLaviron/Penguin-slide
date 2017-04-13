@@ -151,8 +151,8 @@ SlopeRenderable::~SlopeRenderable()
 
 glm::vec3 SlopeRenderable::get(float x, float y) {
     glm::vec3 h1,h2;
-    h1 = hermiteInterp(spline1, x + initx - m_terrain.getVirage(y));
-    h2 = hermiteInterp(spline2, y + inity);
+    h1 = hermiteInterp(spline1, x + initx - 1- m_terrain.getVirage(y));
+    h2 = hermiteInterp(spline2, y + inity - 1);
     glm::vec3 out(h1.x + h2.x, h1.y + h2.y, h1.z * h2.z);
     return out + glm::vec3(0, 0, m_terrain.getX(out.x, out.y) + m_terrain.getY(out.y));
 }
@@ -170,6 +170,7 @@ glm::vec3 SlopeRenderable::getNormal(float x, float y) {
     glm::vec3 tan2 = ht2; tan2.z *= h1.z;
     tan2 *= (1/tan2.y);
     tan2.z += 10*(m_terrain.getY(y+0.1) - m_terrain.getY(y));
-    glm::vec3 out = cross(tan1, tan2); // that should do it
+    glm::vec3 out = glm::normalize(cross(tan1, tan2)); // that should do it
+    return out;
 }
 
