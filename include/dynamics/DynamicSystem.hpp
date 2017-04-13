@@ -79,13 +79,13 @@ private:
      */
     float m_restitution;
 
-    Camera m_cam ;
+    Camera* m_cam ;
 
     bool m_isSnowDynamicSystem;
 
 
 public:
-    DynamicSystem(Camera camera, bool isSnowDynamic);
+    DynamicSystem(Camera* camera, bool isSnowDynamic);
     virtual ~DynamicSystem();
 
     /**@brief Add a particle to the system.
