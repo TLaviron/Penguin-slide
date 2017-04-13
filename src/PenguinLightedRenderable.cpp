@@ -61,7 +61,8 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
 
     //physics initializing
     m_status = PENGUIN_STATUS_STARTING;
-    m_particle = std::make_shared<Particle>(glm::vec3(0, 0, 0), glm::vec3(0), 5, 0.7);
+    m_nextStatus = PENGUIN_STATUS_STARTING;
+    m_particle = std::make_shared<Particle>(glm::vec3(0, 0, 0), glm::vec3(0), 5, 0.5);
     m_particle->setFixed(true);
     dynamicSystem->addParticle(m_particle);
 
