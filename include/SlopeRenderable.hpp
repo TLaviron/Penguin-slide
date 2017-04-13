@@ -30,6 +30,7 @@ public:
     ~SlopeRenderable();
     SlopeRenderable( ShaderProgramPtr program, BasicTerrainGenerator terrain);
 
+    glm::vec3 get(float x, float y);
 protected:
     void do_draw();
     void do_animate( float time );
@@ -40,6 +41,12 @@ private:
     std::vector<glm::vec3> m_normals;
     std::vector<glm::ivec3> m_index;
 
+    // for recomputing heights in any given point
+    std::vector<glm::vec3> spline1;
+    std::vector<glm::vec3> spline2;
+    int initx;
+    int inity;
+    BasicTerrainGenerator m_terrain;
 
     unsigned int m_pBuffer;
     unsigned int m_cBuffer;

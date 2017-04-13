@@ -5,19 +5,20 @@
 #include "../include/SlopeRenderable.hpp"
 
 SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram, BasicTerrainGenerator terrain) :
-        HierarchicalRenderable(shaderProgram)
+        HierarchicalRenderable(shaderProgram),
+        m_terrain(terrain.getVariation())
 {
-    int initx=40;
-    int inity=30;
+    initx=40;
+    inity=30;
     int x = 2*initx;
     int y = 230;
     int n = 10; // discretisation nécessairement pair
-    std::vector<glm::vec3> spline1(x+2);
-    std::vector<glm::vec3> spline2(y+2);
     std::vector<glm::vec3> herm1((x-1)*n + 1);
     std::vector<glm::vec3> herm2((y-1)*n + 1);
     std::vector<glm::vec3> hermtan1((x-1)*n + 1);
     std::vector<glm::vec3> hermtan2((y-1)*n + 1);
+    spline1.resize(x + 2);
+    spline2.resize(y + 2);
     // points de controle du spline
     for (int k = 0; k < x+2; ++k) {
         spline1[k] = glm::vec3(k-initx,0,random(-terrain.getVariation(), terrain.getVariation()));
@@ -146,3 +147,10 @@ SlopeRenderable::~SlopeRenderable()
 
 }
 
+glm::vec3 SlopeRenderable::get(float x, float y) {
+    glm::vec3 h1,h2;
+    h1 = hermiteInterp(spline1, x + float(initx));
+    h2 = hermiteInterp(spline2, y + inity);
+    glm::vec3 out(h1.x + h2.x, h1.y + h2.y, h1.z * h2.z);
+    return out + glm::vec3(m_terrain.getVirage(out.y), 0, m_terrain.getX(out.x, out.y) + m_terrain.getY(out.y));
+}
