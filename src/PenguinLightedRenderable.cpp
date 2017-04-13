@@ -126,7 +126,8 @@ void PenguinLightedRenderable::walkTux(Viewer& viewer, const ShaderProgramPtr& t
     m_nextStatus = PENGUIN_STATUS_STARTING;
     scheduleStatusChange = time + duration;
 
-    //m_particle->setPosition(m_particle->getPosition() + getParentStaticTransform().getOrientation() * position);
+    glm::vec3 rotatedPosition = getParentStaticTransform().getOrientation() * (getParentStaticTransform().getScale() * position);
+    m_particle->setPosition(getParentStaticTransform().getTranslation() + rotatedPosition);
 }
 
 void PenguinLightedRenderable::jumpTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration){
@@ -249,9 +250,13 @@ void PenguinLightedRenderable::do_draw(){
 
 void PenguinLightedRenderable::beforeAnimate(float time){
     if (scheduleStatusChange > 0 && time > scheduleStatusChange){
-        m_particle->setFixed(false);
         scheduleStatusChange = -1;
         GeometricTransformation staticTransform = getParentStaticTransform();
+        Body->clear();
+        RF->clear();
+        LF->clear();
+        RH->clear();
+        LH->clear();
         switch(m_nextStatus){
         case PENGUIN_STATUS_STARTING:
             setParentTransform(GeometricTransformation(m_particle->getPosition()
@@ -259,12 +264,7 @@ void PenguinLightedRenderable::beforeAnimate(float time){
             break;
         case PENGUIN_STATUS_SLIDING:
         // remove all keyframes to get the animation right
-
-            Body->clear();
-            RF->clear();
-            LF->clear();
-            RH->clear();
-            LH->clear();
+            m_particle->setFixed(false);
             break;
 
         default:

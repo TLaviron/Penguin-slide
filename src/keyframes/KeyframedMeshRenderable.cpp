@@ -24,8 +24,14 @@ void KeyframedMeshRenderable::do_animate(float time)
     //Assign the interpolated transformations from the keyframes to the local/parent transformations.
     if (hasLocalTransform()) {
         setLocalTransform(interpLocalTransform(time));
+    }else{
+        setLocalTransform(getLocalStaticTransform().toMatrix());
     }
+
     if (hasParentTransform()) {
         setParentTransform(interpParentTransform(time));
+    }else{
+        setParentTransform(getParentStaticTransform().toMatrix());
     }
+
 }

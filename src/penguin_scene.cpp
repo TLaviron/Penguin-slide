@@ -132,7 +132,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     Tux->bindForceController(systemRenderable);
 
     GeometricTransformation transform = Tux->getParentStaticTransform();
-    transform.setOrientation(quatAxisAngle(M_PI/2, glm::vec3(0, 0, 1)) * transform.getOrientation());
+    transform.setOrientation(quatAxisAngle(M_PI/2, glm::vec3(1, 0, 0)) * transform.getOrientation());
     Tux->setParentTransform(transform);
 
     viewer.addRenderable(Tux);
@@ -184,7 +184,7 @@ void initialize_penguin_scene(Viewer &viewer) {
 
 
     viewer.getCamera().setViewMatrix(
-            glm::lookAt(glm::vec3(0, 5, 3), glm::vec3(0, 10, 0), glm::vec3(0, 0, 1)));
+            glm::lookAt(glm::vec3(0, 3, 5), glm::vec3(0, 10, 0), glm::vec3(0, 0, 1)));
     viewer.startAnimation();
 }
 
