@@ -51,11 +51,13 @@ SlopeRenderable::SlopeRenderable(ShaderProgramPtr shaderProgram, BasicTerrainGen
             tmp[0] += terrain.getVirage(tmp[1]);
             m_positions.push_back(tmp);
             glm::vec3 tan1(hermtan1[i][0],hermtan1[i][1],hermtan1[i][2]*herm2[j][2]);
-            glm::vec3 tan2(hermtan2[j][0],hermtan2[j][1],hermtan1[j][2]*herm2[i][2]);
-            glm::vec3 tanx(terrain.getX(mem[0]+1, mem[1]) - terrain.getX(mem[0], mem[1]),0,0);
-            glm::vec3 tany(0,terrain.getY(mem[1]+1) - terrain.getY(mem[1]),0);
-            glm::vec3 tan(glm::normalize(tanx + tany + glm::cross(tan1,tan2)));
-            m_normals.push_back(tan);
+            glm::vec3 tan2(hermtan2[j][0],hermtan2[j][1],hermtan2[j][2]*herm1[i][2]);
+            tan1 *= 1/tan1.x;
+            tan2 *= 1/tan2.y;
+            tan1.z += 10*(terrain.getX(mem[0]+0.1, mem[1]) - terrain.getX(mem[0], mem[1]));
+            tan2.z += 10*(terrain.getY(mem[1]+0.1) - terrain.getY(mem[1]));
+            glm::vec3 norm(glm::normalize(glm::cross(tan1,tan2)));
+            m_normals.push_back(norm);
             m_colors.push_back(glm::vec4(1.0,1.0,1.0,0.0));
 //            m_colors.push_back(randomColor());
             if (i!=0 && i != n*(x-1)){
@@ -149,8 +151,25 @@ SlopeRenderable::~SlopeRenderable()
 
 glm::vec3 SlopeRenderable::get(float x, float y) {
     glm::vec3 h1,h2;
-    h1 = hermiteInterp(spline1, x + float(initx));
+    h1 = hermiteInterp(spline1, x + initx - m_terrain.getVirage(y));
     h2 = hermiteInterp(spline2, y + inity);
     glm::vec3 out(h1.x + h2.x, h1.y + h2.y, h1.z * h2.z);
-    return out + glm::vec3(m_terrain.getVirage(out.y), 0, m_terrain.getX(out.x, out.y) + m_terrain.getY(out.y));
+    return out + glm::vec3(0, 0, m_terrain.getX(out.x, out.y) + m_terrain.getY(out.y));
 }
+
+glm::vec3 SlopeRenderable::getNormal(float x, float y) {
+    glm::vec3 h1 = hermiteInterp(spline1, x + initx - m_terrain.getVirage(y));
+    glm::vec3 h2 = hermiteInterp(spline2, y + inity);
+    glm::vec3 ht1 = hermiteTangent(spline1, x + initx - m_terrain.getVirage(y));
+    glm::vec3 ht2 = hermiteTangent(spline2, y + inity);
+    glm::vec3 tan1 = ht1; tan1.z *= h2.z;
+    //give tan1 unit length in x
+    tan1 *= (1/tan1.x);
+    //that way, we compute the tangent by adding the derivative of the x function.
+    tan1.z += 10*(m_terrain.getX(x+0.1, y)-m_terrain.getX(x, y));
+    glm::vec3 tan2 = ht2; tan2.z *= h1.z;
+    tan2 *= (1/tan2.y);
+    tan2.z += 10*(m_terrain.getY(y+0.1) - m_terrain.getY(y));
+    glm::vec3 out = cross(tan1, tan2); // that should do it
+}
+

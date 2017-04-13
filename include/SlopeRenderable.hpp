@@ -30,7 +30,25 @@ public:
     ~SlopeRenderable();
     SlopeRenderable( ShaderProgramPtr program, BasicTerrainGenerator terrain);
 
+    /**
+     * @brief Compute an interpolated point of the slope
+     *
+     * @param x Grid abscissa of the point to consider
+     * @param y Grid ordinate of the point to consider
+     *
+     * @return the position interpolated at point (x, y)
+     */
     glm::vec3 get(float x, float y);
+
+    /**
+     * @brief Compute the normal on a point of the slope
+     *
+     * @param x Grid abscissa of the point to consider
+     * @param y Grid ordinate of the point to consider
+     *
+     * @return the normal interpolated at point (x, y)
+     */
+    glm::vec3 getNormal(float x, float y);
 protected:
     void do_draw();
     void do_animate( float time );
