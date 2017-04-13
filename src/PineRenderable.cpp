@@ -85,20 +85,21 @@ void PineRenderable::fell(float time, glm::vec3 direction, float duration){
     for (int i = 0; i < FALL_RESOLUTION; i++) {
         addParentTransformKeyframe(curFallTime,
                 GeometricTransformation(staticTransform.getTranslation(),
+                        staticTransform.getOrientation() *
                         quatAxisAngle(
                                 ((i*i*i)/(n*n*n)) * (M_PI / 2),
-                        trunkShakeAxis) * staticTransform.getOrientation(),
+                        trunkShakeAxis),
                         staticTransform.getScale()));
         curFallTime += fallDt;
     }
     addParentTransformKeyframe(time + (3 * duration) / 4,
             GeometricTransformation(staticTransform.getTranslation(),
-                    quatAxisAngle((M_PI / 2), trunkShakeAxis) * staticTransform.getOrientation(),
+                    staticTransform.getOrientation() * quatAxisAngle((M_PI / 2), trunkShakeAxis),
                     staticTransform.getScale()));
 
     addParentTransformKeyframe(time + duration,
             GeometricTransformation(staticTransform.getTranslation(),
-                    quatAxisAngle((M_PI / 2), trunkShakeAxis) * staticTransform.getOrientation(),
+                    staticTransform.getOrientation() * quatAxisAngle((M_PI / 2), trunkShakeAxis),
                     staticTransform.getScale() * glm::vec3(0, 0, 1)));
 }
 

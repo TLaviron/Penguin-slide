@@ -7,6 +7,8 @@
 
 #include "../../include/dynamics/ParticleTerrainCollision.hpp"
 
+#include <glm/gtx/norm.hpp>
+#include <glm/gtx/quaternion.hpp>
 ParticleTerrainCollision::ParticleTerrainCollision(ParticlePtr p, SlopeRenderablePtr terrain, float restitution) :
         Collision(restitution)
 {
@@ -18,11 +20,47 @@ ParticleTerrainCollision::~ParticleTerrainCollision() {
 }
 
 void ParticleTerrainCollision::do_solveCollision(){
-    //retrieve point of impact
-    // simplification, closest is below (might lead to erratic behavior in huge slopes)
+    //retrieve point that collides
     glm::vec3 pPos = m_p->getPosition();
-    glm::vec3 impact = m_terrain->get(pPos.x, pPos.y);
+    // simplification, closest is below (might lead to erratic behavior in huge slopes)
+    pPos.z -= m_p->getRadius();
+    //point above the point in collision
+    glm::vec3 contact = m_terrain->get(pPos.x, pPos.y);
+
     glm::vec3 normal = m_terrain->getNormal(pPos.x, pPos.y);
+    glm::vec3 v = m_p->getVelocity();
+    glm::vec3 vDir = glm::normalize(v);
+    //tangent to the ground in the plane formed by normal and v
+    glm::vec3 directionalTangent = glm::cross(normal, glm::normalize(glm::cross(v, normal)));
+
+    //compute the point of impact
+    float cosIncidentAngle = glm::dot(vDir, normal);
+    float sinIncidentAngle = glm::dot(vDir, directionalTangent);
+    glm::vec3 verticalDiff = pPos - contact;
+    float tanVerticalDiff = glm::dot(verticalDiff, directionalTangent);
+    float velVerticalDiff = glm::dot(verticalDiff, vDir);
+
+    float a = (tanVerticalDiff - velVerticalDiff * sinIncidentAngle)
+            / (-cosIncidentAngle * cosIncidentAngle);
+    float b = (sinIncidentAngle * tanVerticalDiff - velVerticalDiff)
+            / (-cosIncidentAngle * cosIncidentAngle);
+    //point where impact would takes place if the contact surface were a plane
+    glm::vec3 impact = b * vDir - a * directionalTangent;
+    if (cosIncidentAngle < 0.1){
+        glm::quat rotAlign = glm::rotation(vDir, directionalTangent);
+        m_p->setVelocity(rotAlign * v);
+        glm::vec3 newPosition = impact + rotAlign * (pPos-impact);
+        newPosition.z += m_p->getRadius();
+        m_p->setPosition(newPosition);
+    } else {
+        glm::quat rotBounce = glm::rotation(vDir, directionalTangent); // align only
+        rotBounce *= rotBounce;//reflection
+        m_p->setVelocity(rotBounce * v);
+        glm::vec3 newPosition = impact + rotBounce * (pPos-impact);
+        newPosition.z += m_p->getRadius();
+        m_p->setPosition(newPosition);
+    }
+
 }
 
 bool testParticleTerrain(const ParticlePtr & p, const SlopeRenderablePtr &terrain){
