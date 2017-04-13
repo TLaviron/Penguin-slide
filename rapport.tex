@@ -164,7 +164,7 @@
 % EN-TETE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{\textbf{TP1 de Traitement d'Image}}
+\title{\textbf{TP de Graphiques 3D}}
 \author{
   \begin{tabular}{ccc}
     \textsc{Laviron T.} & \textsc{Vançon S.} & \textsc{Clément R.}\\
@@ -198,46 +198,51 @@
     \section*{\bf Objectifs du TP de Graphiques 3D}
     \paragraph{}
     Le but de ce TP est d'implémenter une scène utilisant de la neige.
-    Nous avons décidé de réaliser un petit jeu où nous allons contrôler un pingouin.
+    Nous avons décidé de réaliser un petit jeu où nous contrôlerons un pingouin.
     Celui-ci devra rejoindre son papa pingouin qui se trouve à la fin d'une piste de glisse pour pingouin.
-    Il devra éviter les objets qui lui bloqueront son chemin et arriver auprès de son papa pingouin pour aller réaliser
-    sa séance de natation synchronisée.
+    Il aura pour objectif  d'éviter les objets qui lui bloqueront son chemin et d'arriver auprès de son papa pingouin pour aller réaliser
+    sa séance de natation synchronisée favorite.
 
     \section{Premières idées et réalisations}
 
     \paragraph{}
     Nous avons tout d'abord pensé à réaliser un jeu avec un pingouin lorsque le thème de la neige a été annoncé.
-    Ayant très rapidement en tête la très célèbre musique du "Papa pingouin" nous avons très rapidement trouvé notre gameplay.
+    Ayant très rapidement en tête la très célèbre musique du "Papa pingouin", nous en avons immédiatement déduit notre gameplay.
     Le petit pingouin devra donc traverser une piste remplie d'obstacles pour rejoindre son papa.
-    Les obstacles présents dans notre jeu sont pour le moment des sapins, présents un peu partout sur la piste (car oui, il y a des sapins en arctique).
+    Les obstacles présents dans notre jeu sont pour le moment des sapins, éparpillés un peu partout sur la piste (car oui, il y a des sapins en arctique).
 
     \paragraph{}
     Nous avons commencé par réaliser trois tâches en parallèles (c'est à la mode en ce moment) :
 
     \paragraph{}
-    La première était la récupération d'un pingouin, mais celui-ci devait être charismatique puisqu'il va être notre personnage principal.
-    Nous avons donc trouvé une template 3D du célèbre Tux sur l'Internet puis nous l'avons adapté à nos besoins : nous l'avons coloré puis découpé en petit morceaux (nous sommes diaboliques).
+    La première est la récupération d'un pingouin, mais celui-ci doit être charismatique puisqu'il va être notre personnage principal.
+    Nous avons trouvé une template 3D du célèbre Tux sur l'Internet puis nous l'avons adapté à nos besoins : nous l'avons coloré puis découpé en petit morceaux (nous sommes diaboliques).
     Les différentes parties sont ensuite correctement remontées dans notre programme OpenGL pour obtenir notre pingouin final (trouvable dans le dossier \textit{./tux}).
     Les découpes ont servis à réaliser les animations, que nous détaillerons un peu plus tard.
 
     \paragraph{}
-    La deuxième était la création des sapins.
+    La deuxième est la création des sapins.
     Nous avons commencé par réaliser des primitives de cônes et donc un renderable associé (disponible dans \textit{./src/ConeRenderable.cpp}).
-    Ensuite nous avons réunis plusieurs de ces cônes pour créer un tronc et des étages de feuilles.
+    Ensuite nous avons réunis plusieurs de ces cônes pour créer un tronc et des étages de feuilles (le tout dans \textit{./src/PineRenderable.cpp}).
     Des animations ont ensuite été rajouté, celles-ci seront décrites prochainement.
     [DETAILS TECHNIQUES]
 
     \paragraph{}
-    La troisième était la création de la piste.
-    Nous avions besoin d'une piste plutôt longue, avec des ondulations. Ainsi nous avons refusé de juste afficher un plan incliné.
+    La troisième est la création de la piste.
+    Nous avions besoin d'une piste plutôt longue, avec des ondulations. Ainsi nous avons refusé l'idée de juste afficher un plan incliné.
     Nous nous sommes rabattu sur une double interpolation hermitienne (une dans la direction de l'axe X, l'autre sur l'axe Y) pour obtenir des effets courbés et donc des bosses, pour rajouter du réalisme à notre piste.
+    Le code de cette partie se trouve dans \textit{./src/BasicTerrainGenerator.cpp}, \textit{./src/decor.cpp}, \textit{SlopeRenderable.cpp}.
     [DETAILS TECHNIQUES]
+
+    \paragraph{}
+    Nous avons ensuite démarré les animations, la physique et l'ajout de la neige.
+    Cette dernière va tomber dans un carré centré autour de la caméra, ce qui nous permet de toujours voir de la neige, sans trop charger d'objets (et donc d'être moins gourmands).
 
     \newpage
     \section{Améliorations}
 
     \paragraph{}
-    Afin d'améliorer notre projet (et surtout de le rendre jouable), nous avons dû réaliser plusieurs ajouts: les animations et la physique (non quantique car les pingouins qui se téléportent, c'est difficile à debugger).
+    Afin d'améliorer notre projet (et surtout de le rendre jouable), nous avons dû réaliser plusieurs ajouts: les animations et la physique (non quantique car les pingouins qui se téléportent, c'est difficile à debugger, et à contrôler !).
 
     \subsection{Les animations}
 
@@ -247,25 +252,31 @@
     Le choc, extrêmement violent, va faire trembler le sapin plusieurs fois, et finira par le faire tomber définitivement (ensuite la magie opère et l'arbre disparait).
     Nous avons donc plusieurs keyframes pour animer tout celà : une où l'arbre est penché vers la gauche, une autre vers la droite, pour réaliser l'effet de tremblement.
     Ensuite il y a plusieurs keyframe pour réaliser la chute de l'arbre.
-    Celui-ci chute suivant la fonction $y=x^3$, ce qui nous permet d'avoir une vitesse initiale de chute lente, puis d'accélerer afin de se rapprocher le plus possible du monde réel.
+    Celui-ci chute suivant la fonction $y=x^3$, ce qui nous permet d'avoir une vitesse initiale de chute lente, puis d'accélerer afin de se rapprocher le plus possible d'une chute d'arbre du monde réel (aucun arbre n'a été blessé durant ce projet).
 
     \paragraph{}
     Nous avons ensuite animé le pingouin (il faut que le bébé pingouin montre à son papa qu'il est en pleine forme).
     Les premières animations nous servent à positionner correctement le pingouin en position de glisse, au sommet de la piste.
-    Il y a au début une animation de marche, où le corps de notre pingouin va dandiner (car il est content de pouvoir descendre une piste, nous n'avons pas beaucoup cette chance cette année).
+    Il y a au début une animation de marche, où le corps de notre pingouin va dandiner (car il est content de pouvoir descendre une piste, nous n'avons pas beaucoup eu cette chance cette année).
     Il va donc incliner légèrement ses pieds, ses nageoires et pencher son corps sur chaque côté alternativement.\\
-    Il y a ensuite une animation de saut où notre protagoniste prend de l'élan, et réaliser un bond, en tendant ses pieds.
-    Cette animation nous permet d'avoir le pingouin sur le ventre (il est conny que les pingouins glisse sur le ventre), parallèle à la piste, en position de départ.
-    Elle nous permet aussi de passer notre pingouin en "mode jouable" (il est assimilé à une particule à ce moment) ce qui va nous permettre de le déplacer.
+    Il y a ensuite une animation de saut où notre protagoniste prend de l'élan, et réalise un bond, en tendant ses pieds.
+    Cette animation nous permet d'avoir le pingouin sur le ventre (il est connu que les pingouins glissent sur le ventre), parallèle à la piste, en position de départ.
+    Elle nous permet aussi de passer notre pingouin en "mode jouable" (il est assimilé à une particule à ce moment là) ce qui va nous permettre de le contrôler.
 
 
     \subsection{La physique}
-    
 
+    La physique est le dernier élèment rajouté à notre projet.
+    Les forces ont tout d'abord été ajouté (avec tout ce qui est nécessaire à côté) pour permettre à la neige de tomber (c'est mieux).
+    Ensuite nous avons réalisé une partie difficile qui est la collision avec la piste.
+    Celle-ci étant une interpolation hermitienne, représentée avec des triangles étirés à certains endroits pour réaliser les virages, il a été ardu de réaliser un calcul de collision précis.\\
+    Nous avons ensuite ajouté le calcul des collisions entre le tux et les sapins (nous devions rentabilisé le temps passé à l'animer après tout!).
+    En revanche, les collisions entre particules de neige ne sont pas calculés, ce qui nous permet d'être moins gourmand.
+    Les flocons sont en effet créés une seule fois, puis déplacés pour suivre la caméra.
 
-
-
-
+    \subsection{Embellissement}
+    Pour rendre notre jeu plus agréable aux yeux (et plus fun!), nous avons ajouté un grand nombre de sapin sur notre carte (nous avons donc plusieurs niveaux de difficulté).
+    Nous avons aussi augmenté le nombre de flocons créés, pour se rapprocher d'une chute de neige assez dense (on adore la neige!).
 
 \end{document}
 % Fin du document LaTex
