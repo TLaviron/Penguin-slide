@@ -147,6 +147,8 @@ void initialize_penguin_scene(Viewer &viewer) {
     LightedSlopeRenderablePtr slope = std::make_shared<LightedSlopeRenderable>(phongShader,terrain,slopeMaterial);
     slope->setMaterial(slopeMaterial);
     viewer.addRenderable(slope);
+    system->setTerrain(slope);
+
 //snow
     // this needs to be after the penguin(s) has been created
     ConstantForceFieldPtr gravity = std::make_shared<ConstantForceField>(system->getParticles(), glm::vec3(0, 0, -10));

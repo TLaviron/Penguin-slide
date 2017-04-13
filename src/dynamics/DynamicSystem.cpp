@@ -8,6 +8,7 @@
 #include "./../../include/dynamics/DynamicSystem.hpp"
 #include "./../../include/dynamics/ParticlePlaneCollision.hpp"
 #include "./../../include/dynamics/ParticleParticleCollision.hpp"
+#include "../../include/dynamics/ParticleTerrainCollision.hpp"
 
 DynamicSystem::DynamicSystem(Camera* camera, bool isSnowSystem) {
     m_dt = 0.1;
@@ -53,6 +54,14 @@ float DynamicSystem::getDt() const
 void DynamicSystem::setDt(float dt)
 {
     m_dt = dt;
+}
+
+void DynamicSystem::setTerrain(const SlopeRenderablePtr & terrain){
+    m_terrain = terrain;
+}
+
+const SlopeRenderablePtr & DynamicSystem::getTerrain(){
+    return m_terrain;
 }
 
 void DynamicSystem::clear()
@@ -122,6 +131,18 @@ void DynamicSystem::detectCollisions()
             }
         }
     }
+
+    //detect terrain particle collisions
+    if (m_terrain != nullptr){
+        for (size_t i = 0; i < m_particles.size(); ++i) {
+            ParticlePtr p = m_particles[i];
+            if (testParticleTerrain(p, m_terrain)){
+                ParticleTerrainCollisionPtr c =
+                        std::make_shared<ParticleTerrainCollision>(p, m_terrain, m_restitution);
+            }
+        }
+    }
+
 }
 
 void DynamicSystem::solveCollisions()
