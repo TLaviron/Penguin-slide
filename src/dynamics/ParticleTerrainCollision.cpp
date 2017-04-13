@@ -46,14 +46,17 @@ void ParticleTerrainCollision::do_solveCollision(){
             / (-cosIncidentAngle * cosIncidentAngle);
     //point where impact would takes place if the contact surface were a plane
     glm::vec3 impact = b * vDir - a * directionalTangent;
-    if (cosIncidentAngle < 0.1){
-        glm::quat rotAlign = glm::rotation(vDir, directionalTangent);
-        m_p->setVelocity(rotAlign * v);
+    if (cosIncidentAngle > 0){
+        m_p->setPosition(contact - 2.0f*verticalDiff);
+        m_p->setVelocity(m_restitution*v + normal);
+    } else if (cosIncidentAngle > -0.2){
+        glm::quat rotAlign = glm::normalize(glm::rotation(vDir, directionalTangent));
+        m_p->setVelocity(glm::l2Norm(v) * directionalTangent);
         glm::vec3 newPosition = impact + rotAlign * (pPos-impact);
         newPosition.z += m_p->getRadius();
         m_p->setPosition(newPosition);
     } else {
-        glm::quat rotBounce = glm::rotation(vDir, directionalTangent); // align only
+        glm::quat rotBounce = glm::normalize(glm::rotation(vDir, directionalTangent)); // align only
         rotBounce *= rotBounce;//reflection
         m_p->setVelocity(m_restitution * rotBounce * v);
         glm::vec3 newPosition = impact + rotBounce * (pPos-impact);
