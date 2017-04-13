@@ -79,7 +79,7 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
     scheduleStatusChange = -1;
 }
 
-void PenguinLightedRenderable::walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration){
+void PenguinLightedRenderable::walkTux(float time, float duration){
     //Keyframes on parent transformation: pairs of (time, transformation)
 
     float timeStep = duration / 4;
@@ -127,10 +127,10 @@ void PenguinLightedRenderable::walkTux(Viewer& viewer, const ShaderProgramPtr& t
     scheduleStatusChange = time + duration;
 
     glm::vec3 rotatedPosition = getParentStaticTransform().getOrientation() * (getParentStaticTransform().getScale() * position);
-    m_particle->setPosition(getParentStaticTransform().getTranslation() + rotatedPosition);
+    m_particle->setPosition(m_particle->getPosition() + rotatedPosition);
 }
 
-void PenguinLightedRenderable::jumpTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration){
+void PenguinLightedRenderable::jumpTux(float time, float duration){
     //Keyframes on parent transformation: pairs of (time, transformation)
     float timeStep = duration / 3;
     glm::vec3 position = m_particle->getPosition();
@@ -165,8 +165,7 @@ void PenguinLightedRenderable::jumpTux(Viewer& viewer, const ShaderProgramPtr& t
 
 }
 
-void PenguinLightedRenderable::collisionTux(Viewer &viewer, const ShaderProgramPtr &texShader, float time,
-                                            float duration, glm::vec3 dirProjection) {
+void PenguinLightedRenderable::collisionTux(float time, float duration, glm::vec3 dirProjection) {
     float timeStep = duration / 3;
     glm::vec3 position = m_particle->getPosition();
 
@@ -249,7 +248,7 @@ void PenguinLightedRenderable::do_draw(){
 }
 
 void PenguinLightedRenderable::beforeAnimate(float time){
-    if (scheduleStatusChange > 0 && time > scheduleStatusChange){
+    if (scheduleStatusChange >= 0 && time > scheduleStatusChange){
         scheduleStatusChange = -1;
         GeometricTransformation staticTransform = getParentStaticTransform();
         Body->clear();
@@ -261,6 +260,27 @@ void PenguinLightedRenderable::beforeAnimate(float time){
         case PENGUIN_STATUS_STARTING:
             setParentTransform(GeometricTransformation(m_particle->getPosition()
                     , staticTransform.getOrientation(), staticTransform.getScale()));
+            break;
+        case PENGUIN_STATUS_WALKING1:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            walkTux(time, 2);
+            scheduleStatusChange = time+2;
+            m_nextStatus = PENGUIN_STATUS_WALKING2;
+            break;
+        case PENGUIN_STATUS_WALKING2:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            walkTux(time, 2);
+            scheduleStatusChange = time+2;
+            m_nextStatus = PENGUIN_STATUS_JUMPING;
+            break;
+        case PENGUIN_STATUS_JUMPING:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            jumpTux(time, 2);
+            scheduleStatusChange = time+2;
+            m_nextStatus = PENGUIN_STATUS_JUMPING;
             break;
         case PENGUIN_STATUS_SLIDING:
         // remove all keyframes to get the animation right
@@ -347,4 +367,14 @@ PenguinStatus PenguinLightedRenderable::getStatus(){
 
 const ParticlePtr & PenguinLightedRenderable::getParticle(){
     return m_particle;
+}
+
+void PenguinLightedRenderable::do_keyReleasedEvent(sf::Event& e){
+    std::cout << "event" << std::endl;
+    if (e.key.code == sf::Keyboard::Return) {
+        std::cout << "SPAAAACE!" << std::endl;
+        if (m_status == PENGUIN_STATUS_STARTING);
+            scheduleStatusChange = 0;
+            m_nextStatus = PENGUIN_STATUS_WALKING1;
+    }
 }
