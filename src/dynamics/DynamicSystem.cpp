@@ -233,7 +233,13 @@ void DynamicSystem::computeSimulationStep()
         solveCollisions();
     }
 }
+const std::vector<PineRenderablePtr>& DynamicSystem::getPine() const{
+    return m_pine;
+}
 
+void DynamicSystem::setPine(const std::vector<PineRenderablePtr > & pine){
+    m_pine=pine;
+}
 const float DynamicSystem::getRestitution()
 {
     return m_restitution;

@@ -163,6 +163,21 @@ public:
      */
     void setParticles(const std::vector<ParticlePtr> & particles);
 
+    /**@brief Access to the set of pine of this system.
+   *
+   * Get the set of pine of this dynamic system.
+   * @return The set of pine of this system.
+   */
+
+    const std::vector<PineRenderablePtr>& getPine() const;
+
+    /**@brief Set the pine of this system.
+     *
+     * Define a new set of pine for this dynamic system.
+     * @param pine The new set of pine of this system.
+     */
+    void setPine(const std::vector<PineRenderablePtr > & pine);
+
     /**@brief Access to the force fields of this system.
      *
      * Get the set of force fields of this system.

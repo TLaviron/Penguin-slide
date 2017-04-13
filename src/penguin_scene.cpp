@@ -124,8 +124,8 @@ void initialize_penguin_scene(Viewer &viewer) {
         forest[i]->setParentTransform(GeometricTransformation(newPosition));
         forest[i]->setPosition(newPosition);
         viewer.addRenderable(forest[i]);
-
     }
+    system->setPine(forest);
 //Penguin
     PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader, system);
     Tux->bindMembers(Tux);
@@ -141,8 +141,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     //Tux->jumpTux(viewer,texShader,4.0,1);
     //Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
 
-/*
-    PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
+/*    PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
     otherTux->bindMembers(otherTux);
     otherTux->bindForceController(systemRenderable);
     GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
@@ -157,7 +156,6 @@ void initialize_penguin_scene(Viewer &viewer) {
     tuxParticle->setVelocity(glm::vec3(-0.2, 4, 2));
     viewer.addRenderable(otherTux);
 */
-
 
 //snow
     // this needs to be after the penguin(s) has been created
