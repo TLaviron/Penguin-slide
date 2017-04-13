@@ -147,7 +147,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     otherTux->bindMembers(otherTux);
     otherTux->bindForceController(systemRenderable);
     GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
-    tuxTransform.setTranslation(glm::vec3(0));
+    tuxTransform.setTranslation(glm::vec3(1, 1, 1));
     tuxTransform.setOrientation(glm::quat());
     otherTux->setParentTransform(tuxTransform);
 
@@ -155,7 +155,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     otherTux->setStatus(PENGUIN_STATUS_SLIDING);
     ParticlePtr tuxParticle = otherTux->getParticle();
     tuxParticle->setFixed(false);
-    tuxParticle->setVelocity(glm::vec3(-0.2, 0.8, 0.3));
+    tuxParticle->setVelocity(glm::vec3(-0.2, 4, 2));
     viewer.addRenderable(otherTux);
 
 
