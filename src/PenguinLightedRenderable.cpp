@@ -213,6 +213,9 @@ void PenguinLightedRenderable::do_draw(){
 
 void PenguinLightedRenderable::beforeAnimate(float time){
     if (scheduleStatusChange > 0 && time > scheduleStatusChange){
+        std::cout << "switching status!" << std::endl;
+        std::cout << "position " << m_particle->getPosition().x << " " << m_particle->getPosition().y << " " << m_particle->getPosition().z << " " << std::endl;
+        std::cout << "velocity " << m_particle->getVelocity().x << " " << m_particle->getVelocity().y << " " << m_particle->getVelocity().z << " " << std::endl;
         m_particle->setFixed(false);
         scheduleStatusChange = -1;
         m_status = PENGUIN_STATUS_SLIDING;
