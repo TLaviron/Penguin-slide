@@ -120,17 +120,12 @@ void initialize_penguin_scene(Viewer &viewer) {
     for (int i = 0; i <nForest ; ++i) {
         forest[i] = std::make_shared<PineRenderable>(phongShader, random(4,7), random(1.4,1.8), int(random(5,10)));
         forest[i]->bindTrunk(forest[i]);
-        forest[i]->setParentTransform(GeometricTransformation(slope->get(random(-35,35),random(-20,200))));
+        glm::vec3 newPosition(slope->get(random(-35,35),random(-20,200)));
+        forest[i]->setParentTransform(GeometricTransformation(newPosition));
+        forest[i]->setPosition(newPosition);
         viewer.addRenderable(forest[i]);
 
     }
-
-    PineRenderablePtr sapin = std::make_shared<PineRenderable>(phongShader, 5, 1.5);
-    sapin->bindTrunk(sapin);
-    sapin->setParentTransform(GeometricTransformation(glm::vec3(2.0, 0.0, 0.0)));
-    sapin->fell(0, glm::vec3(1, 0, 0), 4);
-    viewer.addRenderable(sapin);
-
 //Penguin
     PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader, system);
     Tux->bindMembers(Tux);
@@ -176,20 +171,6 @@ void initialize_penguin_scene(Viewer &viewer) {
     //It also handles some of the key/mouse events
     DynamicSystemRenderablePtr systemSnowRenderable = std::make_shared<DynamicSystemRenderable>(systemSnow);
     viewer.addRenderable(systemSnowRenderable);
-//    SnowballRenderablePtr SF;
-//    glm::vec3 pv(0.0, 0.0, 0.0);
-//    glm::vec3 px(0.0, 0.0, 0.0);
-//    float pm = 0.1, pr = 0.15;
-//    ParticlePtr particle;
-//    for (int i = -5; i < 5; ++i) {
-//        for (int j = 0; j < 10; ++j) {
-//            px = glm::vec3(2*i, 2*j, random(5.0f,10.0f));
-//            particle = std::make_shared<Particle>(px, pv, pm, pr);
-//            SF = std::make_shared<SnowballRenderable>(flatShader,particle);
-//            systemSnow->addParticle(particle);
-//            HierarchicalRenderable::addChild(systemSnowRenderable, SF);
-//        }
-//    }
     Tux->generateSnow(viewer, flatShader, systemSnow, systemSnowRenderable);
 
     ConstantForceFieldPtr gravityForceField = std::make_shared<ConstantForceField>(systemSnow->getParticles(), glm::vec3{0,0,-10} );

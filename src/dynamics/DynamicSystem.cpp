@@ -9,6 +9,7 @@
 #include "./../../include/dynamics/ParticlePlaneCollision.hpp"
 #include "./../../include/dynamics/ParticleParticleCollision.hpp"
 #include "../../include/dynamics/ParticleTerrainCollision.hpp"
+#include "../../include/dynamics/PenguinTreeCollision.hpp"
 
 DynamicSystem::DynamicSystem(Camera* camera, bool isSnowSystem) {
     m_dt = 0.1;
@@ -114,6 +115,17 @@ void DynamicSystem::detectCollisions()
             if (testParticlePlane(p, o)) {
                 ParticlePlaneCollisionPtr c =
                         std::make_shared<ParticlePlaneCollision>(p,o,m_restitution);
+                m_collisions.push_back(c);
+            }
+        }
+    }
+
+    //Detect particle tree collisions
+    for (ParticlePtr p : m_particles) {
+        for (PineRenderablePtr o : m_pine) {
+            if (testPenguinTree(p,o)) {
+                PenguinTreeCollisionPtr c =
+                        std::make_shared<PenguinTreeCollision>(p,o,m_restitution);
                 m_collisions.push_back(c);
             }
         }

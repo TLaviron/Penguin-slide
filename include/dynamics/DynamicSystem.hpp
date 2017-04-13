@@ -11,6 +11,7 @@
 #include "../Camera.hpp"
 
 #include "../SlopeRenderable.hpp"
+#include "../PineRenderable.hpp"
 
 /**@brief A dynamic system.
  *
@@ -42,6 +43,11 @@ private:
      * The set of obstacles that would repel the particles after collisions.
      */
     std::vector<PlanePtr> m_planeObstacles;
+
+    /**@brief the set of trees
+     *
+     */
+    std::vector<PineRenderablePtr > m_pine;
 
     /**
      * @brief The fixed terrain as an obstacle

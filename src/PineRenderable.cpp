@@ -13,6 +13,12 @@
 PineRenderable::PineRenderable(ShaderProgramPtr shaderProgram, float height, float radius,
         unsigned int nbLeaves) :
         HierarchicalRenderable(shaderProgram) {
+    m_radius=radius;
+    m_height=height;
+    m_position = glm::vec3(0.0,0.0,0.0);
+    m_direction = glm::vec3(0.0,0.0,0.0);
+    up = true;
+    mustDie = false;
     glm::vec4 snowWhite(1, 1, 1, 0);
     glm::vec4 barkBrown(0.4, 0.2, 0, 0);
     glm::vec4 darkBrown(0.3, 0.15, 0, 0);
@@ -114,4 +120,47 @@ void PineRenderable::do_animate(float time) {
     if (hasParentTransform()) {
         setParentTransform(interpParentTransform(time));
     }
+    if(mustDie){
+        fell(time,m_direction,4);
+    }
+}
+
+float PineRenderable::getRadius(){
+    return m_radius;
+}
+
+float PineRenderable::getHeight(){
+    return m_height;
+}
+
+glm::vec3 PineRenderable::getPosition(){
+    return m_position;
+}
+
+void PineRenderable::setPosition(glm::vec3 position){
+    m_position = position;
+}
+
+bool PineRenderable::isUp(){
+    return up;
+}
+
+void PineRenderable::setUp(bool upDown){
+    up = upDown;
+}
+
+glm::vec3 PineRenderable::getdirection(){
+    return m_direction;
+}
+
+bool PineRenderable::getMustDie(){
+    return mustDie;
+}
+
+void PineRenderable::setDie(bool die){
+    mustDie = die;
+}
+
+void PineRenderable::setDirection(glm::vec3 direction){
+    m_direction = direction;
 }

@@ -9,23 +9,18 @@
 
 class PenguinTreeCollision: public Collision {
 public:
-    PenguinTreeCollision(PenguinLightedRenderablePtr p, PineRenderablePtr pine,
-                         float restitution, float radius,float height, glm::vec3 position);
+    PenguinTreeCollision(ParticlePtr p, PineRenderablePtr pine,float restitution);
     ~PenguinTreeCollision();
 
 private:
     void do_solveCollision();
 
-    PenguinLightedRenderablePtr m_p;
+    ParticlePtr  m_p;
     PineRenderablePtr m_pine;
-    float m_radius;
-    float m_height;
-    glm::vec3 m_position;
 };
 
 typedef std::shared_ptr<PenguinTreeCollision> PenguinTreeCollisionPtr;
 
-bool testParticleTerrain(const PenguinLightedRenderablePtr & p, const PineRenderablePtr & pine,
-                         const float radius,const float height, const glm::vec3 &position);
+bool testPenguinTree(const ParticlePtr & p, const PineRenderablePtr & pine);
 
 #endif /* INCLUDE_DYNAMICS_PENGUINTREECOLLISION_HPP_ */
