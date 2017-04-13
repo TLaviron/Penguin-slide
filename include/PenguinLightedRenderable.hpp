@@ -21,7 +21,7 @@ typedef enum {
 	PENGUIN_STATUS_STARTING,
 	PENGUIN_STATUS_SLIDING,
 	PENGUIN_STATUS_COLIDING,
-	PENGUIN_STATUS_RECOVERING
+	PENGUIN_STATUS_RECOVERING,
 } PenguinStatus;
 
 
@@ -126,6 +126,11 @@ private:
      * Status of the penguin.
      */
     PenguinStatus m_status;
+
+    /**
+     * Next change of status.
+     */
+    PenguinStatus m_nextStatus;
 
 
     /**
