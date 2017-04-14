@@ -146,6 +146,9 @@ void initialize_penguin_scene(Viewer &viewer) {
     transform.setTranslation(glm::vec3(0,180,-86));
     transform.setScale(glm::vec3(4,4,4));
     papaTux->setParentTransform(transform);
+    ParticlePtr papaParticle = papaTux->getParticle();
+    papaParticle->setPosition(transform.getTranslation());
+    papaParticle->setRadius(1.5);
 
     viewer.addRenderable(papaTux);
 

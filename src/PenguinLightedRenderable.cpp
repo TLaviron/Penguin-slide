@@ -379,8 +379,9 @@ const ParticlePtr & PenguinLightedRenderable::getParticle(){
 
 void PenguinLightedRenderable::do_keyReleasedEvent(sf::Event& e){
     if (e.key.code == sf::Keyboard::Return) {
-        if (m_status == PENGUIN_STATUS_STARTING);
-        scheduleStatusChange = 0;
-        m_nextStatus = PENGUIN_STATUS_WALKING1;
+        if (m_status == PENGUIN_STATUS_STARTING){
+            scheduleStatusChange = 0;
+            m_nextStatus = PENGUIN_STATUS_WALKING1;
+        }
     }
 }
