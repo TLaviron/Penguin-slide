@@ -39,7 +39,7 @@ bool testPenguinTree(const ParticlePtr& p, const PineRenderablePtr& pine){
     glm::vec3 pPos = p->getPosition();
     glm::vec3 position = pine->getPosition();
     float height = pine->getHeight();
-    float radius = pine->getRadius();
+    float radius = pine->getRadius() / 5; // only count the trunk
     // approximation : only have collisions with the bottom most point
     return (pine->isUp())&&((position.x - pPos.x)*(position.x - pPos.x) + (position.y - pPos.y)*(position.y - pPos.y) <
             (radius + p->getRadius())*(radius + p->getRadius())) &&

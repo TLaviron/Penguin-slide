@@ -63,7 +63,7 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
     //physics initializing
     m_status = PENGUIN_STATUS_STARTING;
     m_nextStatus = PENGUIN_STATUS_STARTING;
-    m_particle = std::make_shared<Particle>(parentStaticTransform.getTranslation(), glm::vec3(0), 5, 0.5);
+    m_particle = std::make_shared<Particle>(parentStaticTransform.getTranslation(), glm::vec3(0), 2, 0.5);
     m_particle->setFixed(true);
     dynamicSystem->addParticle(m_particle);
 
@@ -128,20 +128,17 @@ void PenguinLightedRenderable::jumpTux(float time, float duration){
     float timeStep = duration / 3;
     glm::vec3 position(0);
 
-    GeometricTransformation staticTransformation(glm::vec3(0, 4.5, 2.35), quatAxisAngle(float(M_PI_2), glm::vec3(1,0,0)) *
-                                                                          quatAxisAngle(float(M_PI_2), glm::vec3(0,1,0)), glm::vec3(2,2,2));
-
-    Body->addParentTransformKeyframe(0*timeStep+time, GeometricTransformation(position,
-                                                                              glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,0.0,1.0))));
+    Body->addParentTransformKeyframe(0*timeStep+time,
+            GeometricTransformation(position, glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,0.0,1.0))));
     position += glm::vec3(0.5,0.25,0);
-    Body->addParentTransformKeyframe(1*timeStep+time, GeometricTransformation(position ,
-                                                                              glm::angleAxis(-float(M_PI)/8, glm::vec3(0.0,0.0,1.0))));
+    Body->addParentTransformKeyframe(1*timeStep+time,
+            GeometricTransformation(position, glm::angleAxis(-float(M_PI)/8, glm::vec3(0.0,0.0,1.0))));
     position += glm::vec3(0.5,0.25,0);
-    Body->addParentTransformKeyframe(2*timeStep+time, GeometricTransformation(position ,
-                                                                              glm::angleAxis(-float(M_PI)/4, glm::vec3(0.0,0.0,1.0))));
+    Body->addParentTransformKeyframe(2*timeStep+time,
+            GeometricTransformation(position, glm::angleAxis(-float(M_PI)/4, glm::vec3(0.0,0.0,1.0))));
     position += glm::vec3(0.5,0,0);
-    Body->addParentTransformKeyframe(3*timeStep+time, GeometricTransformation(position ,
-                                                                              glm::angleAxis(-float(M_PI)/2, glm::vec3(0.0,0.0,1.0))));
+    Body->addParentTransformKeyframe(3*timeStep+time,
+            GeometricTransformation(position, glm::angleAxis(-float(M_PI)/2, glm::vec3(0.0,0.0,1.0))));
 
 
     glm::vec3 z(0.0,0.0,1.0);
@@ -242,6 +239,7 @@ void PenguinLightedRenderable::do_draw(){
 void PenguinLightedRenderable::beforeAnimate(float time){
     if (scheduleStatusChange >= 0 && time > scheduleStatusChange){
         scheduleStatusChange = -1;
+        m_status = m_nextStatus;
         GeometricTransformation staticTransform = getParentStaticTransform();
         Body->clear();
         RF->clear();
@@ -253,6 +251,7 @@ void PenguinLightedRenderable::beforeAnimate(float time){
             setParentTransform(GeometricTransformation(m_particle->getPosition()
                     , staticTransform.getOrientation(), staticTransform.getScale()));
             break;
+
         case PENGUIN_STATUS_WALKING1:
             setParentTransform(GeometricTransformation(m_particle->getPosition()
                     , staticTransform.getOrientation(), staticTransform.getScale()));
@@ -260,12 +259,14 @@ void PenguinLightedRenderable::beforeAnimate(float time){
             scheduleStatusChange = time+2;
             m_nextStatus = PENGUIN_STATUS_WALKING2;
             break;
+
         case PENGUIN_STATUS_WALKING2:
             setParentTransform(GeometricTransformation(m_particle->getPosition()
                     , staticTransform.getOrientation(), staticTransform.getScale()));
             walkTux(time, 2);
             scheduleStatusChange = time+2;
             m_nextStatus = PENGUIN_STATUS_JUMPING;
+
             break;
         case PENGUIN_STATUS_JUMPING:
             setParentTransform(GeometricTransformation(m_particle->getPosition()
@@ -273,19 +274,19 @@ void PenguinLightedRenderable::beforeAnimate(float time){
             jumpTux(time, 2);
             scheduleStatusChange = time+2;
             m_nextStatus = PENGUIN_STATUS_SLIDING;
+
             break;
         case PENGUIN_STATUS_SLIDING:
         // remove all keyframes to get the animation right
             setParentTransform(GeometricTransformation(m_particle->getPosition()
                     , staticTransform.getOrientation(), staticTransform.getScale()));
-            m_particle->setVelocity(glm::vec3(0, 1, 0));
+            m_particle->setVelocity(glm::vec3(0, 3, 0));
             m_particle->setFixed(false);
             break;
 
         default:
             break;
         }
-        m_status = m_nextStatus;
     }
     glm::vec3 velocityDirection, yAxis(0, 1, 0), zAxis(0, 0, 1);
     glm::vec3 newRightSide;
@@ -363,9 +364,7 @@ const ParticlePtr & PenguinLightedRenderable::getParticle(){
 }
 
 void PenguinLightedRenderable::do_keyReleasedEvent(sf::Event& e){
-    std::cout << "event" << std::endl;
     if (e.key.code == sf::Keyboard::Return) {
-        std::cout << "SPAAAACE!" << std::endl;
         if (m_status == PENGUIN_STATUS_STARTING);
             scheduleStatusChange = 0;
             m_nextStatus = PENGUIN_STATUS_WALKING1;

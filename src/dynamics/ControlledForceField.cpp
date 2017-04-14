@@ -19,8 +19,8 @@ ControlledForceField::~ControlledForceField() {
 
 void ControlledForceField::updateForce(glm::vec3 movement){
     glm::vec3 baseForce;
-    glm::vec3 xAxis(10, 0, 0);
-    glm::vec3 yAxis(0, 5, 0);
+    glm::vec3 xAxis(16, 0, 0);
+    glm::vec3 yAxis(0, 10, 0);
     if (accelerate && !decelerate)
         baseForce = yAxis; // head towards y axis by default
     else if (!accelerate && decelerate)

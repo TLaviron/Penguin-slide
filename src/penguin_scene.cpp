@@ -136,26 +136,6 @@ void initialize_penguin_scene(Viewer &viewer) {
     Tux->setParentTransform(transform);
 
     viewer.addRenderable(Tux);
-    //Tux->walkTux(viewer,texShader,0.0,2);
-    //Tux->walkTux(viewer,texShader,2.0,2);
-    //Tux->jumpTux(viewer,texShader,4.0,1);
-    //Tux->collisionTux(viewer,texShader,6.0,2,glm::vec3(-0.5,-0.5,0));
-
-/*    PenguinLightedRenderablePtr otherTux = std::make_shared<PenguinLightedRenderable>(texShader,system);
-    otherTux->bindMembers(otherTux);
-    otherTux->bindForceController(systemRenderable);
-    GeometricTransformation tuxTransform = otherTux->getParentStaticTransform();
-    tuxTransform.setTranslation(glm::vec3(1, 1, 1));
-    tuxTransform.setOrientation(glm::quat());
-    otherTux->setParentTransform(tuxTransform);
-
-    otherTux->updateModelMatrix();
-    otherTux->setStatus(PENGUIN_STATUS_SLIDING);
-    ParticlePtr tuxParticle = otherTux->getParticle();
-    tuxParticle->setFixed(false);
-    tuxParticle->setVelocity(glm::vec3(-0.2, 4, 2));
-    viewer.addRenderable(otherTux);
-*/
 
 //snow
     // this needs to be after the penguin(s) has been created
@@ -166,7 +146,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     DynamicSystemPtr systemSnow = std::make_shared<DynamicSystem>(&(viewer.getCamera()), true);
     EulerExplicitSolverPtr solverSnow = std::make_shared<EulerExplicitSolver>();
     systemSnow->setSolver(solverSnow);
-    systemSnow->setDt(0.01);
+    systemSnow->setDt(0.05);
 
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep()in the animate() function
@@ -182,7 +162,7 @@ void initialize_penguin_scene(Viewer &viewer) {
 
 
     viewer.getCamera().setViewMatrix(
-            glm::lookAt(glm::vec3(0, 3, 5), glm::vec3(0, 10, 0), glm::vec3(0, 0, 1)));
+            glm::lookAt(glm::vec3(10, 10, 8), glm::vec3(0, 10, 0), glm::vec3(0, 0, 1)));
     viewer.startAnimation();
 }
 
