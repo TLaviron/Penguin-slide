@@ -148,7 +148,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     papaTux->setParentTransform(transform);
     ParticlePtr papaParticle = papaTux->getParticle();
     papaParticle->setPosition(transform.getTranslation());
-    papaParticle->setRadius(1.5);
+    papaParticle->setRadius(4.5);
 
     viewer.addRenderable(papaTux);
 

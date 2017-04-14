@@ -309,22 +309,24 @@ void PenguinLightedRenderable::beforeAnimate(float time){
         case PENGUIN_STATUS_SLIDING:
             if (m_particle->isFixed()){
                 scheduleStatusChange = time;
-                m_nextStatus = PENGUIN_STATUS_COLIDING;
+                m_nextStatus = PENGUIN_STATUS_STARTING;
+            } else {
+
+                velocityDirection = glm::normalize(m_particle->getVelocity());
+
+                // compute quaternion to align penguin yAxis (head) with velocityDirection
+                // we also need nose facing downward, which means the penguin's right side (+z)
+                // has to be aligned with cross(velocityDirection, z)
+                rot = glm::normalize(glm::rotation(yAxis, velocityDirection));
+                newRightSide = rot * zAxis;
+                rot = glm::normalize(glm::rotation(newRightSide, glm::cross(velocityDirection, zAxis))) * rot;
+                setParentTransform(GeometricTransformation(m_particle->getPosition(),
+                        rot, getParentStaticTransform().getScale()));
+
+                m_forceController->updateForce(velocityDirection);
+
+                m_viewer->getCamera().setViewMatrix(glm::lookAt(m_particle->getPosition() + glm::vec3(0, -6, 10), m_particle->getPosition(), zAxis));
             }
-            velocityDirection = glm::normalize(m_particle->getVelocity());
-
-            // compute quaternion to align penguin yAxis (head) with velocityDirection
-            // we also need nose facing downward, which means the penguin's right side (+z)
-            // has to be aligned with cross(velocityDirection, z)
-            rot = glm::normalize(glm::rotation(yAxis, velocityDirection));
-            newRightSide = rot * zAxis;
-            rot = glm::normalize(glm::rotation(newRightSide, glm::cross(velocityDirection, zAxis))) * rot;
-            setParentTransform(GeometricTransformation(m_particle->getPosition(),
-                                                       rot, getParentStaticTransform().getScale()));
-
-            m_forceController->updateForce(velocityDirection);
-
-            m_viewer->getCamera().setViewMatrix(glm::lookAt(m_particle->getPosition() + glm::vec3(0, -6, 10), m_particle->getPosition(), zAxis));
             break;
         case PENGUIN_STATUS_COLIDING:
             break;
