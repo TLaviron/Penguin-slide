@@ -137,9 +137,16 @@ void DynamicSystem::detectCollisions()
             ParticlePtr p1 = m_particles[i];
             ParticlePtr p2 = m_particles[j];
             if (testParticleParticle(p1,p2)) {
-                ParticleParticleCollisionPtr c =
-                        std::make_shared<ParticleParticleCollision>(p1,p2,m_restitution);
-                m_collisions.push_back(c);
+                if (m_isSnowDynamicSystem){
+                    ParticleParticleCollisionPtr c =
+                            std::make_shared<ParticleParticleCollision>(p1,p2,m_restitution);
+                    m_collisions.push_back(c);
+                } else {
+                    // penguins meeting
+                    p1->setFixed(true);
+                    p2->setFixed(true);
+                }
+
             }
         }
     }

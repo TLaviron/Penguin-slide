@@ -253,45 +253,49 @@ void PenguinLightedRenderable::beforeAnimate(float time){
         RH->clear();
         LH->clear();
         switch(m_nextStatus){
-            case PENGUIN_STATUS_STARTING:
-                setParentTransform(GeometricTransformation(m_particle->getPosition()
-                        , staticTransform.getOrientation(), staticTransform.getScale()));
-                break;
+        case PENGUIN_STATUS_STARTING:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            break;
 
-            case PENGUIN_STATUS_WALKING1:
-                setParentTransform(GeometricTransformation(m_particle->getPosition()
-                        , staticTransform.getOrientation(), staticTransform.getScale()));
-                walkTux(time, 2);
-                scheduleStatusChange = time+2;
-                m_nextStatus = PENGUIN_STATUS_WALKING2;
-                break;
+        case PENGUIN_STATUS_WALKING1:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            walkTux(time, 2);
+            scheduleStatusChange = time+2;
+            m_nextStatus = PENGUIN_STATUS_WALKING2;
+            break;
 
-            case PENGUIN_STATUS_WALKING2:
-                setParentTransform(GeometricTransformation(m_particle->getPosition()
-                        , staticTransform.getOrientation(), staticTransform.getScale()));
-                walkTux(time, 2);
-                scheduleStatusChange = time+2;
-                m_nextStatus = PENGUIN_STATUS_JUMPING;
+        case PENGUIN_STATUS_WALKING2:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            walkTux(time, 2);
+            scheduleStatusChange = time+2;
+            m_nextStatus = PENGUIN_STATUS_JUMPING;
 
-                break;
-            case PENGUIN_STATUS_JUMPING:
-                setParentTransform(GeometricTransformation(m_particle->getPosition()
-                        , staticTransform.getOrientation(), staticTransform.getScale()));
-                jumpTux(time, 2);
-                scheduleStatusChange = time+2;
-                m_nextStatus = PENGUIN_STATUS_SLIDING;
+            break;
+        case PENGUIN_STATUS_JUMPING:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            jumpTux(time, 2);
+            scheduleStatusChange = time+2;
+            m_nextStatus = PENGUIN_STATUS_SLIDING;
 
-                break;
-            case PENGUIN_STATUS_SLIDING:
-                // remove all keyframes to get the animation right
-                setParentTransform(GeometricTransformation(m_particle->getPosition()
-                        , staticTransform.getOrientation(), staticTransform.getScale()));
-                m_particle->setVelocity(glm::vec3(0, 3, 0));
-                m_particle->setFixed(false);
-                break;
+            break;
+        case PENGUIN_STATUS_SLIDING:
+        // remove all keyframes to get the animation right
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            m_particle->setVelocity(glm::vec3(0, 3, 0));
+            m_particle->setFixed(false);
+            break;
+        case PENGUIN_STATUS_COLIDING:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
     glm::vec3 velocityDirection, yAxis(0, 1, 0), zAxis(0, 0, 1);
@@ -303,6 +307,10 @@ void PenguinLightedRenderable::beforeAnimate(float time){
         case PENGUIN_STATUS_RECOVERING:
             break;// fully keyframed, nothing to do
         case PENGUIN_STATUS_SLIDING:
+            if (m_particle->isFixed()){
+                scheduleStatusChange = time;
+                m_nextStatus = PENGUIN_STATUS_COLIDING;
+            }
             velocityDirection = glm::normalize(m_particle->getVelocity());
 
             // compute quaternion to align penguin yAxis (head) with velocityDirection
