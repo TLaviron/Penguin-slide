@@ -138,7 +138,6 @@ private:
      */
     PenguinStatus m_nextStatus;
 
-
     /**
      * Steering force applied to the penguin
      */

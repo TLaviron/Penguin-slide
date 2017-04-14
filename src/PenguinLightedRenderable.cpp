@@ -83,12 +83,8 @@ void PenguinLightedRenderable::walkTux(float time, float duration){
     //Keyframes on parent transformation: pairs of (time, transformation)
 
     float timeStep = duration / 4;
-//    GeometricTransformation staticTransformation = getParentStaticTransform();
-    //glm::vec3 position = m_particle->getPosition();
     glm::vec3 position(0);
     
-    //GeometricTransformation staticTransformation = Body.getParentStaticTransform();
-
     Body->addParentTransformKeyframe(0.0+time, GeometricTransformation(position));
     position += glm::vec3(0.5,0.0,0.0);
     Body->addParentTransformKeyframe(1*timeStep+time, GeometricTransformation(position));
@@ -123,9 +119,6 @@ void PenguinLightedRenderable::walkTux(float time, float duration){
     RH->addLocalTransformKeyframe(3*timeStep+time, GeometricTransformation(glm::vec3(0.0,0.0,0.0), glm::normalize(glm::angleAxis(-float(M_PI)/8, z))));
     RH->addLocalTransformKeyframe(4*timeStep+time, GeometricTransformation(glm::vec3(0.0,0.0,0.0), glm::normalize(glm::angleAxis(0.0f, z))));
 
-    m_nextStatus = PENGUIN_STATUS_STARTING;
-    scheduleStatusChange = time + duration;
-
     glm::vec3 rotatedPosition = getParentStaticTransform().getOrientation() * (getParentStaticTransform().getScale() * position);
     m_particle->setPosition(m_particle->getPosition() + rotatedPosition);
 }
@@ -133,22 +126,22 @@ void PenguinLightedRenderable::walkTux(float time, float duration){
 void PenguinLightedRenderable::jumpTux(float time, float duration){
     //Keyframes on parent transformation: pairs of (time, transformation)
     float timeStep = duration / 3;
-    glm::vec3 position = m_particle->getPosition();
+    glm::vec3 position(0);
 
     GeometricTransformation staticTransformation(glm::vec3(0, 4.5, 2.35), quatAxisAngle(float(M_PI_2), glm::vec3(1,0,0)) *
                                                                           quatAxisAngle(float(M_PI_2), glm::vec3(0,1,0)), glm::vec3(2,2,2));
 
-    Body->addParentTransformKeyframe(0*timeStep+time, GeometricTransformation(position  + staticTransformation.getTranslation() ,
-                                                                              glm::normalize(staticTransformation.getOrientation()*glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,0.0,1.0))),staticTransformation.getScale()) );
-    position += glm::vec3(0.0,0.5,0.25);
-    Body->addParentTransformKeyframe(1*timeStep+time, GeometricTransformation(position + staticTransformation.getTranslation() ,
-                                                                              glm::normalize(staticTransformation.getOrientation()*glm::angleAxis(-float(M_PI)/8, glm::vec3(0.0,0.0,1.0))),staticTransformation.getScale()) );
-    position += glm::vec3(0.0,0.5,0.25);
-    Body->addParentTransformKeyframe(2*timeStep+time, GeometricTransformation(position + staticTransformation.getTranslation() ,
-                                                                              glm::normalize(staticTransformation.getOrientation()*glm::angleAxis(-float(M_PI)/4, glm::vec3(0.0,0.0,1.0))),staticTransformation.getScale()) );
-    position += glm::vec3(0.0,0.5,0.0);
-    Body->addParentTransformKeyframe(3*timeStep+time, GeometricTransformation(position + staticTransformation.getTranslation() ,
-                                                                              glm::normalize(staticTransformation.getOrientation()*glm::angleAxis(-float(M_PI)/2, glm::vec3(0.0,0.0,1.0))),staticTransformation.getScale()) );
+    Body->addParentTransformKeyframe(0*timeStep+time, GeometricTransformation(position,
+                                                                              glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,0.0,1.0))));
+    position += glm::vec3(0.5,0.25,0);
+    Body->addParentTransformKeyframe(1*timeStep+time, GeometricTransformation(position ,
+                                                                              glm::angleAxis(-float(M_PI)/8, glm::vec3(0.0,0.0,1.0))));
+    position += glm::vec3(0.5,0.25,0);
+    Body->addParentTransformKeyframe(2*timeStep+time, GeometricTransformation(position ,
+                                                                              glm::angleAxis(-float(M_PI)/4, glm::vec3(0.0,0.0,1.0))));
+    position += glm::vec3(0.5,0,0);
+    Body->addParentTransformKeyframe(3*timeStep+time, GeometricTransformation(position ,
+                                                                              glm::angleAxis(-float(M_PI)/2, glm::vec3(0.0,0.0,1.0))));
 
 
     glm::vec3 z(0.0,0.0,1.0);
@@ -159,10 +152,9 @@ void PenguinLightedRenderable::jumpTux(float time, float duration){
     RF->addLocalTransformKeyframe(2*timeStep+time, GeometricTransformation(glm::vec3(0.0,0.0,0.0), glm::normalize(glm::angleAxis(-float(M_PI)/4, z))));
 
     // update position
-    m_particle->setPosition(glm::vec3(0,10,2.85));
-    m_particle->setVelocity(glm::vec3(0, 1,0)); //could be oriented...
-    scheduleStatusChange = time+duration;
 
+    glm::vec3 rotatedPosition = getParentStaticTransform().getOrientation() * (getParentStaticTransform().getScale() * position);
+    m_particle->setPosition(m_particle->getPosition() + rotatedPosition);
 }
 
 void PenguinLightedRenderable::collisionTux(float time, float duration, glm::vec3 dirProjection) {
