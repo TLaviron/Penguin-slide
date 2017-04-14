@@ -19,6 +19,9 @@
 
 typedef enum {
 	PENGUIN_STATUS_STARTING,
+	PENGUIN_STATUS_WALKING1,
+	PENGUIN_STATUS_WALKING2,
+	PENGUIN_STATUS_JUMPING,
 	PENGUIN_STATUS_SLIDING,
 	PENGUIN_STATUS_COLIDING,
 	PENGUIN_STATUS_RECOVERING,
@@ -48,7 +51,7 @@ public:
  * @param time
  * @param position
  */
-    void walkTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration);
+    void walkTux(float time, float duration);
 /**
  * make jump Tux
  * @param viewer
@@ -56,7 +59,7 @@ public:
  * @param time
  * @param position
  */
-    void jumpTux(Viewer& viewer, const ShaderProgramPtr& texShader,float time, float duration);
+    void jumpTux(float time, float duration);
 
     /**
      * make animation after a collision with a pine.
@@ -66,7 +69,7 @@ public:
      * @param duration
      * @param dirProjection the direction of the Tux's projection
      */
-    void collisionTux(Viewer& viewer, const ShaderProgramPtr& texShader, float time, float duration, glm::vec3 dirProjection);
+    void collisionTux(float time, float duration, glm::vec3 dirProjection);
 
 
     void generateSnow(Viewer& viewer, ShaderProgramPtr flatShader,
@@ -150,6 +153,8 @@ private:
      * Date set to change status (to sliding, usually)
      */
     float scheduleStatusChange;
+
+    virtual void do_keyReleasedEvent(sf::Event& e);
 };
 
 typedef std::shared_ptr<PenguinLightedRenderable> PenguinLightedRenderablePtr;
