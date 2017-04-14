@@ -1,0 +1,30 @@
+=====================================================
+Liste des commandes pour lancer penguin slide
+=====================================================
+
+Tout d'abord, il faut s'assurer d'avoir bien compiler les extlibs, sinon:
+     -cd extlib/ && make;
+Ensuite créer un dossier build dans la racine du projet:
+    -mkdir build && cd build;
+Compiler le cmake et le projet:
+    -cmake ..;
+    -make
+
+Lancer notre jeu:
+    -./main
+Il n'y a pas besoin de préciser d'argument!
+
+
+====================================================
+Commandes en jeu
+====================================================
+Une fois le jeu lancé, vous devriez observer le pingouin sur la piste de départ.
+Vous pouvez déplacé la caméra avec le clic droit de la souris pour observer l'environnement.
+
+Quand vous êtes prêt, appuyer sur la touche Entrée pour démarrer la partie.
+Cela va faire avancer le pingouin et réaliser le saut.
+La caméra va automatiquement s'attacher au pingouin.
+
+Une fois que le saut a été effectué, vous pouvez déplacer le pingouin avec les fléches multidirectionnelles.
+Attention, le déplacement appliqué par les flèches est relatif au pingouin! (ie si la tête du pingouin est en direction de votre écran, si vous appuyer sur la fleche droite, le pingouin tournera à SA droite et non la vôtre.
+
