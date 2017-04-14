@@ -19,8 +19,8 @@ ControlledForceField::~ControlledForceField() {
 
 void ControlledForceField::updateForce(glm::vec3 movement){
     glm::vec3 baseForce;
-    glm::vec3 xAxis(1, 0, 0);
-    glm::vec3 yAxis(0, 1, 0);
+    glm::vec3 xAxis(10, 0, 0);
+    glm::vec3 yAxis(0, 5, 0);
     if (accelerate && !decelerate)
         baseForce = yAxis; // head towards y axis by default
     else if (!accelerate && decelerate)
@@ -35,7 +35,7 @@ void ControlledForceField::updateForce(glm::vec3 movement){
     // then rotate the force to this direction.
     glm::quat turn = glm::rotation(yAxis,
             glm::vec3(glm::dot(movement, xAxis), glm::dot(movement, yAxis),0));
-    baseForce = turn * baseForce;
+    //baseForce = turn * baseForce;
     m_force->setForce(baseForce);
 }
 void ControlledForceField::do_keyPressedEvent(sf::Event& e)

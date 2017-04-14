@@ -122,6 +122,7 @@ void PineRenderable::do_animate(float time) {
     }
     if(mustDie){
         fell(time,m_direction,4);
+        mustDie = false;
     }
 }
 

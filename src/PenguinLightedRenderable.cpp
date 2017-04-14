@@ -272,17 +272,18 @@ void PenguinLightedRenderable::beforeAnimate(float time){
                     , staticTransform.getOrientation(), staticTransform.getScale()));
             jumpTux(time, 2);
             scheduleStatusChange = time+2;
-            m_nextStatus = PENGUIN_STATUS_JUMPING;
+            m_nextStatus = PENGUIN_STATUS_SLIDING;
             break;
         case PENGUIN_STATUS_SLIDING:
         // remove all keyframes to get the animation right
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            m_particle->setVelocity(glm::vec3(0, 1, 0));
             m_particle->setFixed(false);
             break;
 
         default:
             break;
-        }
-        if (m_nextStatus == PENGUIN_STATUS_STARTING){
         }
         m_status = m_nextStatus;
     }
