@@ -224,15 +224,16 @@
     La deuxième est la création des sapins.
     Nous avons commencé par réaliser des primitives de cônes et donc un renderable associé (disponible dans \textit{./src/ConeRenderable.cpp}).
     Ensuite nous avons réunis plusieurs de ces cônes pour créer un tronc et des étages de feuilles (le tout dans \textit{./src/PineRenderable.cpp}).
+    Le sapin hérite de HierarchicalRenderable : les feuilles au sommet ont pour parent le tronc et les autres les feuilles situées au dessus.
     Des animations ont ensuite été rajouté, celles-ci seront décrites prochainement.
-    [DETAILS TECHNIQUES]
+
 
     \paragraph{}
     La troisième est la création de la piste.
     Nous avions besoin d'une piste plutôt longue, avec des ondulations. Ainsi nous avons refusé l'idée de juste afficher un plan incliné.
     Nous nous sommes rabattu sur une double interpolation hermitienne (une dans la direction de l'axe X, l'autre sur l'axe Y) pour obtenir des effets courbés et donc des bosses, pour rajouter du réalisme à notre piste.
     Le code de cette partie se trouve dans \textit{./src/BasicTerrainGenerator.cpp}, \textit{./src/decor.cpp}, \textit{SlopeRenderable.cpp}.
-    [DETAILS TECHNIQUES]
+    
 
     \paragraph{}
     Nous avons ensuite démarré les animations, la physique et l'ajout de la neige.
