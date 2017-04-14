@@ -7,8 +7,8 @@
 #include "../include/SnowballRenderable.hpp"
 #include "glm/ext.hpp"
 
-PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,DynamicSystemPtr dynamicSystem) :
-        HierarchicalRenderable(texShader){
+PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,DynamicSystemPtr dynamicSystem, bool main) :
+        HierarchicalRenderable(texShader) {
 
     //Loading the differents parts of the penguin
     glm::mat4 parentTransformation, localTransformation;
@@ -33,26 +33,27 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
     // placing the different parts together
     Body->setMaterial(pearl);
 
-    GeometricTransformation parentStaticTransform(glm::vec3(0, 4.5, 2.35), quatAxisAngle(float(M_PI_2), glm::vec3(1,0,0)) *
-            quatAxisAngle(float(M_PI_2), glm::vec3(0,1,0)), glm::vec3(2,2,2));
+    GeometricTransformation parentStaticTransform(glm::vec3(0, 4.5, 2.35),
+                                                  quatAxisAngle(float(M_PI_2), glm::vec3(1, 0, 0)) *
+                                                  quatAxisAngle(float(M_PI_2), glm::vec3(0, 1, 0)), glm::vec3(2, 2, 2));
     setParentTransform(parentStaticTransform);
     Body->setParentTransform(GeometricTransformation());
 
     RF->setMaterial(pearl);
     //parentTransformation = glm::translate( glm::mat4(1.0), ));
-    RF->setParentTransform( GeometricTransformation::makeTranslation(glm::vec3(-0.1, -0.68, 0.35)));
+    RF->setParentTransform(GeometricTransformation::makeTranslation(glm::vec3(-0.1, -0.68, 0.35)));
 
     LF->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(-0.12, -0.68, -0.34));
-    LF->setParentTransform( GeometricTransformation::makeTranslation(glm::vec3(-0.12, -0.68, -0.34)));
+    parentTransformation = glm::translate(glm::mat4(1.0), glm::vec3(-0.12, -0.68, -0.34));
+    LF->setParentTransform(GeometricTransformation::makeTranslation(glm::vec3(-0.12, -0.68, -0.34)));
 
     LH->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(-0.29,-0.1 ,-0.51));
-    LH->setParentTransform( GeometricTransformation::makeTranslation(glm::vec3(-0.29,-0.1 ,-0.51)));
+    parentTransformation = glm::translate(glm::mat4(1.0), glm::vec3(-0.29, -0.1, -0.51));
+    LH->setParentTransform(GeometricTransformation::makeTranslation(glm::vec3(-0.29, -0.1, -0.51)));
 
     RH->setMaterial(pearl);
-    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3(-0.29,-0.1 ,0.56));
-    RH->setParentTransform(GeometricTransformation::makeTranslation(glm::vec3(-0.29,-0.1 ,0.56)));
+    parentTransformation = glm::translate(glm::mat4(1.0), glm::vec3(-0.29, -0.1, 0.56));
+    RH->setParentTransform(GeometricTransformation::makeTranslation(glm::vec3(-0.29, -0.1, 0.56)));
 
     //link the parts
     HierarchicalRenderable::addChild(Body, RH);
@@ -61,21 +62,26 @@ PenguinLightedRenderable::PenguinLightedRenderable(ShaderProgramPtr texShader,Dy
     HierarchicalRenderable::addChild(Body, LF);
 
     //physics initializing
-    m_status = PENGUIN_STATUS_STARTING;
-    m_nextStatus = PENGUIN_STATUS_STARTING;
+    if (main) {
+        m_status = PENGUIN_STATUS_STARTING;
+        m_nextStatus = PENGUIN_STATUS_STARTING;
+
+    } else {
+        m_status = PENGUIN_STATUS_COLIDING;
+        m_nextStatus = PENGUIN_STATUS_COLIDING;
+    }
     m_particle = std::make_shared<Particle>(parentStaticTransform.getTranslation(), glm::vec3(0), 2, 0.5);
     m_particle->setFixed(true);
     dynamicSystem->addParticle(m_particle);
 
-    std::vector<ParticlePtr> particleList;
+    std::vector <ParticlePtr> particleList;
     particleList.push_back(m_particle);
 
 
-    m_force = std::make_shared<ConstantForceField>(particleList, glm::vec3(0,0,-10));
+    m_force = std::make_shared<ConstantForceField>(particleList, glm::vec3(0, 0, -10));
     dynamicSystem->addForceField(m_force);
 
     m_forceController = std::make_shared<ControlledForceField>(texShader, m_force);
-
     scheduleStatusChange = -1;
 }
 
@@ -84,7 +90,7 @@ void PenguinLightedRenderable::walkTux(float time, float duration){
 
     float timeStep = duration / 4;
     glm::vec3 position(0);
-    
+
     Body->addParentTransformKeyframe(0.0+time, GeometricTransformation(position));
     position += glm::vec3(0.5,0.0,0.0);
     Body->addParentTransformKeyframe(1*timeStep+time, GeometricTransformation(position));
@@ -129,16 +135,16 @@ void PenguinLightedRenderable::jumpTux(float time, float duration){
     glm::vec3 position(0);
 
     Body->addParentTransformKeyframe(0*timeStep+time,
-            GeometricTransformation(position, glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,0.0,1.0))));
+                                     GeometricTransformation(position, glm::angleAxis(-float(M_PI)/16, glm::vec3(0.0,0.0,1.0))));
     position += glm::vec3(0.5,0.25,0);
     Body->addParentTransformKeyframe(1*timeStep+time,
-            GeometricTransformation(position, glm::angleAxis(-float(M_PI)/8, glm::vec3(0.0,0.0,1.0))));
+                                     GeometricTransformation(position, glm::angleAxis(-float(M_PI)/8, glm::vec3(0.0,0.0,1.0))));
     position += glm::vec3(0.5,0.25,0);
     Body->addParentTransformKeyframe(2*timeStep+time,
-            GeometricTransformation(position, glm::angleAxis(-float(M_PI)/4, glm::vec3(0.0,0.0,1.0))));
+                                     GeometricTransformation(position, glm::angleAxis(-float(M_PI)/4, glm::vec3(0.0,0.0,1.0))));
     position += glm::vec3(0.5,0,0);
     Body->addParentTransformKeyframe(3*timeStep+time,
-            GeometricTransformation(position, glm::angleAxis(-float(M_PI)/2, glm::vec3(0.0,0.0,1.0))));
+                                     GeometricTransformation(position, glm::angleAxis(-float(M_PI)/2, glm::vec3(0.0,0.0,1.0))));
 
 
     glm::vec3 z(0.0,0.0,1.0);
@@ -283,6 +289,10 @@ void PenguinLightedRenderable::beforeAnimate(float time){
             m_particle->setVelocity(glm::vec3(0, 3, 0));
             m_particle->setFixed(false);
             break;
+        case PENGUIN_STATUS_COLIDING:
+            setParentTransform(GeometricTransformation(m_particle->getPosition()
+                    , staticTransform.getOrientation(), staticTransform.getScale()));
+            break;
 
         default:
             break;
@@ -297,6 +307,10 @@ void PenguinLightedRenderable::beforeAnimate(float time){
         case PENGUIN_STATUS_RECOVERING:
             break;// fully keyframed, nothing to do
         case PENGUIN_STATUS_SLIDING:
+            if (m_particle->isFixed()){
+                scheduleStatusChange = time;
+                m_nextStatus = PENGUIN_STATUS_COLIDING;
+            }
             velocityDirection = glm::normalize(m_particle->getVelocity());
 
             // compute quaternion to align penguin yAxis (head) with velocityDirection
@@ -365,8 +379,9 @@ const ParticlePtr & PenguinLightedRenderable::getParticle(){
 
 void PenguinLightedRenderable::do_keyReleasedEvent(sf::Event& e){
     if (e.key.code == sf::Keyboard::Return) {
-        if (m_status == PENGUIN_STATUS_STARTING);
+        if (m_status == PENGUIN_STATUS_STARTING){
             scheduleStatusChange = 0;
             m_nextStatus = PENGUIN_STATUS_WALKING1;
+        }
     }
 }

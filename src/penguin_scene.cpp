@@ -114,7 +114,7 @@ void initialize_penguin_scene(Viewer &viewer) {
     viewer.addRenderable(slope);
     system->setTerrain(slope);
 //pine forest
-    int nForest = 60;
+    int nForest = 40;
     std::vector<PineRenderablePtr> forest(nForest);
 
     for (int i = 0; i <nForest ; ++i) {
@@ -127,15 +127,30 @@ void initialize_penguin_scene(Viewer &viewer) {
     }
     system->setPine(forest);
 //Penguin
-    PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader, system);
+    PenguinLightedRenderablePtr Tux = std::make_shared<PenguinLightedRenderable>(texShader, system,true);
     Tux->bindMembers(Tux);
     Tux->bindForceController(systemRenderable);
 
     GeometricTransformation transform = Tux->getParentStaticTransform();
-    //transform.setOrientation(quatAxisAngle(M_PI/2, glm::vec3(1, 0, 0)) * transform.getOrientation());
     Tux->setParentTransform(transform);
 
     viewer.addRenderable(Tux);
+
+    //Papa
+    PenguinLightedRenderablePtr papaTux = std::make_shared<PenguinLightedRenderable>(texShader, system,false);
+    papaTux->bindMembers(papaTux);
+    papaTux->bindForceController(systemRenderable);
+
+    transform = papaTux->getParentStaticTransform();
+    transform.setOrientation(quatAxisAngle(-M_PI, glm::vec3(0, 0, 1)) * transform.getOrientation());
+    transform.setTranslation(glm::vec3(0,180,-86));
+    transform.setScale(glm::vec3(4,4,4));
+    papaTux->setParentTransform(transform);
+    ParticlePtr papaParticle = papaTux->getParticle();
+    papaParticle->setPosition(transform.getTranslation());
+    papaParticle->setRadius(1.5);
+
+    viewer.addRenderable(papaTux);
 
 //snow
     // this needs to be after the penguin(s) has been created

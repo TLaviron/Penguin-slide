@@ -33,7 +33,7 @@ typedef std::shared_ptr<PenguinLightedRenderable> PenguinLightedRenderablePtr;
 
 class PenguinLightedRenderable: public HierarchicalRenderable {
 public:
-    PenguinLightedRenderable(ShaderProgramPtr texShader,DynamicSystemPtr dynamicSystem);
+    PenguinLightedRenderable(ShaderProgramPtr texShader,DynamicSystemPtr dynamicSystem, bool main = true);
     ~PenguinLightedRenderable();
 
     /**
