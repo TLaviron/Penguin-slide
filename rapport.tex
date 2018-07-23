@@ -201,7 +201,8 @@
     Nous avons décidé de réaliser un petit jeu où nous contrôlerons un pingouin.
     Celui-ci devra rejoindre son papa pingouin qui se trouve à la fin d'une piste de glisse pour pingouin.
     Il aura pour objectif  d'éviter les objets qui lui bloqueront son chemin et d'arriver auprès de son papa pingouin pour aller réaliser
-    sa séance de natation synchronisée favorite.
+    sa séance de natation synchronisée favorite (cette dernière n'est malheureusement pas modélisée car la piscine ne
+    nous a pas autorisé à reproduire l'intérieur).
 
     \section{Premières idées et réalisations}
 
@@ -258,7 +259,9 @@
     \paragraph{}
     Nous avons ensuite animé le pingouin (il faut que le bébé pingouin montre à son papa qu'il est en pleine forme).
     Les premières animations nous servent à positionner correctement le pingouin en position de glisse, au sommet de la piste.
-    Il y a au début une animation de marche, où le corps de notre pingouin va dandiner (car il est content de pouvoir descendre une piste, nous n'avons pas beaucoup eu cette chance cette année).
+    Il y a au début une animation de marche, où le corps de notre pingouin va dandiner \footnote{Cette animation de dandinement
+    à disparu du résultat final; elle a été  perdue lors de la déspaghettification du code. Seul le mouvement des pieds et
+    nagoires est resté.} (car il est content de pouvoir descendre une piste, nous n'avons pas beaucoup eu cette chance cette année).
     Il va donc incliner légèrement ses pieds, ses nageoires et pencher son corps sur chaque côté alternativement.\\
     Il y a ensuite une animation de saut où notre protagoniste prend de l'élan, et réalise un bond, en tendant ses pieds.
     Cette animation nous permet d'avoir le pingouin sur le ventre (il est connu que les pingouins glissent sur le ventre), parallèle à la piste, en position de départ.
@@ -272,14 +275,14 @@
     Les forces ont tout d'abord été ajouté (avec tout ce qui est nécessaire à côté) pour permettre à la neige de tomber (c'est mieux).
     Ensuite nous avons réalisé une partie difficile qui est la collision avec la piste.
     Celle-ci étant une interpolation hermitienne, représentée avec des triangles étirés à certains endroits pour réaliser les virages, il a été ardu de réaliser un calcul de collision précis.\\
-    Nous avons ensuite ajouté le calcul des collisions entre le tux et les sapins (nous devions rentabilisé le temps passé à l'animer après tout!).
-    En revanche, les collisions entre particules de neige ne sont pas calculés, ce qui nous permet d'être moins gourmand.
+    Nous avons ensuite ajouté le calcul des collisions entre le tux et les sapins (nous devions rentabiliser le temps passé à l'animer après tout!).
+    En revanche, les collisions entre particules de neige ne sont pas calculées, ce qui nous permet d'être moins gourmand.
     Les flocons sont en effet créés une seule fois, puis déplacés pour suivre la caméra.
 
     \subsection{Embellissement}
 
     \paragraph{}
-    Pour rendre notre jeu plus agréable aux yeux (et plus fun!), nous avons ajouté un grand nombre de sapin sur notre carte (nous avons donc plusieurs niveaux de difficulté).
+    Pour rendre notre jeu plus agréable aux yeux (et plus fun!), nous avons ajouté un grand nombre de sapins sur notre carte (nous avons donc plusieurs niveaux de difficulté).
     Nous avons aussi augmenté le nombre de flocons créés, pour se rapprocher d'une chute de neige assez dense (on adore la neige!).
 
 \end{document}
